@@ -27,7 +27,7 @@ Run `node stats.js` to generate from source:
 ---
 
 ## Table of Contents
-
+- [Table of Contents] (#Table-of-Contents)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [CLI Commands](#cli-commands)
@@ -75,7 +75,7 @@ Run `node stats.js` to generate from source:
 
 ---
 
-## Installation
+## Installation ## Table of Contents
 
 ```bash
 npm install @haridevx/hdx-css
