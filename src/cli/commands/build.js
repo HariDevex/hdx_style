@@ -6,7 +6,6 @@ import { getAnimationKeyframes } from '../../utilities/index.js';
 import { extractClassNames } from '../../scanner/extractor.js';
 import { purgeUnused } from '../../scanner/purger.js';
 import { getAllUtilities } from '../../utilities/index.js';
-import { parseClass, mapUtilitiesToVariants } from '../../core/parser.js';
 import { success, info, step, error, warn } from '../utils.js';
 
 /**

@@ -1,7 +1,7 @@
 import { loadConfigFromFile, resolveConfigPath } from '../../core/config.js';
 import { generateCSS } from '../../generator/index.js';
 import { getAnimationKeyframes } from '../../utilities/index.js';
-import { success, step, info } from '../utils.js';
+import { success, info } from '../utils.js';
 import fs from 'node:fs';
 import path from 'node:path';
 
