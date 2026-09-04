@@ -1,10 +1,28 @@
 # @haridevx/hdx-css
 
-**HDX CSS** — Modern utility-first CSS framework with a complete design system.
+**HDX CSS** — A modern, independent utility-first CSS framework and design system built from scratch around the `hdx_` namespace.
+
+> HDX CSS is an independent utility-first CSS framework and design system. It is inspired by the usability of utility-first CSS, but its implementation, utilities, tokens, components, generator, CLI, and plugin API are independently developed. It is not a fork, wrapper, derivative implementation, or modified version of Tailwind CSS.
 
 Every utility class starts with `hdx_`. Built for SaaS, dashboards, and enterprise applications.
 
-**1,187 utilities. 58 components. 13 variants. 100 tests passing.**
+### Verified Statistics
+
+Run `node stats.js` to generate from source:
+
+| Metric | Count |
+|---|---|
+| Utilities | **1,187** |
+| Utility categories | **19** |
+| Components | **58** |
+| Variants | **28** |
+| State variants | **20** |
+| Responsive breakpoints | **5** |
+| Tests | **100** |
+| Source files | **55** |
+| Runtime dependencies | **4** |
+| PostCSS dependency | **No** |
+| Tailwind dependency | **No** |
 
 ---
 
@@ -52,6 +70,7 @@ Every utility class starts with `hdx_`. Built for SaaS, dashboards, and enterpri
 - [Plugin System](#plugin-system)
 - [Content Purging](#content-purging)
 - [Framework Integration](#framework-integration)
+- [Complete Page Example](#complete-page-example)
 - [License](#license)
 
 ---
@@ -173,6 +192,28 @@ export default {
   plugins: [],
 };
 ```
+
+### Safelist
+
+Force classes to always be included in the CSS output, even if not detected in content files:
+
+```js
+export default {
+  safelist: [
+    'hdx_flex',
+    'hdx_hidden',
+    'hdx_bg-primary',
+    'hdx_text-white',
+    // Dynamic class patterns
+    'hdx_opacity-',
+  ],
+};
+```
+
+This is useful for:
+- Classes built dynamically via string concatenation
+- Classes used in JavaScript logic not scanned by the content scanner
+- Ensuring critical utility classes are never purged
 
 ### Custom Prefix
 
@@ -834,6 +875,31 @@ All utilities support responsive prefixes:
 
 ## State Variants
 
+HDX CSS supports 20 state variants:
+
+| Variant | Pseudo-class |
+|---|---|
+| `hover` | `:hover` |
+| `focus` | `:focus` |
+| `focus-visible` | `:focus-visible` |
+| `active` | `:active` |
+| `visited` | `:visited` |
+| `disabled` | `:disabled` |
+| `checked` | `:checked` |
+| `required` | `:required` |
+| `invalid` | `:invalid` |
+| `valid` | `:valid` |
+| `first` | `:first-child` |
+| `last` | `:last-child` |
+| `odd` | `:nth-child(odd)` |
+| `even` | `:nth-child(even)` |
+| `empty` | `:empty` |
+| `enabled` | `:enabled` |
+| `read-only` | `:read-only` |
+| `placeholder` | `::placeholder` |
+| `first-line` | `::first-line` |
+| `selection` | `::selection` |
+
 ### Hover
 
 ```html
@@ -918,6 +984,36 @@ All utilities support responsive prefixes:
 " disabled />
 ```
 
+### Checked / Required / Invalid
+
+```html
+<input type="checkbox" class="hdx_checkbox hdx_checked_bg-primary hdx_checked_border-primary">
+<input type="text" class="hdx_input hdx_required_border-danger">
+<input type="email" class="hdx_input hdx_invalid_border-danger hdx_invalid_text-danger">
+```
+
+### First / Last / Odd / Even
+
+```html
+<div class="hdx_flex hdx_flex-col">
+  <div class="hdx_p-4 hdx_first_rounded-t-lg hdx_last_rounded-b-lg hdx_odd_bg-surface hdx_even_bg-surface-secondary">
+    Item
+  </div>
+</div>
+```
+
+### Placeholder
+
+```html
+<input class="hdx_input hdx_placeholder_text-text-muted" placeholder="Enter text...">
+```
+
+### Selection
+
+```html
+<p class="hdx_selection_bg-primary hdx_selection_text-white">Selected text</p>
+```
+
 ### Group Hover
 
 ```html
@@ -939,6 +1035,27 @@ All utilities support responsive prefixes:
     </p>
   </div>
 </div>
+```
+
+### Combined Variants
+
+Combine responsive + state, responsive + dark, or dark + state:
+
+```html
+<!-- Responsive + State: hdx_md_hover_bg-primary-hover -->
+<button class="hdx_btn hdx_btn-primary hdx_md_hover_bg-primary-hover">
+  Hover on md+
+</button>
+
+<!-- Responsive + Dark: hdx_lg_dark_bg-surface-secondary -->
+<div class="hdx_bg-surface hdx_lg_dark_bg-surface-secondary">
+  Dark on lg+
+</div>
+
+<!-- Dark + State: hdx_dark_hover_bg-primary-hover -->
+<button class="hdx_btn hdx_btn-primary hdx_dark_hover_bg-primary-hover">
+  Hover in dark mode
+</button>
 ```
 
 ---
@@ -1631,4 +1748,6 @@ export default function App({ Component, pageProps }) {
 
 ## License
 
+Licensed By HariDevX
+--------------------
 MIT

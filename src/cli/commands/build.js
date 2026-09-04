@@ -50,7 +50,7 @@ export function buildCommand(program) {
 
           // Filter CSS to only include used utilities
           const allUtilities = getAllUtilities(config);
-          const usedUtils = purgeUnused(allUtilities, allUsedClasses, config.prefix);
+          const usedUtils = purgeUnused(allUtilities, allUsedClasses, config.prefix, config.safelist || []);
           info(`Keeping ${usedUtils.length} of ${allUtilities.length} utilities`);
 
           // Re-generate with only used utilities

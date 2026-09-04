@@ -1,6 +1,6 @@
 import { getSelector } from '../core/prefix.js';
 import { generateRule, generateMultiPropertyRule } from './utility-generator.js';
-import { wrapInStateVariant, wrapInResponsive, wrapInDark } from './variant-generator.js';
+import { wrapInStateVariant, wrapInResponsive, wrapInDark, wrapInCombinedVariant, wrapInCombinedResponsiveDark, wrapInCombinedDarkState } from './variant-generator.js';
 import { getAllUtilities } from '../utilities/index.js';
 import { getAllVariants } from '../variants/index.js';
 import { getAllComponents } from '../components/index.js';
@@ -33,28 +33,59 @@ export function generateCSS(config, options = {}) {
   const utilities = getAllUtilities(processedConfig);
   const variants = getAllVariants(processedConfig);
 
+  const responsiveVariants = variants.filter(v => v.type === 'responsive');
+  const stateVariantsList = variants.filter(v => v.type === 'state');
+  const darkVariantsList = variants.filter(v => v.type === 'dark');
+
   css += '\n/* HDX CSS — Utilities */\n';
   for (const util of utilities) {
-    if (util.css) {
-      css += generateMultiPropertyRule(util, processedConfig.prefix);
-    } else {
-      css += generateRule(util, processedConfig.prefix);
-    }
+    const baseRule = util.css
+      ? generateMultiPropertyRule(util, processedConfig.prefix)
+      : generateRule(util, processedConfig.prefix);
+    css += baseRule;
 
+    // Single variants
     for (const variant of variants) {
-      let baseRule;
-      if (util.css) {
-        baseRule = generateMultiPropertyRule(util, processedConfig.prefix);
-      } else {
-        baseRule = generateRule(util, processedConfig.prefix);
-      }
+      let rule = util.css
+        ? generateMultiPropertyRule(util, processedConfig.prefix)
+        : generateRule(util, processedConfig.prefix);
 
       if (variant.type === 'state') {
-        css += wrapInStateVariant(baseRule, variant, util.name, processedConfig.prefix);
+        css += wrapInStateVariant(rule, variant, util.name, processedConfig.prefix);
       } else if (variant.type === 'responsive') {
-        css += wrapInResponsive(baseRule, variant, util.name, processedConfig.prefix);
+        css += wrapInResponsive(rule, variant, util.name, processedConfig.prefix);
       } else if (variant.type === 'dark') {
-        css += wrapInDark(baseRule, variant, util.name, processedConfig.prefix, processedConfig.darkMode);
+        css += wrapInDark(rule, variant, util.name, processedConfig.prefix, processedConfig.darkMode);
+      }
+    }
+
+    // Combined variants: responsive + state (e.g., hdx_md_hover_flex)
+    for (const resp of responsiveVariants) {
+      for (const state of stateVariantsList) {
+        let rule = util.css
+          ? generateMultiPropertyRule(util, processedConfig.prefix)
+          : generateRule(util, processedConfig.prefix);
+        css += wrapInCombinedVariant(rule, resp, state, util.name, processedConfig.prefix);
+      }
+    }
+
+    // Combined variants: responsive + dark (e.g., hdx_lg_dark_flex)
+    for (const resp of responsiveVariants) {
+      for (const dark of darkVariantsList) {
+        let rule = util.css
+          ? generateMultiPropertyRule(util, processedConfig.prefix)
+          : generateRule(util, processedConfig.prefix);
+        css += wrapInCombinedResponsiveDark(rule, resp, dark, util.name, processedConfig.prefix, processedConfig.darkMode);
+      }
+    }
+
+    // Combined variants: dark + state (e.g., hdx_dark_hover_flex)
+    for (const dark of darkVariantsList) {
+      for (const state of stateVariantsList) {
+        let rule = util.css
+          ? generateMultiPropertyRule(util, processedConfig.prefix)
+          : generateRule(util, processedConfig.prefix);
+        css += wrapInCombinedDarkState(rule, dark, state, util.name, processedConfig.prefix, processedConfig.darkMode);
       }
     }
   }

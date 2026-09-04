@@ -183,6 +183,7 @@ export const defaultFontFamily = 'Inter, ui-sans-serif, system-ui, -apple-system
 export const defaultConfig = {
   prefix: 'hdx_',
   content: [],
+  safelist: [],
   darkMode: 'class',
   theme: defaultTheme,
   plugins: [],
