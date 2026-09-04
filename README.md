@@ -208,7 +208,7 @@ npx hdx_style build -p          # Build with content purging
 npx hdx_style build -o out.css  # Custom output path
 npx hdx_style build -c my.config.js  # Custom config path
 npx hdx_style watch             # Watch files and rebuild
-npx hdx_style generate          # Alias for build
+npx hdx_style generate          # Generate the full stylesheet (all utilities and variants)
 npx hdx_style --version         # Print version
 npx hdx_style --help            # Print help
 ```

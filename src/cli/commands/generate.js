@@ -4,13 +4,13 @@ import { getAnimationKeyframes } from '../../utilities/index.js';
 import { success, step, info } from '../utils.js';
 
 /**
- * Register the generate command (alias for build)
+ * Register the generate command — simpler, always-full-output build
  * @param {import('commander').Command} program
  */
 export function generateCommand(program) {
   program
     .command('generate')
-    .description('Generate CSS (alias for build)')
+    .description('Generate the full stylesheet (all utilities and variants)')
     .option('-c, --config <path>', 'Config file path (hdx.config.js / .mjs / .cjs)')
     .option('-o, --output <path>', 'Output file path', 'dist/hdx.css')
     .action(async (opts) => {
