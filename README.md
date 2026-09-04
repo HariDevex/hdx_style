@@ -158,6 +158,20 @@ Key design decisions:
 
 <h2 id="installation">📥 Installation</h2>
 
+> **Not published to npm yet.** `@haridevx/hdx-style` is not on the public npm registry yet (checking `registry.npmjs.org` returns 404), so the `npm install`, unpkg CDN link, and `@haridevx/hdx-style/...` imports below only work **after the package is published** (`npm publish --access public`). Until then, reference the local build — the CLI writes it to `dist/hdx.css`:
+
+```html
+<!-- in your page (after running npx hdx_style build) -->
+<link rel="stylesheet" href="./dist/hdx.css">
+```
+
+```js
+// or in your app entry
+import "./dist/hdx.css";
+```
+
+Once published, the standard install paths are:
+
 ```bash
 npm install @haridevx/hdx-style
 ```
