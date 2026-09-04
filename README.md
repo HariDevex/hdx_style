@@ -1,28 +1,65 @@
-# @haridevx/hdx-style
+<div align="center">
 
-**HDX Style** — A modern, independent utility-first CSS framework and design system built from scratch around the `hdx_` namespace.
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="HDX Style logo">
+  <defs>
+    <linearGradient id="hdxGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="50%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#EC4899"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="100" height="100" rx="26" fill="url(#hdxGrad)"/>
+  <path d="M34 84 V36 h11 v38 h30 v-38 h11 v48 Z" fill="#FFFFFF"/>
+  <path d="M86 40 l-14 12 14 12 Z" fill="#FDE047"/>
+</svg>
 
-> HDX Style is an independent utility-first CSS framework and design system. It is inspired by the usability of utility-first CSS, but its implementation, utilities, tokens, components, generator, CLI, and plugin API are independently developed. It is not a fork, wrapper, derivative implementation, or modified version of Tailwind CSS.
+# HDX Style
 
-Every utility class starts with `hdx_`. Built for SaaS, dashboards, and enterprise applications.
+**`@haridevx/hdx-style`** — a modern, **independent**, utility-first CSS framework & design system, built from scratch around the `hdx_` namespace.
 
-### Verified Statistics
+Every utility class starts with `hdx_` — built for SaaS, dashboards, and enterprise applications.
+
+[![npm version](https://img.shields.io/npm/v/@haridevx/hdx-style?style=for-the-badge&logo=npm&label=version&color=%237C3AED)](https://www.npmjs.com/package/@haridevx/hdx-style)
+[![License](https://img.shields.io/badge/license-MIT-%2316A34A?style=for-the-badge&logo=opensourceinitiative)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node-%E2%89%A5%2018-%230EA5E9?style=for-the-badge&logo=node.js&logoColor=white)](package.json)
+[![Tests](https://img.shields.io/badge/tests-163%20passing-%23A3E635?style=for-the-badge&logo=vitest)](.github/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/HariDevex/hdx_style/ci.yml?branch=main&style=for-the-badge&label=CI&logo=github&color=%23F59E0B)](.github/workflows/ci.yml)
+
+</div>
+
+> **Independent implementation.** HDX Style is an independent utility-first CSS framework and design system. It is inspired by the usability of utility-first CSS, but its implementation, utilities, tokens, components, generator, CLI, and plugin API are independently developed. It is **not** a fork, wrapper, derivative implementation, or modified version of Tailwind CSS.
+
+### 📊 Verified Statistics
 
 Run `node stats.js` to generate from source:
 
 | Metric | Count |
 |---|---|
-| Utilities | **1,184** |
-| Utility categories | **19** |
-| Components | **58** |
-| Variants | **28** |
-| State variants | **20** |
-| Responsive breakpoints | **5** |
-| Tests | **154** |
-| Source files | **57** |
-| Runtime dependencies | **4** |
-| PostCSS dependency | **No** |
-| Tailwind dependency | **No** |
+| 📦 Utilities | **1,184** |
+| 🗂️ Utility categories | **19** |
+| 🧩 Components | **58** |
+| 🎛️ Variants | **28** |
+| 📐 Responsive breakpoints | **5** |
+| ✅ Tests | **163** |
+| 📄 Source files | **56** |
+| ⚙️ Runtime dependencies | **4** |
+| 🚫 PostCSS dependency | **No** |
+| 🚫 Tailwind dependency | **No** |
+
+### ✨ Why HDX Style?
+
+| | |
+|---|---|
+| ⚡ **Demand-driven builds** | Production output ~1,000× smaller — only the classes you actually use |
+| 🔬 **Class parser** | `hdx_md_hover_bg-primary` → `{ variants: [md, hover], utility: bg-primary }` |
+| 🎨 **Design tokens** | Semantic colors, spacing, shadows, breakpoints → CSS variables |
+| 🌙 **Dark mode** | `class`, `media`, or `both` strategies, namespaced as `hdx_dark` |
+| 📐 **Responsive prefixes** | `sm` `md` `lg` `xl` `2xl` on every single utility |
+| 🔌 **Plugin API** | Registry-based: add utilities, variants, and components |
+| 🧱 **Components** | 58 drop-in components — buttons, cards, modals, tables, and more |
+| 🧹 **Auto purging** | Scans HTML/JS/JSX/TS/Vue/Svelte and keeps only what's used |
+| ♿ **Accessible** | Focus rings, `sr-only`, and reduced-motion support built in |
+| 🔒 **Deterministic** | Identical input → identical CSS. No timestamps, no surprises |
 
 ---
 
@@ -79,7 +116,7 @@ Run `node stats.js` to generate from source:
 
 ---
 
-## Architecture
+<h2 id="architecture">🏗️ Architecture</h2>
 
 HDX Style is an independent, modular CSS framework. Its pipeline:
 
@@ -120,7 +157,7 @@ Key design decisions:
 
 ---
 
-## Installation 
+<h2 id="installation">📥 Installation</h2>
 
 ```bash
 npm install @haridevx/hdx-style
@@ -156,7 +193,7 @@ The package ships TypeScript definitions (`.d.ts`) for the full public API.
 
 ---
 
-## Quick Start
+<h2 id="quick-start">🚀 Quick Start</h2>
 
 ### 1. Install
 
@@ -199,7 +236,7 @@ npx hdx_style build
 
 ---
 
-## CLI Commands
+<h2 id="cli-commands">💻 CLI Commands</h2>
 
 ```bash
 npx hdx_style init              # Create hdx.config.js (.mjs/.cjs auto-detected)
@@ -215,7 +252,7 @@ npx hdx_style --help            # Print help
 
 ---
 
-## Configuration
+<h2 id="configuration">⚙️ Configuration</h2>
 
 Create `hdx.config.js` (or `hdx.config.cjs` / `hdx.config.mjs`) in your project root:
 
@@ -338,7 +375,7 @@ export default {
 
 ---
 
-## Design Tokens
+<h2 id="design-tokens">🎨 Design Tokens</h2>
 
 ### Colors (Semantic System)
 
@@ -464,7 +501,7 @@ breakpoints: {
 
 ---
 
-## CSS Variables
+<h2 id="css-variables">🧬 CSS Variables</h2>
 
 All semantic colors generate CSS custom properties:
 
@@ -497,7 +534,7 @@ Utilities reference these variables:
 
 ---
 
-## Utilities
+<h2 id="utilities">🛠️ Utilities</h2>
 
 ### Display
 
@@ -881,7 +918,7 @@ Utilities reference these variables:
 
 ---
 
-## Class Parser
+<h2 id="class-parser">🔬 Class Parser</h2>
 
 The class parser decomposes any HDX class into its components. It does **not** assume a fixed number of variants:
 
@@ -895,7 +932,7 @@ The class parser decomposes any HDX class into its components. It does **not** a
 
 Applied primarily by the scanner in production builds to map used classes to required utilities + variant combos.
 
-## Variant Pipeline
+<h2 id="variant-pipeline">🔀 Variant Pipeline</h2>
 
 Variants compose in ordered layers instead of special-cased combinations:
 
@@ -920,7 +957,7 @@ Variant types:
 | `dark` | `hdx_dark` ancestor or media query | `dark` |
 | `ancestor` | Ancestor selector | `group-hover`, `peer-hover` |
 
-## Responsive Design
+<h2 id="responsive-design">📐 Responsive Design</h2>
 
 All utilities support responsive prefixes:
 
@@ -994,7 +1031,7 @@ All utilities support responsive prefixes:
 
 ---
 
-## State Variants
+<h2 id="state-variants">🎚️ State Variants</h2>
 
 HDX Style supports 20 state variants:
 
@@ -1181,7 +1218,7 @@ Combine responsive + state, responsive + dark, or dark + state:
 
 ---
 
-## Dark Mode
+<h2 id="dark-mode">🌙 Dark Mode</h2>
 
 ### Class Strategy (Default)
 
@@ -1262,15 +1299,15 @@ Note: the generated dark variables use `.hdx_dark`, not `.dark`. The dark mode c
     <div class="hdx_container hdx_mx-auto hdx_px-4 hdx_py-3 hdx_flex hdx_items-center hdx_justify-between">
       <span class="hdx_text-lg hdx_font-bold">Dashboard</span>
       <div class="hdx_flex hdx_gap-4">
-        <a href="#" class="hdx_text-sm hdx_text-text-secondary hover:hdx_text-primary">Home</a>
-        <a href="#" class="hdx_text-sm hdx_text-text-secondary hover:hdx_text-primary">Settings</a>
+        <a href="#" class="hdx_text-sm hdx_text-text-secondary hdx_hover_text-primary">Home</a>
+        <a href="#" class="hdx_text-sm hdx_text-text-secondary hdx_hover_text-primary">Settings</a>
       </div>
     </div>
   </nav>
 
   <!-- Content -->
   <main class="hdx_container hdx_mx-auto hdx_p-6">
-    <div class="hdx_grid hdx_grid-cols-1 md:hdx_grid-cols-3 hdx_gap-6">
+    <div class="hdx_grid hdx_grid-cols-1 hdx_md_grid-cols-3 hdx_gap-6">
       <div class="hdx_bg-surface hdx_border hdx_border-border hdx_rounded-xl hdx_shadow-sm hdx_p-6
                   hdx_dark_bg-surface-secondary hdx_dark_border-border-strong">
         <h2 class="hdx_text-lg hdx_font-semibold hdx_text-text">Card 1</h2>
@@ -1285,7 +1322,7 @@ Note: the generated dark variables use `.hdx_dark`, not `.dark`. The dark mode c
 
 ---
 
-## Components
+<h2 id="components">🧱 Components</h2>
 
 ### Buttons
 
@@ -1392,7 +1429,7 @@ Note: the generated dark variables use `.hdx_dark`, not `.dark`. The dark mode c
 </div>
 
 <!-- Card Grid -->
-<div class="hdx_grid hdx_grid-cols-1 md:hdx_grid-cols-3 hdx_gap-6">
+<div class="hdx_grid hdx_grid-cols-1 hdx_md_grid-cols-3 hdx_gap-6">
   <div class="hdx_card">
     <h3 class="hdx_text-lg hdx_font-semibold">Card 1</h3>
     <p class="hdx_mt-2 hdx_text-sm hdx_text-text-secondary">Content</p>
@@ -1518,7 +1555,7 @@ Note: the generated dark variables use `.hdx_dark`, not `.dark`. The dark mode c
 
 ---
 
-## Accessibility
+<h2 id="accessibility">♿ Accessibility</h2>
 
 ### Focus Ring
 
@@ -1557,7 +1594,7 @@ HDX Style automatically reduces animations for users who prefer reduced motion:
 
 ---
 
-## Plugin System
+<h2 id="plugin-system">🔌 Plugin System</h2>
 
 ### Creating a Plugin
 
@@ -1617,7 +1654,7 @@ padding-inline: 1rem;`,
 
 ---
 
-## Content Purging
+<h2 id="content-purging">🧹 Content Purging</h2>
 
 Remove unused CSS in production:
 
@@ -1725,7 +1762,7 @@ className={isActive ? "hdx_flex" : "hdx_block"}
 
 ---
 
-## Framework Integration
+<h2 id="framework-integration">🧩 Framework Integration</h2>
 
 ### Vanilla HTML
 
@@ -1821,7 +1858,7 @@ export default function App({ Component, pageProps }) {
 
 ---
 
-## Complete Page Example
+<h2 id="complete-page-example">🖼️ Complete Page Example</h2>
 
 ```html
 <!DOCTYPE html>
@@ -1859,7 +1896,7 @@ export default function App({ Component, pageProps }) {
     </div>
 
     <!-- Stats Grid -->
-    <div class="hdx_grid hdx_grid-cols-1 sm:hdx_grid-cols-2 lg:hdx_grid-cols-4 hdx_gap-6 hdx_mb-8">
+    <div class="hdx_grid hdx_grid-cols-1 hdx_sm_grid-cols-2 hdx_lg_grid-cols-4 hdx_gap-6 hdx_mb-8">
       <div class="hdx_card">
         <p class="hdx_text-sm hdx_text-text-muted">Total Users</p>
         <p class="hdx_text-2xl hdx_font-bold hdx_text-text hdx_mt-1">12,345</p>
@@ -1883,10 +1920,10 @@ export default function App({ Component, pageProps }) {
     </div>
 
     <!-- Content Grid -->
-    <div class="hdx_grid hdx_grid-cols-1 lg:hdx_grid-cols-3 hdx_gap-6">
+    <div class="hdx_grid hdx_grid-cols-1 hdx_lg_grid-cols-3 hdx_gap-6">
 
       <!-- Recent Activity -->
-      <div class="lg:hdx_col-span-2 hdx_card">
+      <div class="hdx_lg_col-span-2 hdx_card">
         <div class="hdx_card-header hdx_flex hdx_items-center hdx_justify-between">
           <h2 class="hdx_text-lg hdx_font-semibold hdx_text-text">Recent Activity</h2>
           <button class="hdx_btn hdx_btn-ghost hdx_btn-sm">View All</button>
@@ -1935,7 +1972,7 @@ export default function App({ Component, pageProps }) {
 
 ---
 
-## License
+<h2 id="license">📜 License</h2>
 
 Licensed By HariDevX
 --------------------
