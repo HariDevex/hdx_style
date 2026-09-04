@@ -123,7 +123,43 @@ describe('Integration: Dark mode uses hdx_dark', () => {
         { name: 'bg-primary', property: 'background-color', value: 'var(--hdx-color-primary)', category: 'colors', _requestedVariants: [['dark']] },
       ],
     });
-    expect(css).toContain('.hdx_dark .hdx_bg-primary');
+    expect(css).toContain('.hdx_dark .hdx_dark_bg-primary');
+  });
+});
+
+describe('Integration: Combined variant selectors', () => {
+  it('responsive + state combo keeps the hover selector inside the media query', () => {
+    const config = loadConfig();
+    const css = generateCSS(config, {
+      utilities: [
+        { name: 'bg-primary', property: 'background-color', value: 'var(--hdx-color-primary)', category: 'colors', _requestedVariants: [['md', 'hover']] },
+      ],
+    });
+    expect(css).toContain('@media (min-width: 768px) {');
+    expect(css).toContain('.hdx_md_hover_bg-primary:hover');
+  });
+
+  it('responsive + dark combo places the dark ancestor inside the media query', () => {
+    const config = loadConfig();
+    const css = generateCSS(config, {
+      utilities: [
+        { name: 'bg-primary', property: 'background-color', value: 'var(--hdx-color-primary)', category: 'colors', _requestedVariants: [['md', 'dark']] },
+      ],
+    });
+    expect(css).toContain('@media (min-width: 768px) {');
+    expect(css).toContain('.hdx_dark .hdx_md_dark_bg-primary');
+    expect(css).not.toContain('.hdx_dark .hdx_bg-primary');
+  });
+
+  it('responsive + dark + state combo emits fully qualified selector behind the dark ancestor', () => {
+    const config = loadConfig();
+    const css = generateCSS(config, {
+      utilities: [
+        { name: 'bg-primary', property: 'background-color', value: 'var(--hdx-color-primary)', category: 'colors', _requestedVariants: [['md', 'dark', 'hover']] },
+      ],
+    });
+    expect(css).toContain('@media (min-width: 768px) {');
+    expect(css).toContain('.hdx_dark .hdx_md_dark_hover_bg-primary:hover');
   });
 });
 

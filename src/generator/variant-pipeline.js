@@ -55,13 +55,29 @@ export function applyVariantPipeline(baseCss, variantNames, variantMap, utilityN
   const fullClassName = variantPrefix + utilityName;
   const escaped = getSelector(fullClassName, prefix);
 
-  // Apply variants from outermost (first) to innermost (last)
-  // In CSS, outermost is the wrapper, innermost is closest to the rule
-  let css = baseCss;
+  // 1. Compose the inner selector. State/ancestor variants mutate the selector
+  //    closest to the rule, so walk variants innermost (last) → outermost (first)
+  //    and only rewrite the selector of the bare rule, never the wrappers.
+  let selector = '.' + escaped;
+  for (let i = variantNames.length - 1; i >= 0; i--) {
+    const variant = variantMap.get(variantNames[i]);
+    if (!variant) continue;
 
-  for (let i = 0; i < variantNames.length; i++) {
-    const vName = variantNames[i];
-    const variant = variantMap.get(vName);
+    if (variant.type === 'state' || variant.type === 'ancestor') {
+      const variantSelector = variant.selector(fullClassName);
+      selector = variantSelector.includes('&')
+        ? variantSelector.replace('&', selector)
+        : selector + variantSelector;
+    }
+  }
+
+  // Replace the base rule's selector once, before any wrapping
+  let css = baseCss.replace(/^(\.\S+)(\s*\{)/, selector + '$2');
+
+  // 2. Apply wrappers (responsive, dark) from innermost to outermost so that
+  //    responsive ends up outermost and dark sits between it and the rule.
+  for (let i = variantNames.length - 1; i >= 0; i--) {
+    const variant = variantMap.get(variantNames[i]);
     if (!variant) continue;
 
     if (variant.type === 'responsive') {
@@ -78,16 +94,6 @@ export function applyVariantPipeline(baseCss, variantNames, variantMap, utilityN
         // class strategy: prepend .hdx_dark
         css = '.hdx_dark ' + css;
       }
-    } else {
-      // State or ancestor
-      const variantSelector = variant.selector(fullClassName);
-      let selector;
-      if (variantSelector.includes('&')) {
-        selector = variantSelector.replace('&', '.' + escaped);
-      } else {
-        selector = '.' + escaped + variantSelector;
-      }
-      css = css.replace(/^(\.\S+)(\s*\{)/, selector + '$2');
     }
   }
 
