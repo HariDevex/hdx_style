@@ -7,7 +7,7 @@ import { extractClassNames } from '../../scanner/extractor.js';
 import { purgeUnused } from '../../scanner/purger.js';
 import { getAllUtilities } from '../../utilities/index.js';
 import { parseClass, mapUtilitiesToVariants } from '../../core/parser.js';
-import { success, info, step, error } from '../utils.js';
+import { success, info, step, error, warn } from '../utils.js';
 
 /**
  * Register the build command
@@ -87,6 +87,9 @@ export function buildCommand(program) {
 
           css = generateCSS(config, { utilities: neededUtils });
         } else {
+          if (config.content.length > 0) {
+            warn('Full build — generating every utility × variant combination. Pass -p/--purge or --production for a much smaller production build.');
+          }
           css = generateCSS(config);
         }
 
