@@ -79,6 +79,26 @@ describe('Integration: Purge actually reduces output', () => {
     expect(purged.find(u => u.name === 'p-4')).toBeDefined();
     expect(purged.find(u => u.name === 'text-primary')).toBeDefined();
   });
+
+  it('purger output feeds demand-driven generation end to end', () => {
+    const html = '<button class="hdx_lg_dark_hover_bg-primary"></button>';
+    const classes = extractClassNames(html);
+
+    const config = loadConfig();
+    const allUtilities = getAllUtilities(config);
+    const purged = purgeUnused(allUtilities, classes, config.prefix);
+
+    // The purger resolves deep combos via the class parser
+    const bg = purged.find(u => u.name === 'bg-primary');
+    expect(bg).toBeDefined();
+    expect(bg._requestedVariants).toContainEqual(['lg', 'dark', 'hover']);
+
+    // Its output drives the demand-driven generator
+    const purgedCss = generateCSS(config, { utilities: purged });
+    expect(purgedCss).toContain('.hdx_bg-primary');
+    expect(purgedCss).not.toContain('.hdx_grid');
+    expect(purgedCss).not.toContain('.hdx_shadow-xl');
+  });
 });
 
 describe('Integration: Dark mode uses hdx_dark', () => {

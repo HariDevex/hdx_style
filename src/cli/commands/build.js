@@ -49,39 +49,10 @@ export function buildCommand(program) {
 
           info('Found ' + allUsedClasses.size + ' unique class names in content');
 
-          // Parse classes to extract utility names and their variant combos
+          // Resolve needed utilities (with exact variant combos) via the purger
           const allUtilities = getAllUtilities(config);
-          const utilMap = new Map(allUtilities.map(u => [u.name, u]));
           const prefix = config.prefix || 'hdx_';
-
-          // Map each used class to its utility + variant combo
-          const classToVariants = mapUtilitiesToVariants(allUsedClasses, prefix);
-
-          // Resolve needed utilities with their variant combos
-          const neededUtils = [];
-          for (const [utilName, variantCombos] of classToVariants) {
-            const util = utilMap.get(utilName);
-            if (util) {
-              const utilWithVariants = { ...util };
-              // Store requested variant combos for demand-driven generation
-              utilWithVariants._requestedVariants = [...variantCombos]
-                .filter(v => v.length > 0)
-                .map(v => v.split('_'));
-              neededUtils.push(utilWithVariants);
-            }
-          }
-
-          // Also include safelist utilities
-          const safelist = config.safelist || [];
-          for (const safelistItem of safelist) {
-            const parsed = parseClass(safelistItem, prefix);
-            if (parsed.valid) {
-              const util = utilMap.get(parsed.utility);
-              if (util && !neededUtils.find(u => u.name === util.name)) {
-                neededUtils.push({ ...util, _requestedVariants: [] });
-              }
-            }
-          }
+          const neededUtils = purgeUnused(allUtilities, allUsedClasses, prefix, config.safelist || []);
 
           info('Keeping ' + neededUtils.length + ' of ' + allUtilities.length + ' utilities');
 

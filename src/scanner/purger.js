@@ -1,62 +1,50 @@
-import { prefixClass } from '../core/prefix.js';
+import { mapUtilitiesToVariants, parseClass } from '../core/parser.js';
 
 /**
- * Filter utilities to only those used in content (plus safelist)
+ * Compute the utilities (and their variant combos) referenced by content,
+ * plus safelisted classes.
+ *
+ * Uses the class parser so variant combos of any depth (e.g.
+ * `hdx_lg_dark_hover_bg-primary`) resolve to the right utility. The returned
+ * utilities carry a `_requestedVariants` array that drives demand-driven
+ * generation: each entry is the exact ordered variant combo to emit.
+ *
  * @param {import('../core/types.js').UtilityDefinition[]} allUtilities
- * @param {Set<string>} usedClasses
+ * @param {Set<string>|string[]} usedClasses - HDX class names found in content
  * @param {string} prefix
  * @param {string[]} [safelist]
  * @returns {import('../core/types.js').UtilityDefinition[]}
  */
 export function purgeUnused(allUtilities, usedClasses, prefix = 'hdx_', safelist = []) {
-  // Merge used classes with safelist
-  const allUsed = new Set([...usedClasses, ...safelist]);
+  const utilMap = new Map(allUtilities.map(u => [u.name, u]));
+  const classToVariants = mapUtilitiesToVariants(usedClasses, prefix);
 
-  const statePrefixes = [
-    'hover', 'focus', 'focus-visible', 'active', 'visited',
-    'disabled', 'checked', 'required', 'invalid', 'valid',
-    'first', 'last', 'odd', 'even', 'empty', 'enabled',
-    'read-only', 'placeholder', 'first-line', 'selection',
-    'group-hover', 'peer-hover',
-  ];
-  const responsivePrefixes = ['sm', 'md', 'lg', 'xl', '2xl'];
-  const darkPrefixes = ['dark'];
+  const needed = [];
+  const keptNames = new Set();
 
-  return allUtilities.filter((util) => {
-    const prefixed = prefixClass(util.name, prefix);
+  for (const [utilName, variantCombos] of classToVariants) {
+    const util = utilMap.get(utilName);
+    if (!util) continue;
 
-    // Direct match
-    if (allUsed.has(prefixed)) return true;
+    needed.push({
+      ...util,
+      _requestedVariants: [...variantCombos]
+        .filter(combo => combo.length > 0)
+        .map(combo => combo.split('_')),
+    });
+    keptNames.add(utilName);
+  }
 
-    // Check variant forms
-    for (const used of allUsed) {
-      const stripped = used.startsWith(prefix) ? used.slice(prefix.length) : used;
-      const parts = stripped.split('_');
+  for (const safelistItem of safelist) {
+    const parsed = parseClass(safelistItem, prefix);
+    if (!parsed.valid) continue;
 
-      // Responsive: hdx_md_flex → parts = ['md', 'flex']
-      for (const bp of responsivePrefixes) {
-        if (parts[0] === bp && parts.slice(1).join('_') === util.name) return true;
-        // Combined: hdx_md_hover_flex → parts = ['md', 'hover', 'flex']
-        for (const state of statePrefixes) {
-          if (parts[0] === bp && parts[1] === state && parts.slice(2).join('_') === util.name) return true;
-        }
-      }
+    const util = utilMap.get(parsed.utility);
+    if (!util || keptNames.has(util.name)) continue;
 
-      // State: hdx_hover_flex → parts = ['hover', 'flex']
-      for (const state of statePrefixes) {
-        if (parts[0] === state && parts.slice(1).join('_') === util.name) return true;
-      }
+    needed.push({ ...util, _requestedVariants: [] });
+    keptNames.add(util.name);
+  }
 
-      // Dark: hdx_dark_flex → parts = ['dark', 'flex']
-      for (const dark of darkPrefixes) {
-        if (parts[0] === dark && parts.slice(1).join('_') === util.name) return true;
-        // Combined: hdx_dark_hover_flex → parts = ['dark', 'hover', 'flex']
-        for (const state of statePrefixes) {
-          if (parts[0] === dark && parts[1] === state && parts.slice(2).join('_') === util.name) return true;
-        }
-      }
-    }
-
-    return false;
-  });
+  return needed;
 }
