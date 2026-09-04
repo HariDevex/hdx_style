@@ -79,6 +79,26 @@ describe('Integration: Purge actually reduces output', () => {
     expect(purged.find(u => u.name === 'p-4')).toBeDefined();
     expect(purged.find(u => u.name === 'text-primary')).toBeDefined();
   });
+
+  it('purger output feeds demand-driven generation end to end', () => {
+    const html = '<button class="hdx_lg_dark_hover_bg-primary"></button>';
+    const classes = extractClassNames(html);
+
+    const config = loadConfig();
+    const allUtilities = getAllUtilities(config);
+    const purged = purgeUnused(allUtilities, classes, config.prefix);
+
+    // The purger resolves deep combos via the class parser
+    const bg = purged.find(u => u.name === 'bg-primary');
+    expect(bg).toBeDefined();
+    expect(bg._requestedVariants).toContainEqual(['lg', 'dark', 'hover']);
+
+    // Its output drives the demand-driven generator
+    const purgedCss = generateCSS(config, { utilities: purged });
+    expect(purgedCss).toContain('.hdx_bg-primary');
+    expect(purgedCss).not.toContain('.hdx_grid');
+    expect(purgedCss).not.toContain('.hdx_shadow-xl');
+  });
 });
 
 describe('Integration: Dark mode uses hdx_dark', () => {
@@ -103,7 +123,43 @@ describe('Integration: Dark mode uses hdx_dark', () => {
         { name: 'bg-primary', property: 'background-color', value: 'var(--hdx-color-primary)', category: 'colors', _requestedVariants: [['dark']] },
       ],
     });
-    expect(css).toContain('.hdx_dark .hdx_bg-primary');
+    expect(css).toContain('.hdx_dark .hdx_dark_bg-primary');
+  });
+});
+
+describe('Integration: Combined variant selectors', () => {
+  it('responsive + state combo keeps the hover selector inside the media query', () => {
+    const config = loadConfig();
+    const css = generateCSS(config, {
+      utilities: [
+        { name: 'bg-primary', property: 'background-color', value: 'var(--hdx-color-primary)', category: 'colors', _requestedVariants: [['md', 'hover']] },
+      ],
+    });
+    expect(css).toContain('@media (min-width: 768px) {');
+    expect(css).toContain('.hdx_md_hover_bg-primary:hover');
+  });
+
+  it('responsive + dark combo places the dark ancestor inside the media query', () => {
+    const config = loadConfig();
+    const css = generateCSS(config, {
+      utilities: [
+        { name: 'bg-primary', property: 'background-color', value: 'var(--hdx-color-primary)', category: 'colors', _requestedVariants: [['md', 'dark']] },
+      ],
+    });
+    expect(css).toContain('@media (min-width: 768px) {');
+    expect(css).toContain('.hdx_dark .hdx_md_dark_bg-primary');
+    expect(css).not.toContain('.hdx_dark .hdx_bg-primary');
+  });
+
+  it('responsive + dark + state combo emits fully qualified selector behind the dark ancestor', () => {
+    const config = loadConfig();
+    const css = generateCSS(config, {
+      utilities: [
+        { name: 'bg-primary', property: 'background-color', value: 'var(--hdx-color-primary)', category: 'colors', _requestedVariants: [['md', 'dark', 'hover']] },
+      ],
+    });
+    expect(css).toContain('@media (min-width: 768px) {');
+    expect(css).toContain('.hdx_dark .hdx_md_dark_hover_bg-primary:hover');
   });
 });
 
