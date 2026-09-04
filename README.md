@@ -81,7 +81,7 @@ Run `node stats.js` to generate from source:
 npm install @haridevx/hdx-css
 ```
 
-### CDN
+### CDN ## Table of Contents
 
 ```html
 <link rel="stylesheet" href="https://unpkg.com/@haridevx/hdx-css/dist/hdx.css">
