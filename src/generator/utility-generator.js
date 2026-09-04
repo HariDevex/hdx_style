@@ -8,19 +8,30 @@ import { getSelector } from '../core/prefix.js';
  */
 export function generateRule(def, prefix = 'hdx_') {
   const selector = getSelector(def.name, prefix);
-  return `.${selector} { ${def.property}: ${def.value}; }\n`;
+  return '.' + selector + ' { ' + def.property + ': ' + def.value + '; }\n';
 }
 
 /**
  * Generate a CSS rule from a multi-property utility (component-style)
+ * Supports both `css` string format and `declarations` object format.
  * @param {import('../core/types.js').UtilityDefinition} def
  * @param {string} prefix
  * @returns {string} CSS rule
  */
 export function generateMultiPropertyRule(def, prefix = 'hdx_') {
   const selector = getSelector(def.name, prefix);
-  const css = def.css.trim();
-  // Ensure the CSS ends with }
-  const formatted = css.endsWith('}') ? css : `${css}`;
-  return `.${selector} {\n${formatted.split('\n').map(l => `  ${l.trim()}`).join('\n')}\n}\n`;
+
+  let cssBody;
+  if (def.css) {
+    cssBody = def.css.trim();
+  } else if (def.declarations) {
+    cssBody = Object.entries(def.declarations)
+      .map(([prop, val]) => prop + ': ' + val + ';')
+      .join('\n');
+  } else {
+    return generateRule(def, prefix);
+  }
+
+  const lines = cssBody.split('\n').map(l => '  ' + l.trim()).join('\n');
+  return '.' + selector + ' {\n' + lines + '\n}\n';
 }

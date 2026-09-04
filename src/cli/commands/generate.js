@@ -11,7 +11,7 @@ export function generateCommand(program) {
   program
     .command('generate')
     .description('Generate CSS (alias for build)')
-    .option('-c, --config <path>', 'Config file path', 'hdx.config.js')
+    .option('-c, --config <path>', 'Config file path (hdx.config.js / .mjs / .cjs)')
     .option('-o, --output <path>', 'Output file path', 'dist/hdx.css')
     .action(async (opts) => {
       step('Generating CSS...');

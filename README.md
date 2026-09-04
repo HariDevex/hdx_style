@@ -1,8 +1,8 @@
-# @haridevx/hdx-css
+# @haridevx/hdx-style
 
-**HDX CSS** — A modern, independent utility-first CSS framework and design system built from scratch around the `hdx_` namespace.
+**HDX Style** — A modern, independent utility-first CSS framework and design system built from scratch around the `hdx_` namespace.
 
-> HDX CSS is an independent utility-first CSS framework and design system. It is inspired by the usability of utility-first CSS, but its implementation, utilities, tokens, components, generator, CLI, and plugin API are independently developed. It is not a fork, wrapper, derivative implementation, or modified version of Tailwind CSS.
+> HDX Style is an independent utility-first CSS framework and design system. It is inspired by the usability of utility-first CSS, but its implementation, utilities, tokens, components, generator, CLI, and plugin API are independently developed. It is not a fork, wrapper, derivative implementation, or modified version of Tailwind CSS.
 
 Every utility class starts with `hdx_`. Built for SaaS, dashboards, and enterprise applications.
 
@@ -12,14 +12,14 @@ Run `node stats.js` to generate from source:
 
 | Metric | Count |
 |---|---|
-| Utilities | **1,187** |
+| Utilities | **1,184** |
 | Utility categories | **19** |
 | Components | **58** |
 | Variants | **28** |
 | State variants | **20** |
 | Responsive breakpoints | **5** |
-| Tests | **100** |
-| Source files | **55** |
+| Tests | **154** |
+| Source files | **57** |
 | Runtime dependencies | **4** |
 | PostCSS dependency | **No** |
 | Tailwind dependency | **No** |
@@ -28,6 +28,7 @@ Run `node stats.js` to generate from source:
 
 ## Table of Contents
 - [Table of Contents](#Table-of-Contents)
+- [Architecture](#architecture)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [CLI Commands](#cli-commands)
@@ -53,6 +54,8 @@ Run `node stats.js` to generate from source:
   - [Transforms](#transforms)
   - [Transitions](#transitions)
   - [Animations](#animations)
+- [Class Parser](#class-parser)
+- [Variant Pipeline](#variant-pipeline)
 - [Responsive Design](#responsive-design)
 - [State Variants](#state-variants)
 - [Dark Mode](#dark-mode)
@@ -69,35 +72,87 @@ Run `node stats.js` to generate from source:
 - [Accessibility](#accessibility)
 - [Plugin System](#plugin-system)
 - [Content Purging](#content-purging)
+- [Production Builds](#production-builds)
 - [Framework Integration](#framework-integration)
 - [Complete Page Example](#complete-page-example)
 - [License](#license)
 
 ---
 
+## Architecture
+
+HDX Style is an independent, modular CSS framework. Its pipeline:
+
+```text
+Configuration (hdx.config.js)
+        ↓
+Design Tokens (theme)
+        ↓
+Content Scanner (extract HDX classes from HTML/JS/JSX/Vue/Svelte)
+        ↓
+Class Parser (hdx_md_hover_bg-primary → { variants: [md, hover], utility: bg-primary })
+        ↓
+Variant Pipeline (state → dark → responsive, ordered)
+        ↓
+CSS Generator (demand-driven in production)
+        ↓
+dist/hdx.css
+```
+
+Layered design:
+
+| Layer | Responsibility |
+|---|---|
+| **Tokens** | Colors, spacing, radius, shadows, breakpoints, transitions |
+| **Utilities** | 19 categories, 1,184 utilities across display, flexbox, grid, spacing, etc. |
+| **Components** | Base + variant + size classes for buttons, cards, modals, etc. |
+| **Variants** | State, responsive, dark, ancestor — compose via the variant pipeline |
+| **Generator** | Produces deterministic CSS. Demand-driven in production mode |
+
+Key design decisions:
+
+- **Demand-driven generation**: In production (`--purge`), only utilities actually used in your content are generated. The full 15 MB development stylesheet becomes a minimal production file with only the classes you used.
+- **Class parser**: Any class like `hdx_md_hover_bg-primary` is decomposed into `variants: ['md', 'hover']` + `utility: 'bg-primary'` without assuming a fixed number of variants.
+- **Variant pipeline**: Variants compose in ordered layers — responsive wraps media queries, dark adds the `hdx_dark` ancestor, state adds pseudo-classes. The pipeline is extensible: future variants (e.g. `supports`, `container`) drop into the same mechanism.
+- **Registry-based plugins**: Plugins write to an isolated registry instead of mutating the original config. Invalid definitions are rejected with actionable errors.
+- **Configurable reset**: Set `reset: false` to use HDX Style as a pure utility layer.
+- **Deterministic output**: Identical input always produces identical CSS. No timestamps, no random ordering.
+
+---
+
 ## Installation 
 
 ```bash
-npm install @haridevx/hdx-css
+npm install @haridevx/hdx-style
 ```
 
 ### CDN
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@haridevx/hdx-css/dist/hdx.css">
+<link rel="stylesheet" href="https://unpkg.com/@haridevx/hdx-style/dist/hdx.css">
 ```
 
 ### CSS Import
 
 ```css
-@import "@haridevx/hdx-css/css";
+@import "@haridevx/hdx-style/css";
 ```
 
 ### JavaScript Import
 
 ```js
-import "@haridevx/hdx-css/css";
+import "@haridevx/hdx-style/css";
 ```
+
+### Node API
+
+```js
+import { generateCSS, loadConfig } from "@haridevx/hdx-style";
+
+const css = generateCSS(loadConfig());
+```
+
+The package ships TypeScript definitions (`.d.ts`) for the full public API.
 
 ---
 
@@ -106,11 +161,13 @@ import "@haridevx/hdx-css/css";
 ### 1. Install
 
 ```bash
-npm install @haridevx/hdx-css
-npx hdx_css init
+npm install @haridevx/hdx-style
+npx hdx_style init
 ```
 
 ### 2. Configure `hdx.config.js`
+
+`hdx_style init` creates the config with the correct module syntax for your project: `hdx.config.cjs` (CommonJS) for CommonJS projects, `hdx.config.js` (ESM) for `"type": "module"` projects. ESM, CommonJS (`.cjs`), and `.mjs` config files are all supported.
 
 ```js
 export default {
@@ -125,7 +182,7 @@ export default {
 ### 3. Build
 
 ```bash
-npx hdx_css build
+npx hdx_style build
 ```
 
 ### 4. Use
@@ -145,35 +202,42 @@ npx hdx_css build
 ## CLI Commands
 
 ```bash
-npx hdx_css init              # Create hdx.config.js
-npx hdx_css build             # Build dist/hdx.css
-npx hdx_css build -p          # Build with content purging
-npx hdx_css build -o out.css  # Custom output path
-npx hdx_css build -c my.config.js  # Custom config path
-npx hdx_css watch             # Watch files and rebuild
-npx hdx_css generate          # Alias for build
-npx hdx_css --version         # Print version
-npx hdx_css --help            # Print help
+npx hdx_style init              # Create hdx.config.js (.mjs/.cjs auto-detected)
+npx hdx_style build             # Build dist/hdx.css
+npx hdx_style build -p          # Build with content purging
+npx hdx_style build -o out.css  # Custom output path
+npx hdx_style build -c my.config.js  # Custom config path
+npx hdx_style watch             # Watch files and rebuild
+npx hdx_style generate          # Alias for build
+npx hdx_style --version         # Print version
+npx hdx_style --help            # Print help
 ```
 
 ---
 
 ## Configuration
 
-Create `hdx.config.js` in your project root:
+Create `hdx.config.js` (or `hdx.config.cjs` / `hdx.config.mjs`) in your project root:
 
 ```js
 export default {
   // Prefix for all utility classes
   prefix: 'hdx_',
 
-  // Files to scan for used classes (for purging)
+  // Files to scan for used classes (for production purging)
   content: [
     './src/**/*.{html,js,jsx,ts,tsx,vue,svelte}',
   ],
 
+  // Force classes to always be included (see Safelist below)
+  safelist: [],
+
   // Dark mode strategy: 'class' | 'media' | 'both'
+  // class: .hdx_dark ancestor  |  media: prefers-color-scheme  |  both: both rules
   darkMode: 'class',
+
+  // Include the global reset/base styles? (default true)
+  reset: true,
 
   // Theme customization (deep-merged with defaults)
   theme: {
@@ -190,6 +254,24 @@ export default {
 
   // Plugins
   plugins: [],
+};
+```
+
+### Dark Mode Strategy
+
+| Strategy | When styles apply | Generated CSS |
+|---|---|---|
+| `class` (default) | `.hdx_dark` on an ancestor (`<html class="hdx_dark">`) | `.hdx_dark .hdx_dark_bg-primary { ... }` |
+| `media` | OS-level `prefers-color-scheme: dark` | `@media (prefers-color-scheme: dark) { ... }` |
+| `both` | Both mechanisms; class overrides take precedence | Both rules emitted |
+
+### Custom Reset
+
+HDX Style includes a global reset (`box-sizing`, margin/padding zeroing, base font, etc.) by default. To use HDX Style purely as a utility layer on top of your existing global styles:
+
+```js
+export default {
+  reset: false,
 };
 ```
 
@@ -397,7 +479,7 @@ All semantic colors generate CSS custom properties:
   --hdx-color-border: #E2E8F0;
 }
 
-.dark {
+.hdx_dark {
   --hdx-color-background: #0F172A;
   --hdx-color-surface: #1E293B;
   --hdx-color-text: #F8FAFC;
@@ -799,6 +881,45 @@ Utilities reference these variables:
 
 ---
 
+## Class Parser
+
+The class parser decomposes any HDX class into its components. It does **not** assume a fixed number of variants:
+
+| Class | Parsed |
+|---|---|
+| `hdx_flex` | `{ variants: [], utility: 'flex' }` |
+| `hdx_md_flex` | `{ variants: ['md'], utility: 'flex' }` |
+| `hdx_md_hover_bg-primary` | `{ variants: ['md', 'hover'], utility: 'bg-primary' }` |
+| `hdx_lg_dark_hover_bg-primary` | `{ variants: ['lg', 'dark', 'hover'], utility: 'bg-primary' }` |
+| `hdx_2xl_focus-visible_ring` | `{ variants: ['2xl', 'focus-visible'], utility: 'ring' }` |
+
+Applied primarily by the scanner in production builds to map used classes to required utilities + variant combos.
+
+## Variant Pipeline
+
+Variants compose in ordered layers instead of special-cased combinations:
+
+```text
+hdx_md_hover_bg-primary
+  → variants: ['md', 'hover']
+  → pipeline: hover (:hover) wrapped by md (@media (min-width: 768px))
+  → @media (min-width: 768px) { .hdx_md_hover_bg-primary:hover { ... } }
+
+hdx_lg_dark_hover_bg-primary
+  → variants: ['lg', 'dark', 'hover']
+  → pipeline: hover wrapped by dark (.hdx_dark ancestor) wrapped by lg
+  → @media (min-width: 1024px) { .hdx_dark .hdx_lg_dark_hover_bg-primary:hover { ... } }
+```
+
+Variant types:
+
+| Type | Behavior | Examples |
+|---|---|---|
+| `state` | Pseudo-class suffix | `hover`, `focus`, `disabled`, `checked` |
+| `responsive` | Media query wrapper | `sm`, `md`, `lg`, `xl`, `2xl` |
+| `dark` | `hdx_dark` ancestor or media query | `dark` |
+| `ancestor` | Ancestor selector | `group-hover`, `peer-hover` |
+
 ## Responsive Design
 
 All utilities support responsive prefixes:
@@ -875,7 +996,7 @@ All utilities support responsive prefixes:
 
 ## State Variants
 
-HDX CSS supports 20 state variants:
+HDX Style supports 20 state variants:
 
 | Variant | Pseudo-class |
 |---|---|
@@ -1120,13 +1241,15 @@ export default {
   --hdx-color-border: #E2E8F0;
 }
 
-.dark {
+.hdx_dark {
   --hdx-color-background: #0F172A;
   --hdx-color-surface: #1E293B;
   --hdx-color-text: #F8FAFC;
   --hdx-color-border: #334155;
 }
 ```
+
+Note: the generated dark variables use `.hdx_dark`, not `.dark`. The dark mode class is namespaced like every other HDX class.
 
 ### Complete Dark Mode Example
 
@@ -1419,7 +1542,7 @@ export default {
 
 ### Reduced Motion
 
-HDX CSS automatically reduces animations for users who prefer reduced motion:
+HDX Style automatically reduces animations for users who prefer reduced motion:
 
 ```css
 @media (prefers-reduced-motion: reduce) {
@@ -1499,7 +1622,9 @@ padding-inline: 1rem;`,
 Remove unused CSS in production:
 
 ```bash
-npx hdx_css build -p
+npx hdx_style build -p
+# or
+npx hdx_style build --production
 ```
 
 This scans your content files and only includes utilities that are actually used:
@@ -1511,6 +1636,24 @@ This scans your content files and only includes utilities that are actually used
 <!-- These classes will be removed (not in content) -->
 <!-- .hdx_grid, .hdx_text-center, etc. -->
 ```
+
+### How It Works
+
+Production builds use **demand-driven generation**:
+
+```text
+Content files
+    ↓
+Scanner (extracts HDX class names, supports multiline/template literals)
+    ↓
+Class Parser (hdx_md_hover_bg-primary → { variants: [md, hover], utility: bg-primary })
+    ↓
+Registry lookup (resolve needed utilities + their variant combos)
+    ↓
+Generator (produces ONLY the requested rules, no combinatorial explosion)
+```
+
+If your content contains only `<div class="hdx_flex hdx_p-4 hdx_text-primary"></div>`, the production output contains `.hdx_flex`, `.hdx_p-4`, `.hdx_text-primary` — and **not** `.hdx_grid`, `.hdx_shadow-xl`, `.hdx_rotate-45`, or any unrelated variant combinations.
 
 ### Configuration
 
@@ -1524,6 +1667,18 @@ export default {
 };
 ```
 
+### Safelist
+
+Force classes to always be included, even when not found in content:
+
+```js
+export default {
+  safelist: ['hdx_flex', 'hdx_hidden', 'hdx_bg-primary'],
+};
+```
+
+Useful for classes built dynamically via string concatenation or used in JavaScript logic the scanner cannot see.
+
 ### Supported File Types
 
 - HTML
@@ -1533,6 +1688,40 @@ export default {
 - TSX (React)
 - Vue (SFC)
 - Svelte
+
+### Scanner Capabilities
+
+The scanner handles real-world formatting:
+
+```jsx
+<div
+  className="
+    hdx_flex
+    hdx_items-center
+    hdx_gap-4
+  "
+>
+```
+
+```jsx
+// Template literals
+const classes = `hdx_flex hdx_p-4`;
+```
+
+```js
+// Conditional strings
+className={isActive ? "hdx_flex" : "hdx_block"}
+```
+
+> **Limitation**: Dynamically *generated* class names (e.g. `` `hdx_${color}-500` ``) cannot be statically discovered. Add them to the `safelist` or construct complete class strings.
+
+### Build Modes
+
+| Mode | Command | Output |
+|---|---|---|
+| Development | `npx hdx_style build` | Complete stylesheet (all utilities × all variants) |
+| Production | `npx hdx_style build -p` | Only used utilities + their variants |
+| Production (alias) | `npx hdx_style build --production` | Same as `-p` |
 
 ---
 
@@ -1544,7 +1733,7 @@ export default {
 <!DOCTYPE html>
 <html class="hdx_dark">
 <head>
-  <link rel="stylesheet" href="./node_modules/@haridevx/hdx-css/dist/hdx.css">
+  <link rel="stylesheet" href="./node_modules/@haridevx/hdx-style/dist/hdx.css">
 </head>
 <body class="hdx_min-h-screen hdx_bg-background hdx_text-text">
   <div class="hdx_container hdx_mx-auto hdx_p-6">
@@ -1557,7 +1746,7 @@ export default {
 ### React
 
 ```jsx
-import "@haridevx/hdx-css/css";
+import "@haridevx/hdx-style/css";
 
 export default function App() {
   return (
@@ -1592,7 +1781,7 @@ export default function App() {
 </template>
 
 <script setup>
-import "@haridevx/hdx-css/css";
+import "@haridevx/hdx-style/css";
 </script>
 ```
 
@@ -1602,14 +1791,14 @@ import "@haridevx/hdx-css/css";
 // vite.config.js
 export default {
   css: {
-    // HDX CSS works with Vite out of the box
+    // HDX Style works with Vite out of the box
   },
 };
 ```
 
 ```html
 <!-- index.html -->
-<link rel="stylesheet" href="./node_modules/@haridevx/hdx-css/dist/hdx.css">
+<link rel="stylesheet" href="./node_modules/@haridevx/hdx-style/dist/hdx.css">
 ```
 
 ### Next.js
@@ -1617,13 +1806,13 @@ export default {
 ```js
 // next.config.js
 module.exports = {
-  // Add HDX CSS to your Next.js app
+  // Add HDX Style to your Next.js app
 };
 ```
 
 ```jsx
 // pages/_app.js
-import "@haridevx/hdx-css/css";
+import "@haridevx/hdx-style/css";
 
 export default function App({ Component, pageProps }) {
   return <Component {...pageProps} />;

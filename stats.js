@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * HDX CSS — Automated Statistics
+ * HDX Style — Automated Statistics
  * Counts utilities, components, variants, and tests from actual source.
  */
 
@@ -69,7 +69,7 @@ const devDeps = Object.keys(pkg.devDependencies || {}).length;
 
 console.log('');
 console.log('╔══════════════════════════════════════════════════╗');
-console.log('║       HDX CSS — Framework Statistics             ║');
+console.log('║       HDX Style — Framework Statistics          ║');
 console.log('╠══════════════════════════════════════════════════╣');
 console.log(`║  Utilities:        ${String(utilities.length).padStart(6)}                      ║`);
 console.log(`║  Utility categories: ${String(utilCategories.length).padStart(4)}                      ║`);

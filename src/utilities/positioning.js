@@ -29,7 +29,6 @@ export function positioningUtilities(config) {
 
   // Inset utilities
   const insets = [
-    ['inset-0', 'inset', '0px'],
     ['inset-auto', 'inset', 'auto'],
     ['inset-x-0', 'left', '0px'],
     ['inset-x-auto', 'left', 'auto'],
@@ -43,9 +42,8 @@ export function positioningUtilities(config) {
     utils.push({ name, property: prop, value, category: 'positioning' });
   }
 
-  // For inset-0, we need both left and top
-  utils.push({ name: '_inset-0-right', property: 'right', value: '0px', category: 'positioning' });
-  utils.push({ name: '_inset-0-bottom', property: 'bottom', value: '0px', category: 'positioning' });
+  // inset-0 covers all four sides via shorthand
+  utils.push({ name: 'inset-0', css: 'top: 0px;\nright: 0px;\nbottom: 0px;\nleft: 0px;', category: 'positioning' });
 
   return utils;
 }

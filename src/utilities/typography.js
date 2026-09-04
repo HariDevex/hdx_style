@@ -70,7 +70,7 @@ export function typographyUtilities(config) {
 
   // Text overflow
   utils.push(
-    { name: 'truncate', property: 'overflow', value: 'hidden', category: 'typography' },
+    { name: 'truncate', css: 'overflow: hidden;\ntext-overflow: ellipsis;\nwhite-space: nowrap;', category: 'typography' },
     { name: 'text-ellipsis', property: 'text-overflow', value: 'ellipsis', category: 'typography' },
     { name: 'text-clip', property: 'text-overflow', value: 'clip', category: 'typography' },
   );

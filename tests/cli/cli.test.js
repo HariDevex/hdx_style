@@ -16,7 +16,7 @@ describe('CLI', () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
-  it('hdx_css init creates hdx.config.js', () => {
+  it('hdx_style init creates hdx.config.cjs in a CommonJS project', () => {
     const testDir = path.join(tmpDir, 'init-test');
     fs.mkdirSync(testDir, { recursive: true });
 
@@ -25,13 +25,43 @@ describe('CLI', () => {
       encoding: 'utf-8',
     });
 
-    expect(fs.existsSync(path.join(testDir, 'hdx.config.js'))).toBe(true);
-    const content = fs.readFileSync(path.join(testDir, 'hdx.config.js'), 'utf-8');
+    expect(fs.existsSync(path.join(testDir, 'hdx.config.cjs'))).toBe(true);
+    const content = fs.readFileSync(path.join(testDir, 'hdx.config.cjs'), 'utf-8');
+    expect(content).toContain('module.exports');
     expect(content).toContain("prefix: 'hdx_'");
     expect(content).toContain('darkMode');
   });
 
-  it('hdx_css build generates CSS file', () => {
+  it('hdx_style init creates hdx.config.js (ESM) in a module project', () => {
+    const testDir = path.join(tmpDir, 'init-esm-test');
+    fs.mkdirSync(testDir, { recursive: true });
+    fs.writeFileSync(path.join(testDir, 'package.json'), JSON.stringify({ type: 'module' }));
+
+    execSync(`node ${path.join(PROJECT_ROOT, 'src/cli/index.js')} init`, {
+      cwd: testDir,
+      encoding: 'utf-8',
+    });
+
+    expect(fs.existsSync(path.join(testDir, 'hdx.config.js'))).toBe(true);
+    const content = fs.readFileSync(path.join(testDir, 'hdx.config.js'), 'utf-8');
+    expect(content).toContain('export default');
+  });
+
+  it('hdx_style init skips when a config already exists', () => {
+    const testDir = path.join(tmpDir, 'init-skip-test');
+    fs.mkdirSync(testDir, { recursive: true });
+    fs.writeFileSync(path.join(testDir, 'hdx.config.cjs'), 'module.exports = {};');
+
+    const output = execSync(`node ${path.join(PROJECT_ROOT, 'src/cli/index.js')} init`, {
+      cwd: testDir,
+      encoding: 'utf-8',
+    });
+
+    expect(output).toContain('already exists');
+    expect(fs.readFileSync(path.join(testDir, 'hdx.config.cjs'), 'utf-8')).toBe('module.exports = {};');
+  });
+
+  it('hdx_style build generates CSS file', () => {
     const testDir = path.join(tmpDir, 'build-test');
     fs.mkdirSync(testDir, { recursive: true });
 
@@ -59,18 +89,18 @@ describe('CLI', () => {
     expect(css).toContain('--hdx-color-primary');
   });
 
-  it('hdx_css --version prints version', () => {
+  it('hdx_style --version prints version', () => {
     const output = execSync(`node ${path.join(PROJECT_ROOT, 'src/cli/index.js')} --version`, {
       encoding: 'utf-8',
     });
     expect(output.trim()).toBe('0.1.0');
   });
 
-  it('hdx_css --help prints help', () => {
+  it('hdx_style --help prints help', () => {
     const output = execSync(`node ${path.join(PROJECT_ROOT, 'src/cli/index.js')} --help`, {
       encoding: 'utf-8',
     });
-    expect(output).toContain('hdx_css');
+    expect(output).toContain('hdx_style');
     expect(output).toContain('init');
     expect(output).toContain('build');
     expect(output).toContain('watch');

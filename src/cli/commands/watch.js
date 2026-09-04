@@ -1,4 +1,4 @@
-import { loadConfigFromFile } from '../../core/config.js';
+import { loadConfigFromFile, resolveConfigPath } from '../../core/config.js';
 import { generateCSS } from '../../generator/index.js';
 import { getAnimationKeyframes } from '../../utilities/index.js';
 import { success, step, info } from '../utils.js';
@@ -13,7 +13,7 @@ export function watchCommand(program) {
   program
     .command('watch')
     .description('Watch for changes and rebuild CSS')
-    .option('-c, --config <path>', 'Config file path', 'hdx.config.js')
+    .option('-c, --config <path>', 'Config file path (hdx.config.js / .mjs / .cjs)')
     .option('-o, --output <path>', 'Output file path', 'dist/hdx.css')
     .action(async (opts) => {
       const chokidar = await import('chokidar');
@@ -45,8 +45,8 @@ export function watchCommand(program) {
       await rebuild();
 
       // Watch config
-      const configPath = path.resolve(process.cwd(), opts.config);
-      if (fs.existsSync(configPath)) {
+      const configPath = await resolveConfigPath(opts.config);
+      if (configPath) {
         chokidar.default.watch(configPath).on('change', () => {
           info('Config changed, rebuilding...');
           debounce();

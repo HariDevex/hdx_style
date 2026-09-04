@@ -41,26 +41,33 @@ describe('theme defaults', () => {
 
 describe('CSS variables generation', () => {
   it('generates :root variables', () => {
-    const css = generateAllVariables(defaultTheme);
+    const css = generateAllVariables(defaultTheme, 'hdx_', 'class');
     expect(css).toContain(':root {');
     expect(css).toContain('--hdx-color-primary: #2563EB');
     expect(css).toContain('--hdx-color-background: #F8FAFC');
   });
 
-  it('generates dark class variables', () => {
-    const css = generateAllVariables(defaultTheme);
-    expect(css).toContain('.dark {');
+  it('generates .hdx_dark class variables', () => {
+    const css = generateAllVariables(defaultTheme, 'hdx_', 'class');
+    expect(css).toContain('.hdx_dark {');
     expect(css).toContain('--hdx-color-background: #0F172A');
   });
 
-  it('generates dark media query variables', () => {
-    const css = generateAllVariables(defaultTheme);
+  it('generates dark media query variables with media strategy', () => {
+    const css = generateAllVariables(defaultTheme, 'hdx_', 'media');
     expect(css).toContain('@media (prefers-color-scheme: dark)');
-    expect(css).toContain('.hdx_dark-media {');
+    expect(css).toContain(':root {');
+    expect(css).not.toContain('.hdx_dark {');
+  });
+
+  it('generates both class and media variables with both strategy', () => {
+    const css = generateAllVariables(defaultTheme, 'hdx_', 'both');
+    expect(css).toContain('.hdx_dark {');
+    expect(css).toContain('@media (prefers-color-scheme: dark)');
   });
 
   it('custom prefix changes variable prefix', () => {
-    const css = generateAllVariables(defaultTheme, 'my_');
+    const css = generateAllVariables(defaultTheme, 'my_', 'class');
     expect(css).toContain('--my-color-primary');
     expect(css).not.toContain('--hdx-color-primary');
   });

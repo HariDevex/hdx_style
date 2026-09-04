@@ -185,6 +185,7 @@ export const defaultConfig = {
   content: [],
   safelist: [],
   darkMode: 'class',
+  reset: true,
   theme: defaultTheme,
   plugins: [],
 };

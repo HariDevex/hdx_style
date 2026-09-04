@@ -12,12 +12,11 @@ export function bordersUtilities(config) {
 
   // Border width
   utils.push(
-    { name: 'border', property: 'border-width', value: '1px', category: 'borders' },
+    { name: 'border', css: 'border-width: 1px;\nborder-style: solid;', category: 'borders' },
     { name: 'border-0', property: 'border-width', value: '0px', category: 'borders' },
     { name: 'border-2', property: 'border-width', value: '2px', category: 'borders' },
     { name: 'border-4', property: 'border-width', value: '4px', category: 'borders' },
     { name: 'border-8', property: 'border-width', value: '8px', category: 'borders' },
-    { name: 'border', property: 'border-style', value: 'solid', category: 'borders' },
   );
 
   // Individual side borders

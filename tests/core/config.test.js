@@ -1,6 +1,13 @@
-import { describe, it, expect } from 'vitest';
-import { loadConfig, getDefaultConfig } from '../../src/core/config.js';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { loadConfig, getDefaultConfig, resolveConfigPath, loadConfigFromFile, getProjectModuleType } from '../../src/core/config.js';
 import { deepMerge } from '../../src/theme/merge.js';
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+import { execSync } from 'node:child_process';
+
+const PROJECT_ROOT = path.resolve('.');
+const tmpDir = path.join(os.tmpdir(), 'hdx-config-test-' + Date.now());
 
 describe('config', () => {
   it('getDefaultConfig returns valid config', () => {
@@ -70,5 +77,100 @@ describe('deepMerge', () => {
     deepMerge(target, source);
     expect(target.a).toEqual({ x: 1 });
     expect(source.a).toEqual({ y: 2 });
+  });
+});
+
+describe('config file loading', () => {
+  beforeAll(() => {
+    fs.mkdirSync(tmpDir, { recursive: true });
+  });
+
+  afterAll(() => {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it('getProjectModuleType detects type: module', async () => {
+    const dir = path.join(tmpDir, 'esm-proj');
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ type: 'module' }));
+    expect(await getProjectModuleType(dir)).toBe('module');
+  });
+
+  it('getProjectModuleType returns commonjs for typeless projects', async () => {
+    const dir = path.join(tmpDir, 'cjs-proj');
+    fs.mkdirSync(dir, { recursive: true });
+    expect(await getProjectModuleType(dir)).toBe('commonjs');
+  });
+
+  it('resolveConfigPath prefers hdx.config.js in module projects', async () => {
+    const dir = path.join(tmpDir, 'resolve-esm');
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ type: 'module' }));
+    fs.writeFileSync(path.join(dir, 'hdx.config.js'), 'export default {};');
+
+    const prevCwd = process.cwd();
+    process.chdir(dir);
+    const resolved = await resolveConfigPath();
+    process.chdir(prevCwd);
+
+    expect(resolved).toBe(path.join(dir, 'hdx.config.js'));
+  });
+
+  it('resolveConfigPath prefers hdx.config.cjs in CommonJS projects', async () => {
+    const dir = path.join(tmpDir, 'resolve-cjs');
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, 'hdx.config.cjs'), 'module.exports = {};');
+    fs.writeFileSync(path.join(dir, 'hdx.config.js'), 'export default {};');
+
+    const prevCwd = process.cwd();
+    process.chdir(dir);
+    const resolved = await resolveConfigPath();
+    process.chdir(prevCwd);
+
+    expect(resolved).toBe(path.join(dir, 'hdx.config.cjs'));
+  });
+
+  it('loadConfigFromFile loads hdx.config.cjs in CommonJS projects', async () => {
+    const dir = path.join(tmpDir, 'load-cjs');
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(
+      path.join(dir, 'hdx.config.cjs'),
+      `module.exports = { prefix: 'cjs_', content: [], darkMode: 'class', theme: {}, plugins: [] };`
+    );
+
+    const prevCwd = process.cwd();
+    process.chdir(dir);
+    const config = await loadConfigFromFile();
+    process.chdir(prevCwd);
+
+    expect(config.prefix).toBe('cjs_');
+  });
+
+  it('loadConfigFromFile loads ESM hdx.config.js in a typeless project without warning noise', async () => {
+    const dir = path.join(tmpDir, 'load-esm-typeless');
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(
+      path.join(dir, 'hdx.config.js'),
+      `export default { prefix: 'esm_', content: [], darkMode: 'class', theme: {}, plugins: [] };`
+    );
+
+    const prevCwd = process.cwd();
+    process.chdir(dir);
+    const config = await loadConfigFromFile();
+    process.chdir(prevCwd);
+
+    expect(config.prefix).toBe('esm_');
+  });
+
+  it('loadConfigFromFile returns defaults when no config file exists', async () => {
+    const dir = path.join(tmpDir, 'no-config');
+    fs.mkdirSync(dir, { recursive: true });
+
+    const prevCwd = process.cwd();
+    process.chdir(dir);
+    const config = await loadConfigFromFile();
+    process.chdir(prevCwd);
+
+    expect(config.prefix).toBe('hdx_');
   });
 });

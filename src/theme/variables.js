@@ -18,32 +18,35 @@ export function generateCSSVariables(theme, prefix = 'hdx_') {
 }
 
 /**
- * Generate dark mode CSS variables
+ * Generate dark mode CSS variables respecting the configured strategy.
  * @param {Object} theme
  * @param {string} prefix
+ * @param {'class'|'media'|'both'} [strategy='class']
  * @returns {string} CSS string with dark overrides
  */
-export function generateDarkVariables(theme, prefix = 'hdx_') {
+export function generateDarkVariables(theme, prefix = 'hdx_', strategy = 'class') {
   const varPrefix = prefix.replace(/_/g, '-').replace(/-$/, '');
   let css = '';
 
-  // Class-based dark mode
-  css += `.dark {\n`;
-  for (const [key, value] of Object.entries(theme.darkColors || {})) {
-    const varName = `--${varPrefix}-color-${key}`;
-    css += `  ${varName}: ${value};\n`;
+  if (strategy === 'class' || strategy === 'both') {
+    css += '.hdx_dark {\n';
+    for (const [key, value] of Object.entries(theme.darkColors || {})) {
+      const varName = `--${varPrefix}-color-${key}`;
+      css += `  ${varName}: ${value};\n`;
+    }
+    css += '}\n';
   }
-  css += '}\n';
 
-  // Media query dark mode
-  css += `@media (prefers-color-scheme: dark) {\n`;
-  css += `  .hdx_dark-media {\n`;
-  for (const [key, value] of Object.entries(theme.darkColors || {})) {
-    const varName = `--${varPrefix}-color-${key}`;
-    css += `    ${varName}: ${value};\n`;
+  if (strategy === 'media' || strategy === 'both') {
+    css += '@media (prefers-color-scheme: dark) {\n';
+    css += '  :root {\n';
+    for (const [key, value] of Object.entries(theme.darkColors || {})) {
+      const varName = `--${varPrefix}-color-${key}`;
+      css += `    ${varName}: ${value};\n`;
+    }
+    css += '  }\n';
+    css += '}\n';
   }
-  css += `  }\n`;
-  css += '}\n';
 
   return css;
 }
@@ -52,8 +55,9 @@ export function generateDarkVariables(theme, prefix = 'hdx_') {
  * Generate all CSS variables (light + dark)
  * @param {Object} theme
  * @param {string} prefix
+ * @param {'class'|'media'|'both'} [strategy='class']
  * @returns {string}
  */
-export function generateAllVariables(theme, prefix = 'hdx_') {
-  return generateCSSVariables(theme, prefix) + '\n' + generateDarkVariables(theme, prefix);
+export function generateAllVariables(theme, prefix = 'hdx_', strategy = 'class') {
+  return generateCSSVariables(theme, prefix) + '\n' + generateDarkVariables(theme, prefix, strategy);
 }

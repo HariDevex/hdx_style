@@ -1,23 +1,30 @@
 {
-  "name": "@haridevx/hdx-css",
+  "name": "@haridevx/hdx-style",
   "version": "0.1.0",
-  "description": "HDX CSS — Modern utility-first CSS framework with design system",
+  "description": "HDX Style — Modern utility-first CSS framework with design system",
   "type": "module",
   "main": "./src/index.js",
+  "types": "./index.d.ts",
   "bin": {
-    "hdx_css": "./src/cli/index.js"
+    "hdx_style": "./src/cli/index.js"
   },
   "exports": {
-    ".": "./src/index.js",
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./src/index.js"
+    },
     "./css": "./dist/hdx.css"
   },
   "files": [
     "src/",
-    "dist/"
+    "dist/",
+    "index.d.ts"
   ],
   "scripts": {
+    "prepack": "npm run build",
     "test": "vitest run",
     "test:watch": "vitest",
+    "stats": "node stats.js",
     "build": "node src/cli/index.js build",
     "build:dev": "node src/cli/index.js build",
     "dev": "node src/cli/index.js watch",
@@ -34,6 +41,20 @@
   ],
   "author": "HariDevX",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HariDevex/hdx_style.git"
+  },
+  "homepage": "https://github.com/HariDevex/hdx_style#readme",
+  "bugs": {
+    "url": "https://github.com/HariDevex/hdx_style/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "chokidar": "^3.6.0",
     "commander": "^12.0.0",

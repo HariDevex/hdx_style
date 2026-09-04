@@ -11,7 +11,7 @@ export function darkVariants(config) {
     variants.push({
       name: 'dark',
       prefix: 'dark_',
-      selector: () => '.dark',
+      selector: () => '.hdx_dark',
       type: 'dark',
       strategy: 'class',
     });

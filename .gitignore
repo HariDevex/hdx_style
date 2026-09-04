@@ -3,3 +3,5 @@ dist/
 *.log
 .DS_Store
 hdx.config.js
+!examples/vanilla/hdx.config.js
+*.tgz
