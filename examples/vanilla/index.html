@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" class="hdx_dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HDX CSS — Vanilla Example</title>
+  <link rel="stylesheet" href="./node_modules/@haridevx/hdx-css/dist/hdx.css">
+</head>
+<body class="hdx_min-h-screen hdx_bg-background">
+  <div class="hdx_p-6">
+    <div class="hdx_container hdx_mx-auto">
+
+      <!-- Header -->
+      <header class="hdx_flex hdx_items-center hdx_justify-between hdx_mb-8">
+        <h1 class="hdx_text-2xl hdx_font-bold hdx_text-text">HDX CSS</h1>
+        <nav class="hdx_flex hdx_gap-4">
+          <a href="#" class="hdx_text-sm hdx_font-medium hdx_text-text-secondary hdx_hover_text-primary">Docs</a>
+          <a href="#" class="hdx_text-sm hdx_font-medium hdx_text-text-secondary hdx_hover_text-primary">GitHub</a>
+        </nav>
+      </header>
+
+      <!-- Grid -->
+      <div class="hdx_grid hdx_grid-cols-1 md:hdx_grid-cols-2 lg:hdx_grid-cols-3 hdx_gap-6">
+
+        <!-- Card 1 -->
+        <div class="hdx_bg-surface hdx_border hdx_border-border hdx_rounded-xl hdx_shadow-sm hdx_p-6">
+          <div class="hdx_flex hdx_items-center hdx_gap-3 hdx_mb-4">
+            <div class="hdx_w-10 hdx_h-10 hdx_rounded-lg hdx_bg-primary hdx_flex hdx_items-center hdx_justify-center hdx_text-white hdx_font-bold">H</div>
+            <div>
+              <h2 class="hdx_text-lg hdx_font-semibold hdx_text-text">Dashboard</h2>
+              <p class="hdx_text-xs hdx_text-text-muted">Overview</p>
+            </div>
+          </div>
+          <p class="hdx_text-sm hdx_text-text-secondary hdx_mb-4">Monitor your application performance and metrics in real-time.</p>
+          <button class="hdx_px-4 hdx_py-2 hdx_bg-primary hdx_text-white hdx_text-sm hdx_font-medium hdx_rounded-lg hdx_transition hdx_hover_bg-primary-hover hdx_focus-ring">
+            View Details
+          </button>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="hdx_bg-surface hdx_border hdx_border-border hdx_rounded-xl hdx_shadow-sm hdx_p-6">
+          <div class="hdx_flex hdx_items-center hdx_gap-3 hdx_mb-4">
+            <div class="hdx_w-10 hdx_h-10 hdx_rounded-lg hdx_bg-success hdx_flex hdx_items-center hdx_justify-center hdx_text-white hdx_font-bold">S</div>
+            <div>
+              <h2 class="hdx_text-lg hdx_font-semibold hdx_text-text">Analytics</h2>
+              <p class="hdx_text-xs hdx_text-text-muted">Reports</p>
+            </div>
+          </div>
+          <p class="hdx_text-sm hdx_text-text-secondary hdx_mb-4">Track user engagement and conversion rates across channels.</p>
+          <button class="hdx_px-4 hdx_py-2 hdx_bg-outline hdx_text-text hdx_text-sm hdx_font-medium hdx_rounded-lg hdx_border hdx_border-border-strong hdx_transition hdx_hover_bg-surface-secondary">
+            View Report
+          </button>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="hdx_bg-surface hdx_border hdx_border-border hdx_rounded-xl hdx_shadow-sm hdx_p-6">
+          <div class="hdx_flex hdx_items-center hdx_gap-3 hdx_mb-4">
+            <div class="hdx_w-10 hdx_h-10 hdx_rounded-lg hdx_bg-warning hdx_flex hdx_items-center hdx_justify-center hdx_text-white hdx_font-bold">!</div>
+            <div>
+              <h2 class="hdx_text-lg hdx_font-semibold hdx_text-text">Alerts</h2>
+              <p class="hdx_text-xs hdx_text-text-muted">Notifications</p>
+            </div>
+          </div>
+          <p class="hdx_text-sm hdx_text-text-secondary hdx_mb-4">Stay informed about critical events and system status updates.</p>
+          <button class="hdx_px-4 hdx_py-2 hdx_bg-ghost hdx_text-text hdx_text-sm hdx_font-medium hdx_rounded-lg hdx_transition hdx_hover_bg-surface-secondary">
+            Configure
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Form Example -->
+      <div class="hdx_mt-8 hdx_bg-surface hdx_border hdx_border-border hdx_rounded-xl hdx_shadow-sm hdx_p-6">
+        <h2 class="hdx_text-xl hdx_font-bold hdx_text-text hdx_mb-4">Settings</h2>
+        <form class="hdx_grid hdx_grid-cols-1 md:hdx_grid-cols-2 hdx_gap-4">
+          <div>
+            <label class="hdx_label">Name</label>
+            <input type="text" class="hdx_input" placeholder="Enter your name">
+          </div>
+          <div>
+            <label class="hdx_label">Email</label>
+            <input type="email" class="hdx_input" placeholder="Enter your email">
+          </div>
+          <div class="md:hdx_col-span-2">
+            <label class="hdx_label">Message</label>
+            <textarea class="hdx_textarea" rows="3" placeholder="Write a message..."></textarea>
+          </div>
+          <div class="md:hdx_col-span-2 hdx_flex hdx_justify-end hdx_gap-3">
+            <button type="button" class="hdx_btn hdx_btn-ghost hdx_btn-md">Cancel</button>
+            <button type="submit" class="hdx_btn hdx_btn-primary hdx_btn-md">Save Changes</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Badges -->
+      <div class="hdx_mt-6 hdx_flex hdx_gap-2 hdx_flex-wrap">
+        <span class="hdx_badge-primary">Primary</span>
+        <span class="hdx_badge-success">Success</span>
+        <span class="hdx_badge-danger">Danger</span>
+        <span class="hdx_badge-warning">Warning</span>
+        <span class="hdx_badge-info">Info</span>
+        <span class="hdx_badge-outline">Outline</span>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
