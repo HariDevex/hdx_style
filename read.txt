@@ -64,7 +64,7 @@ Run `node stats.js` to generate from source:
 ---
 
 ## Table of Contents
-- [Table of Contents](#table-of-contents)
+- [Table of Contents](#Table-of-Contents)
 - [Architecture](#architecture)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
@@ -109,6 +109,7 @@ Run `node stats.js` to generate from source:
 - [Accessibility](#accessibility)
 - [Plugin System](#plugin-system)
 - [Content Purging](#content-purging)
+- [Production Builds](#production-builds)
 - [Framework Integration](#framework-integration)
 - [Complete Page Example](#complete-page-example)
 - [License](#license)
@@ -238,14 +239,13 @@ npx hdx_style build
 <h2 id="cli-commands">💻 CLI Commands</h2>
 
 ```bash
-npx hdx_style init              # Create hdx.config.js / .cjs / .mjs
-npx hdx_style build             # Build dist/hdx.css (full stylesheet — large output)
-npx hdx_style build -p          # Production build (purges unused CSS) — recommended
-npx hdx_style build --production  # Production build (same as -p)
+npx hdx_style init              # Create hdx.config.js (.mjs/.cjs auto-detected)
+npx hdx_style build             # Build dist/hdx.css
+npx hdx_style build -p          # Build with content purging
 npx hdx_style build -o out.css  # Custom output path
 npx hdx_style build -c my.config.js  # Custom config path
 npx hdx_style watch             # Watch files and rebuild
-npx hdx_style generate          # Full stylesheet — always non-purged (no -p/--production)
+npx hdx_style generate          # Generate the full stylesheet (all utilities and variants)
 npx hdx_style --version         # Print version
 npx hdx_style --help            # Print help
 ```
@@ -323,17 +323,16 @@ export default {
     'hdx_hidden',
     'hdx_bg-primary',
     'hdx_text-white',
-    'hdx_opacity-50',
+    // Dynamic class patterns
+    'hdx_opacity-',
   ],
 };
 ```
 
 This is useful for:
-- Complete classes built dynamically via string concatenation
+- Classes built dynamically via string concatenation
 - Classes used in JavaScript logic not scanned by the content scanner
 - Ensuring critical utility classes are never purged
-
-> **No prefix patterns**: safelist entries must be complete class names. `'hdx_opacity-'` is not treated as "keep every `hdx_opacity-*`" — list each full class you need (e.g. `'hdx_opacity-25'`, `'hdx_opacity-50'`).
 
 ### Custom Prefix
 
@@ -1665,8 +1664,6 @@ npx hdx_style build -p
 npx hdx_style build --production
 ```
 
-> **Heads-up — `build` with no flags is huge by design.** `npx hdx_style build` generates every utility × variant combination, producing a multi-megabyte stylesheet (≈15 MB with the default theme). That is expected — it is the development convenience. The CLI now prints a warning whenever a full build runs with `content` configured. For any real project — including daily development — use `build -p` or `build --production`: the output contains only the utilities your app actually uses.
-
 This scans your content files and only includes utilities that are actually used:
 
 ```html
@@ -1717,7 +1714,7 @@ export default {
 };
 ```
 
-Useful for complete classes built dynamically via string concatenation or used in JavaScript logic the scanner cannot see. Entries must be full class names — prefix patterns like `hdx_opacity-` are not supported.
+Useful for classes built dynamically via string concatenation or used in JavaScript logic the scanner cannot see.
 
 ### Supported File Types
 
@@ -1762,7 +1759,6 @@ className={isActive ? "hdx_flex" : "hdx_block"}
 | Development | `npx hdx_style build` | Complete stylesheet (all utilities × all variants) |
 | Production | `npx hdx_style build -p` | Only used utilities + their variants |
 | Production (alias) | `npx hdx_style build --production` | Same as `-p` |
-| Full stylesheet | `npx hdx_style generate` | Always the complete stylesheet — ignores `-p`/`--production` |
 
 ---
 
