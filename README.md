@@ -27,7 +27,7 @@ Run `node stats.js` to generate from source:
 ---
 
 ## Table of Contents
-- [Table of Contents] (#Table-of-Contents)
+- [Table of Contents](#Table-of-Contents)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [CLI Commands](#cli-commands)
@@ -74,20 +74,20 @@ Run `node stats.js` to generate from source:
 - [License](#license)
 
 ---
-
-## Installation ## Table of Contents
+## Table of Contents
+## Installation 
 
 ```bash
 npm install @haridevx/hdx-css
 ```
-
-### CDN ## Table of Contents
+## Table of Contents
+### CDN
 
 ```html
 <link rel="stylesheet" href="https://unpkg.com/@haridevx/hdx-css/dist/hdx.css">
 ```
 
-### CSS Import
+### CSS Import # Table of Contents
 
 ```css
 @import "@haridevx/hdx-css/css";
