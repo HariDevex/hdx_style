@@ -2,18 +2,40 @@
   "name": "@haridevx/hdx-style",
   "version": "0.1.0",
   "description": "HDX Style — Modern utility-first CSS framework with design system",
-  "type": "module",
-  "main": "./src/index.js",
-  "types": "./index.d.ts",
-  "bin": {
-    "hdx_style": "./src/cli/index.js"
+  "keywords": [
+    "css",
+    "utility",
+    "framework",
+    "design-system",
+    "hdx",
+    "tailwind"
+  ],
+  "homepage": "https://github.com/HariDevex/hdx_style#readme",
+  "bugs": {
+    "url": "https://github.com/HariDevex/hdx_style/issues"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HariDevex/hdx_style.git"
+  },
+  "license": "MIT",
+  "author": "HariDevX",
+  "type": "module",
   "exports": {
     ".": {
       "types": "./index.d.ts",
       "default": "./src/index.js"
     },
     "./css": "./dist/hdx.css"
+  },
+  "main": "./src/index.js",
+  "types": "./index.d.ts",
+  "bin": {
+    "hdx_style": "src/cli/index.js"
+  },
+  "directories": {
+    "example": "examples",
+    "test": "tests"
   },
   "files": [
     "src/",
@@ -31,30 +53,6 @@
     "generate": "node src/cli/index.js generate",
     "init": "node src/cli/index.js init"
   },
-  "keywords": [
-    "css",
-    "utility",
-    "framework",
-    "design-system",
-    "hdx",
-    "tailwind"
-  ],
-  "author": "HariDevX",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/HariDevex/hdx_style.git"
-  },
-  "homepage": "https://github.com/HariDevex/hdx_style#readme",
-  "bugs": {
-    "url": "https://github.com/HariDevex/hdx_style/issues"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
   "dependencies": {
     "chokidar": "^3.6.0",
     "commander": "^12.0.0",
@@ -63,5 +61,11 @@
   },
   "devDependencies": {
     "vitest": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
