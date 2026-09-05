@@ -270,6 +270,86 @@ describe('Integration: Configurable reset', () => {
   });
 });
 
+describe('Integration: Cascade ordering (P1 regression)', () => {
+  it('base utilities precede all responsive media blocks in full output', () => {
+    const config = loadConfig();
+    const css = generateCSS(config);
+
+    const baseInfoIdx = css.indexOf('.hdx_hidden');
+    expect(baseInfoIdx).toBeGreaterThan(-1);
+
+    // Every breakpoint media query must come after the base rule. This is the
+    // ordering contract that lets `hdx_hidden hdx_lg_flex` show at >= lg.
+    for (const [bp, width] of Object.entries(config.theme.breakpoints)) {
+      const mediaBlock = css.indexOf('@media (min-width: ' + width + ')');
+      expect(mediaBlock).toBeGreaterThan(-1);
+      expect(baseInfoIdx).toBeLessThan(mediaBlock);
+    }
+  });
+
+  it('responsive display variant is emitted inside the media block after hidden base', () => {
+    const config = loadConfig();
+    const css = generateCSS(config);
+
+    const hiddenPos = css.indexOf('.hdx_hidden { display: none;');
+    expect(hiddenPos).toBeGreaterThan(-1);
+
+    // Find the media block that actually wraps the hdx_lg_flex rule and confirm
+    // it contains display:flex and comes after the hidden base.
+    const lgFlexRule = '.hdx_lg_flex { display: flex; }';
+    expect(css).toContain(lgFlexRule);
+    expect(hiddenPos).toBeLessThan(css.indexOf(lgFlexRule));
+  });
+
+  it('purged output also keeps base rules before responsive media blocks', () => {
+    const config = loadConfig();
+    const allUtilities = getAllUtilities(config);
+    const utilMap = new Map(allUtilities.map(u => [u.name, u]));
+
+    const neededUtils = [
+      { ...utilMap.get('hidden'), _requestedVariants: [] },
+      { ...utilMap.get('flex'), _requestedVariants: [['lg']] },
+    ];
+
+    const css = generateCSS(config, { utilities: neededUtils });
+
+    const hiddenPos = css.indexOf('.hdx_hidden { display: none;');
+    const lgPos = css.indexOf('@media (min-width: 1024px)');
+    expect(hiddenPos).toBeLessThan(lgPos);
+  });
+});
+
+describe('Integration: Media blocks grouped for inspection', () => {
+  it('all breakpoint media queries are contiguous near the end of the utilities section', () => {
+    const config = loadConfig();
+    const css = generateCSS(config);
+    const componentsIdx = css.indexOf('/* HDX CSS — Components */');
+    const utilitiesSection = css.slice(0, componentsIdx);
+    const lines = utilitiesSection.split('\n');
+
+    const mediaLines = [];
+    let firstMedia = -1;
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].trim().startsWith('@media (min-width')) {
+        if (firstMedia === -1) firstMedia = i;
+        mediaLines.push(i);
+      }
+    }
+
+    expect(mediaLines.length).toBeGreaterThan(0);
+
+    // Media blocks are contiguous: no unindented base rule appears between the
+    // first and last breakpoint media query.
+    for (let i = firstMedia; i <= mediaLines[mediaLines.length - 1]; i++) {
+      const raw = lines[i];
+      const t = raw.trim();
+      if (/^\.hdx_.+\{/.test(t)) {
+        expect(raw.startsWith('  ')).toBe(true);
+      }
+    }
+  });
+});
+
 describe('Integration: Deterministic output', () => {
   it('generating CSS twice produces identical output', () => {
     const config = loadConfig();

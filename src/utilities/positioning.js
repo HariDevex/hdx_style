@@ -27,6 +27,22 @@ export function positioningUtilities(config) {
     utils.push({ name: `${name}-full`, property: prop, value: '100%', category: 'positioning' });
   }
 
+  // Negative offsets driven by the spacing scale (-top-4, -left-1/2, ...)
+  const negate = (value) => {
+    if (/^0(px|rem|%)$/.test(value) || value === '0') return '0';
+    return value.startsWith('-') ? value : '-' + value;
+  };
+  for (const [name, prop] of positions) {
+    for (const [key, value] of Object.entries(config.theme.spacing || {})) {
+      utils.push({ name: `-${name}-${key}`, property: prop, value: negate(value), category: 'positioning' });
+    }
+  }
+  for (const [name, prop] of positions) {
+    utils.push({ name: `-${name}-1/2`, property: prop, value: '-50%', category: 'positioning' });
+    utils.push({ name: `-${name}-full`, property: prop, value: '-100%', category: 'positioning' });
+    utils.push({ name: `-${name}-px`, property: prop, value: '-1px', category: 'positioning' });
+  }
+
   // Inset utilities
   const insets = [
     ['inset-auto', 'inset', 'auto'],

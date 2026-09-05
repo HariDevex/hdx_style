@@ -76,6 +76,24 @@ export function colorsUtilities(config) {
       value: cssVar,
       category: 'colors',
     });
+
+    // Gradient stops. Each rule composes the --hdx-gradient-stops variable that
+// bg-gradient-to-* consumes, mirroring Tailwind's var-based gradient model.
+    utils.push({
+      name: `from-${key}`,
+      css: '--hdx-gradient-from: ' + cssVar + ';\n--hdx-gradient-stops: var(--hdx-gradient-from), var(--hdx-gradient-to, transparent);',
+      category: 'colors',
+    });
+    utils.push({
+      name: `via-${key}`,
+      css: '--hdx-gradient-via: ' + cssVar + ';\n--hdx-gradient-stops: var(--hdx-gradient-from, transparent), var(--hdx-gradient-via), var(--hdx-gradient-to, transparent);',
+      category: 'colors',
+    });
+    utils.push({
+      name: `to-${key}`,
+      css: '--hdx-gradient-to: ' + cssVar + ';\n--hdx-gradient-stops: var(--hdx-gradient-from, transparent), var(--hdx-gradient-to);',
+      category: 'colors',
+    });
   }
 
   return utils;

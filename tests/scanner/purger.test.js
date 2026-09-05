@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { purgeUnused } from '../../src/scanner/purger.js';
+import { purgeUnused, findUnknownClasses } from '../../src/scanner/purger.js';
 
 describe('purger', () => {
   const allUtilities = [
@@ -75,5 +75,34 @@ describe('purger', () => {
     const result = purgeUnused(allUtilities, used, 'hdx_', ['hdx_flex']);
     const flexes = result.filter(u => u.name === 'flex');
     expect(flexes).toHaveLength(1);
+  });
+});
+
+describe('findUnknownClasses', () => {
+  const allUtilities = [
+    { name: 'flex', property: 'display', value: 'flex' },
+    { name: 'bg-primary', property: 'background-color', value: 'var(--hdx-color-primary)' },
+  ];
+
+  it('returns nothing for fully-resolvable classes', () => {
+    const unknown = findUnknownClasses(allUtilities, new Set(['hdx_flex', 'hdx_md_bg-primary']));
+    expect(unknown).toHaveLength(0);
+  });
+
+  it('flags classes that use an unknown utility name', () => {
+    const unknown = findUnknownClasses(allUtilities, new Set(['hdx_grid', 'hdx_hover_grid']));
+    expect(unknown.length).toBeGreaterThan(0);
+    expect(unknown.find(u => u.className === 'hdx_grid')).toBeDefined();
+    expect(unknown.find(u => u.className === 'hdx_hover_grid').utility).toBe('grid');
+  });
+
+  it('ignores non-HDX classes', () => {
+    const unknown = findUnknownClasses(allUtilities, new Set(['navbar-brand', 'flex']));
+    expect(unknown).toHaveLength(0);
+  });
+
+  it('flags syntactically-invalid classes', () => {
+    const unknown = findUnknownClasses(allUtilities, new Set(['hdx__weird__name']));
+    expect(unknown.length).toBeGreaterThan(0);
   });
 });

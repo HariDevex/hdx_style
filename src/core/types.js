@@ -30,6 +30,8 @@
  * @property {string} [property]
  * @property {string} [value]
  * @property {string} [css]
+ * @property {string} [selector] - Optional selector suffix appended to the class
+ *   (e.g. ' > :not([hidden]) ~ :not([hidden])' for space/divide combinators).
  * @property {string} [category]
  */
 

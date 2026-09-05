@@ -1,14 +1,26 @@
 import { getSelector } from '../core/prefix.js';
 
 /**
+ * Build the full CSS selector for a utility, applying an optional selector
+ * suffix (e.g. ` > :not([hidden]) ~ :not([hidden])` for space/divide combinators).
+ * @param {import('../core/types.js').UtilityDefinition} def
+ * @param {string} prefix
+ * @returns {string}
+ */
+function selectorFor(def, prefix) {
+  const base = '.' + getSelector(def.name, prefix);
+  return def.selector ? base + def.selector : base;
+}
+
+/**
  * Generate a CSS rule string from a utility definition
  * @param {import('../core/types.js').UtilityDefinition} def
  * @param {string} prefix
  * @returns {string} CSS rule
  */
 export function generateRule(def, prefix = 'hdx_') {
-  const selector = getSelector(def.name, prefix);
-  return '.' + selector + ' { ' + def.property + ': ' + def.value + '; }\n';
+  const selector = selectorFor(def, prefix);
+  return selector + ' { ' + def.property + ': ' + def.value + '; }\n';
 }
 
 /**
@@ -19,7 +31,7 @@ export function generateRule(def, prefix = 'hdx_') {
  * @returns {string} CSS rule
  */
 export function generateMultiPropertyRule(def, prefix = 'hdx_') {
-  const selector = getSelector(def.name, prefix);
+  const selector = selectorFor(def, prefix);
 
   let cssBody;
   if (def.css) {
@@ -33,5 +45,5 @@ export function generateMultiPropertyRule(def, prefix = 'hdx_') {
   }
 
   const lines = cssBody.split('\n').map(l => '  ' + l.trim()).join('\n');
-  return '.' + selector + ' {\n' + lines + '\n}\n';
+  return selector + ' {\n' + lines + '\n}\n';
 }

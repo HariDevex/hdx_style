@@ -34,5 +34,17 @@ export function backgroundsUtilities(config) {
     { name: 'bg-clip-padding', property: 'background-clip', value: 'padding-box', category: 'backgrounds' },
     { name: 'bg-clip-content', property: 'background-clip', value: 'content-box', category: 'backgrounds' },
     { name: 'bg-clip-text', property: 'background-clip', value: 'text', category: 'backgrounds' },
+
+    // Gradient direction helpers (set background-image direction). Color stops
+    // (from-*/via-*/to-*) are generated in colors.js and compose
+    // --hdx-gradient-stops.
+    { name: 'bg-gradient-to-t', property: 'background-image', value: 'linear-gradient(to top, var(--hdx-gradient-stops, transparent))', category: 'backgrounds' },
+    { name: 'bg-gradient-to-tr', property: 'background-image', value: 'linear-gradient(to top right, var(--hdx-gradient-stops, transparent))', category: 'backgrounds' },
+    { name: 'bg-gradient-to-r', property: 'background-image', value: 'linear-gradient(to right, var(--hdx-gradient-stops, transparent))', category: 'backgrounds' },
+    { name: 'bg-gradient-to-br', property: 'background-image', value: 'linear-gradient(to bottom right, var(--hdx-gradient-stops, transparent))', category: 'backgrounds' },
+    { name: 'bg-gradient-to-b', property: 'background-image', value: 'linear-gradient(to bottom, var(--hdx-gradient-stops, transparent))', category: 'backgrounds' },
+    { name: 'bg-gradient-to-bl', property: 'background-image', value: 'linear-gradient(to bottom left, var(--hdx-gradient-stops, transparent))', category: 'backgrounds' },
+    { name: 'bg-gradient-to-l', property: 'background-image', value: 'linear-gradient(to left, var(--hdx-gradient-stops, transparent))', category: 'backgrounds' },
+    { name: 'bg-gradient-to-tl', property: 'background-image', value: 'linear-gradient(to top left, var(--hdx-gradient-stops, transparent))', category: 'backgrounds' },
   ];
 }

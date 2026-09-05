@@ -640,10 +640,30 @@ Utilities reference these variables:
 <div class="hdx_mt-6">Margin Top</div>
 <div class="hdx_mb-8">Margin Bottom</div>
 
+<!-- Negative Margins -->
+<div class="hdx_-mt-4">Negative Top Margin</div>
+<div class="hdx_-mx-2">Negative X Margin</div>
+
+<!-- Space Between Children -->
+<div class="hdx_space-y-4 hdx_flex hdx_flex-col">
+  <div>Item 1</div>
+  <div>Item 2</div>
+  <div>Item 3</div>
+</div>
+<div class="hdx_space-x-2 hdx_flex">
+  <button>Button 1</button>
+  <button>Button 2</button>
+</div>
+
 <!-- Gap -->
 <div class="hdx_flex hdx_gap-4">Gap 4</div>
 <div class="hdx_grid hdx_gap-6">Gap 6</div>
 ```
+
+Space and (horizontal/vertical) dividers apply to adjacent children via the
+Tailwind child combinator:
+`.hdx_space-y-4 > :not([hidden]) ~ :not([hidden])`,
+so `hdx_hidden` children are respected automatically.
 
 ### Sizing
 
@@ -761,6 +781,30 @@ Utilities reference these variables:
 <div class="hdx_bg-no-repeat">No Repeat</div>
 <div class="hdx_bg-fixed">Fixed</div>
 <div class="hdx_bg-clip-text">Clip Text</div>
+
+<!-- Gradients -->
+<div class="hdx_bg-gradient-to-r hdx_from-primary hdx_to-info">
+  Linear Gradient (primary → info)
+</div>
+<div class="hdx_bg-gradient-to-br hdx_from-danger hdx_via-warning hdx_to-success">
+  Three-Stop Gradient
+</div>
+```
+
+Gradients set `background-image` from `from-*` / `via-*` / `to-*` stops, which
+compose a `--hdx-gradient-stops` variable consumed by `hdx_bg-gradient-to-*`
+directions (`t/tr/r/br/b/bl/l/tl`). Skeleton-shimmer backgrounds can then use
+`hdx_bg-gradient-to-r` with theme colors.
+
+### Interaction
+
+```html
+<button class="hdx_cursor-pointer">Pointer Cursor</button>
+<button class="hdx_cursor-not-allowed hdx_opacity-50" disabled>Disabled</button>
+<input class="hdx_select-none">No Text Selection</input>
+<input class="hdx_appearance-none">Custom Select</input>
+<textarea class="hdx_resize-none">Fixed Size</textarea>
+<textarea class="hdx_resize-y">Vertical Resize</textarea>
 ```
 
 ### Borders
@@ -791,6 +835,9 @@ Utilities reference these variables:
   <div>Item 2</div>
 </div>
 ```
+
+`hdx_divide-x` / `hdx_divide-y` (and `hdx_divide-*-0|2|4|8`) emit the child
+combinator so borders render **between** adjacent children only.
 
 ### Border Radius
 
@@ -861,6 +908,11 @@ Utilities reference these variables:
 <div class="hdx_top-1/2 hdx_left-1/2 hdx_-translate-x-1/2 hdx_-translate-y-1/2">
   Centered
 </div>
+
+<!-- Negative Offsets -->
+<div class="hdx_-top-4">Top: -1rem</div>
+<div class="hdx_-left-1/2">Left: -50%</div>
+<div class="hdx_-bottom-full">Bottom: -100%</div>
 ```
 
 ### Z-Index
@@ -971,6 +1023,20 @@ Variant types:
 | `responsive` | Media query wrapper | `sm`, `md`, `lg`, `xl`, `2xl` |
 | `dark` | `hdx_dark` ancestor or media query | `dark` |
 | `ancestor` | Ancestor selector | `group-hover`, `peer-hover` |
+| `important` | `!important` override variant | `hdx_important_bg-primary` |
+
+**Ordering guarantee (cascade contract).** All base utility rules are emitted
+before every responsive `@media` block, so the idiomatic "hidden on mobile,
+shown at `lg`" pattern is safe to use:
+
+```html
+<aside class="hdx_hidden hdx_lg_flex">Sidebar — shown from lg up</aside>
+```
+
+`display:none` applies below `lg`; `display:flex` applies at `>= lg`. This
+holds in both full and purged builds (there is a regression test for it).
+
+<!-- Responsive Grid -->
 
 <h2 id="responsive-design">📐 Responsive Design</h2>
 
@@ -1230,6 +1296,54 @@ Combine responsive + state, responsive + dark, or dark + state:
   Hover in dark mode
 </button>
 ```
+
+---
+
+<h2 id="important-variant">🚨 Important Variant</h2>
+
+Use `important` as a variant to override component-layer CSS with equal
+specificity (replaces Tailwind's escaped `.\!bg-primary`):
+
+```html
+<input class="hdx_input hdx_important_border-error hdx_important_h-9">
+```
+
+Combines with other variants: `hdx_md_important_flex`,
+`hdx_hover_important_text-primary`.
+
+---
+
+<h2 id="arbitrary-values">🔧 Arbitrary Values & Negative Utilities</h2>
+
+### Arbitrary Values
+
+A safe subset of Tailwind-style arbitrary values resolves at build time
+(purged/production builds only):
+
+```html
+<img class="hdx_w-[260px] hdx_max-h-[70vh] hdx_rounded-[10px]">
+<div class="hdx_w-[45%] hdx_opacity-[0.5] hdx_blur-[2px]">Overlay</div>
+<div class="hdx_rotate-[90deg] hdx_md_translate-x-[-50%]">Badge</div>
+```
+
+Supported prefixes: `w h min-w min-h max-w max-h rounded text leading
+tracking p px py pt pr pb pl m mx my mt mr mb ml gap gap-x gap-y top right
+bottom left opacity z delay duration rotate translate-x translate-y scale-x
+scale-y blur`. A bare number in a length/angle position gets `px`/`deg`
+appended automatically. Underscores inside the brackets are treated as
+spaces (`blur-[1_rem]`).
+
+### Negative Values
+
+```html
+<div class="hdx_-mt-4 hdx_-mx-2">Pulled left/up</div>
+<div class="hdx_-top-1/2 hdx_-translate-y-1/2">Lifted</div>
+<div class="hdx_-rotate-45">Counter-rotated</div>
+```
+
+Negative margins (`-m-*`), insets (`-top-*`, `-left-1/2`, `-bottom-full`),
+and transforms (`-translate-x/y-*`, `-rotate-*`) are generated from the theme
+spacing scale.
 
 ---
 
@@ -1777,6 +1891,21 @@ className={isActive ? "hdx_flex" : "hdx_block"}
 | Production | `npx hdx_style build -p` | Only used utilities + their variants |
 | Production (alias) | `npx hdx_style build --production` | Same as `-p` |
 | Full stylesheet | `npx hdx_style generate` | Always the complete stylesheet — ignores `-p`/`--production` |
+
+**Unknown-utility warnings.** In production mode the build reports any HDX
+class that resolves to no utility, with its `file:line:column`, instead of
+silently dropping it:
+
+```text
+⚠ Unknown utility "hdx_nonexistent-class" (./src/App.jsx:3:38) — no CSS generated
+```
+
+This makes Tailwind→HDX migrations auditable: nothing disappears quietly.
+
+**Responsive media ordering.** Base utilities are always emitted before the
+`@media` blocks, and every responsive block is grouped contiguously (ordered by
+breakpoint) at the end of the utilities section, so `hdx_hidden hdx_lg_flex`
+behaves correctly and the generated file is easy to inspect.
 
 ---
 

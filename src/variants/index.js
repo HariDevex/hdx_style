@@ -2,6 +2,7 @@ import { stateVariants } from './states.js';
 import { responsiveVariants } from './responsive.js';
 import { darkVariants } from './dark.js';
 import { groupVariants } from './group.js';
+import { importantVariants } from './important.js';
 
 /**
  * Get all variant definitions
@@ -16,6 +17,7 @@ export function getAllVariants(config) {
     ...responsiveVariants(config),
     ...darkVariants(config),
     ...groupVariants(config),
+    ...importantVariants(),
     ...customVariants,
   ];
 }

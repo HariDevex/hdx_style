@@ -87,20 +87,32 @@ function generateFullCSS(allUtilities, pluginUtilities, variants, variantMap, pr
   let css = '\n/* HDX CSS — Utilities */\n';
   const utils = [...allUtilities, ...pluginUtilities];
 
+  // Phase 1: emit ALL base rules first. This guarantees that every base
+  // utility (e.g. `.hdx_hidden { display:none }`) precedes every responsive
+  // `@media` block, so at equal specificity the responsive variant always wins
+  // when its breakpoint matches. (Cascade ordering contract — see notes.)
+  for (const util of utils) {
+    css += util.css
+      ? generateMultiPropertyRule(util, prefix)
+      : generateRule(util, prefix);
+  }
+
+  // Non-media variant rules accumulate inline; every @media block is buffered
+  // and appended at the end (grouped by breakpoint for inspection).
+  const mediaBlocks = {};
+
+  // Phase 2: emit all variant rules (state, dark, important, and combos) and
+  // single responsive variants.
   for (const util of utils) {
     const baseRule = util.css
       ? generateMultiPropertyRule(util, prefix)
       : generateRule(util, prefix);
-    css += baseRule;
 
     // Generate single variants
     for (const variant of variants) {
-      let rule = util.css
-        ? generateMultiPropertyRule(util, prefix)
-        : generateRule(util, prefix);
-
       const fullClass = variant.prefix + util.name;
-      css = appendVariantCSS(css, rule, variant, fullClass, util.name, prefix, darkStrategy);
+      const rule = appendVariantCSS('', baseRule, variant, fullClass, util.name, prefix, darkStrategy, util.selector);
+      css = groupEmit(css, mediaBlocks, rule);
     }
 
     // Generate combined variants: responsive + state
@@ -115,7 +127,8 @@ function generateFullCSS(allUtilities, pluginUtilities, variants, variantMap, pr
         let rule = util.css
           ? generateMultiPropertyRule(util, prefix)
           : generateRule(util, prefix);
-        css = applyVariantPipelineToCSS(css, rule, variantCombo, variantMap, util.name, prefix, darkStrategy);
+        rule = applyVariantPipeline(rule, variantCombo, variantMap, util.name, prefix, darkStrategy, util.selector);
+        css = groupEmit(css, mediaBlocks, rule);
       }
     }
 
@@ -126,7 +139,8 @@ function generateFullCSS(allUtilities, pluginUtilities, variants, variantMap, pr
         let rule = util.css
           ? generateMultiPropertyRule(util, prefix)
           : generateRule(util, prefix);
-        css = applyVariantPipelineToCSS(css, rule, variantCombo, variantMap, util.name, prefix, darkStrategy);
+        rule = applyVariantPipeline(rule, variantCombo, variantMap, util.name, prefix, darkStrategy, util.selector);
+        css = groupEmit(css, mediaBlocks, rule);
       }
     }
 
@@ -137,11 +151,33 @@ function generateFullCSS(allUtilities, pluginUtilities, variants, variantMap, pr
         let rule = util.css
           ? generateMultiPropertyRule(util, prefix)
           : generateRule(util, prefix);
-        css = applyVariantPipelineToCSS(css, rule, variantCombo, variantMap, util.name, prefix, darkStrategy);
+        rule = applyVariantPipeline(rule, variantCombo, variantMap, util.name, prefix, darkStrategy, util.selector);
+        css = groupEmit(css, mediaBlocks, rule);
       }
     }
   }
 
+  // Phase 3: all @media blocks, grouped by breakpoint, appended last.
+  for (const key of Object.keys(mediaBlocks)) {
+    css += mediaBlocks[key];
+  }
+
+  return css;
+}
+
+/**
+ * Append `rule` to either the inline css (non-media) or the media buffer keyed
+ * by the first @media line of the rule so blocks group together by breakpoint.
+ */
+function groupEmit(css, mediaBlocks, rule) {
+  const mediaLine = (rule.trimStart().startsWith('@media') ? rule.trimStart().split('\n')[0] : null)
+    || (/\n\s*@media/.test(rule) ? rule.trim().split('\n').find(l => l.trim().startsWith('@media')).trim() : null);
+
+  if (mediaLine) {
+    mediaBlocks[mediaLine] = (mediaBlocks[mediaLine] || '') + rule;
+  } else {
+    css += rule;
+  }
   return css;
 }
 
@@ -152,50 +188,58 @@ function generateFullCSS(allUtilities, pluginUtilities, variants, variantMap, pr
 function generatePurgedCSS(purgedUtilities, variants, variantMap, prefix, darkStrategy) {
   let css = '\n/* HDX CSS — Utilities */\n';
 
+  // Phase 1: emit ALL base rules first (see generateFullCSS ordering contract).
   for (const util of purgedUtilities) {
+    css += util.css
+      ? generateMultiPropertyRule(util, prefix)
+      : generateRule(util, prefix);
+  }
+
+  // Phase 2: emit all requested variant combos, buffering @media blocks so they
+  // are grouped at the end (see generateFullCSS).
+  const mediaBlocks = {};
+  for (const util of purgedUtilities) {
+    if (!util._requestedVariants) continue;
     const baseRule = util.css
       ? generateMultiPropertyRule(util, prefix)
       : generateRule(util, prefix);
-    css += baseRule;
-
-    // If the utility has requested variant combos, generate those too
-    if (util._requestedVariants) {
-      for (const variantCombo of util._requestedVariants) {
-        if (variantCombo.length === 0) continue;
-        let rule = util.css
-          ? generateMultiPropertyRule(util, prefix)
-          : generateRule(util, prefix);
-        css = applyVariantPipelineToCSS(css, rule, variantCombo, variantMap, util.name, prefix, darkStrategy);
-      }
+    for (const variantCombo of util._requestedVariants) {
+      if (variantCombo.length === 0) continue;
+      const rule = applyVariantPipeline(baseRule, variantCombo, variantMap, util.name, prefix, darkStrategy, util.selector);
+      css = groupEmit(css, mediaBlocks, rule);
     }
+  }
+
+  if (Object.keys(mediaBlocks).length > 0) {
+    css += '\n/* HDX CSS — Responsive */\n';
+  }
+  for (const key of Object.keys(mediaBlocks)) {
+    css += mediaBlocks[key];
   }
 
   return css;
 }
 
 /**
- * Apply variant pipeline and append result to css string.
- */
-function applyVariantPipelineToCSS(css, baseRule, variantNames, variantMap, utilityName, prefix, darkStrategy) {
-  const wrapped = applyVariantPipeline(baseRule, variantNames, variantMap, utilityName, prefix, darkStrategy);
-  return css + wrapped;
-}
-
-/**
  * Append a single variant CSS to the output string.
  */
-function appendVariantCSS(css, baseRule, variant, fullClassName, utilityName, prefix, darkStrategy) {
+function appendVariantCSS(css, baseRule, variant, fullClassName, utilityName, prefix, darkStrategy, suffix) {
   const escaped = getSelector(fullClassName, prefix);
+  const classSel = '.' + escaped;
+  const withSuffix = classSel + (suffix || '');
+
+  // Rebuild a rule whose selector is `selector` (keeping the declaration body).
+  const rule = (selector) => selector + ' ' + baseRule.slice(baseRule.indexOf('{'));
 
   if (variant.type === 'responsive') {
     const mediaQuery = variant.selector(utilityName);
-    const inner = baseRule.replace(/^(\.\S+)(\s*\{)/, '.' + escaped + '$2');
+    const inner = rule(withSuffix);
     return css + mediaQuery + ' {\n' + indent(inner) + '\n}\n';
   }
 
   if (variant.type === 'dark') {
     const strategy = variant.strategy || darkStrategy;
-    const inner = baseRule.replace(/^(\.\S+)(\s*\{)/, '.' + escaped + '$2');
+    const inner = rule(withSuffix);
 
     if (strategy === 'media') {
       return css + '@media (prefers-color-scheme: dark) {\n' + indent(inner) + '\n}\n';
@@ -206,16 +250,22 @@ function appendVariantCSS(css, baseRule, variant, fullClassName, utilityName, pr
     return css + '.hdx_dark ' + inner;
   }
 
+  // Important/override variant: keep the class selector but mark declarations
+  // !important so they beat component-layer rules of equal specificity.
+  if (variant.type === 'important') {
+    return css + rule(withSuffix).replace(/;/g, ' !important;');
+  }
+
   // State or ancestor
   const variantSelector = variant.selector(fullClassName);
   let selector;
   if (variantSelector.includes('&')) {
-    selector = variantSelector.replace('&', '.' + escaped);
+    selector = variantSelector.replace('&', classSel);
   } else {
-    selector = '.' + escaped + variantSelector;
+    selector = classSel + variantSelector;
   }
-  const inner = baseRule.replace(/^(\.\S+)(\s*\{)/, selector + '$2');
-  return css + inner;
+  selector += suffix || '';
+  return css + rule(selector);
 }
 
 /**

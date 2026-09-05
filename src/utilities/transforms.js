@@ -33,6 +33,16 @@ export function transformsUtilities(config) {
     { name: 'rotate-90', property: '--rotate', value: '90deg', category: 'transforms' },
     { name: 'rotate-180', property: '--rotate', value: '180deg', category: 'transforms' },
 
+    // Negative rotate (Tailwind-compatible: -rotate-45, -rotate-90, …)
+    { name: '-rotate-1', property: '--rotate', value: '-1deg', category: 'transforms' },
+    { name: '-rotate-2', property: '--rotate', value: '-2deg', category: 'transforms' },
+    { name: '-rotate-3', property: '--rotate', value: '-3deg', category: 'transforms' },
+    { name: '-rotate-6', property: '--rotate', value: '-6deg', category: 'transforms' },
+    { name: '-rotate-12', property: '--rotate', value: '-12deg', category: 'transforms' },
+    { name: '-rotate-45', property: '--rotate', value: '-45deg', category: 'transforms' },
+    { name: '-rotate-90', property: '--rotate', value: '-90deg', category: 'transforms' },
+    { name: '-rotate-180', property: '--rotate', value: '-180deg', category: 'transforms' },
+
     // Translate
     { name: 'translate-x-0', property: '--translate-x', value: '0px', category: 'transforms' },
     { name: 'translate-x-px', property: '--translate-x', value: '1px', category: 'transforms' },
@@ -53,6 +63,14 @@ export function transformsUtilities(config) {
     { name: 'translate-y-1/4', property: '--translate-y', value: '25%', category: 'transforms' },
     { name: 'translate-y--full', property: '--translate-y', value: '-100%', category: 'transforms' },
     { name: 'translate-y--1/2', property: '--translate-y', value: '-50%', category: 'transforms' },
+
+    // Negative translate (Tailwind-compatible: -translate-x-4, -translate-y-1/2)
+    { name: '-translate-x-px', property: '--translate-x', value: '-1px', category: 'transforms' },
+    { name: '-translate-x-full', property: '--translate-x', value: '-100%', category: 'transforms' },
+    { name: '-translate-x-1/2', property: '--translate-x', value: '-50%', category: 'transforms' },
+    { name: '-translate-y-px', property: '--translate-y', value: '-1px', category: 'transforms' },
+    { name: '-translate-y-full', property: '--translate-y', value: '-100%', category: 'transforms' },
+    { name: '-translate-y-1/2', property: '--translate-y', value: '-50%', category: 'transforms' },
 
     // Skew
     { name: 'skew-x-0', property: '--skew-x', value: '0deg', category: 'transforms' },
@@ -79,6 +97,16 @@ export function transformsUtilities(config) {
     { name: 'origin-left', property: 'transform-origin', value: 'left', category: 'transforms' },
     { name: 'origin-top-left', property: 'transform-origin', value: 'top left', category: 'transforms' },
   ];
+
+  // Negative translate driven by the theme spacing scale (-translate-x-4, …)
+  const negate = (value) => {
+    if (/^0(px|rem|%)$/.test(value) || value === '0') return '0px';
+    return value.startsWith('-') ? value : '-' + value;
+  };
+  for (const [key, value] of Object.entries(config.theme.spacing || {})) {
+    utils.push({ name: `-translate-x-${key}`, property: '--translate-x', value: negate(value), category: 'transforms' });
+    utils.push({ name: `-translate-y-${key}`, property: '--translate-y', value: negate(value), category: 'transforms' });
+  }
 
   return utils;
 }

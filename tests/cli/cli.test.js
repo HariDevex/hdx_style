@@ -93,7 +93,8 @@ describe('CLI', () => {
     const output = execSync(`node ${path.join(PROJECT_ROOT, 'src/cli/index.js')} --version`, {
       encoding: 'utf-8',
     });
-    expect(output.trim()).toBe('0.1.0');
+    const pkg = JSON.parse(fs.readFileSync(path.join(PROJECT_ROOT, 'package.json'), 'utf-8'));
+    expect(output.trim()).toBe(pkg.version);
   });
 
   it('hdx_style --help prints help', () => {

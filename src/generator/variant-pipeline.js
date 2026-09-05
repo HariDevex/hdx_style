@@ -43,9 +43,10 @@ export function indent(css, indentStr = '  ') {
  * @param {string} utilityName - The utility name (e.g. 'flex')
  * @param {string} prefix - HDX prefix
  * @param {'class'|'media'|'both'} [darkStrategy='class']
+ * @param {string} [suffix=''] - Optional selector suffix (e.g. ' > :not([hidden]) ~ :not([hidden])')
  * @returns {string} Wrapped CSS
  */
-export function applyVariantPipeline(baseCss, variantNames, variantMap, utilityName, prefix = 'hdx_', darkStrategy = 'class') {
+export function applyVariantPipeline(baseCss, variantNames, variantMap, utilityName, prefix = 'hdx_', darkStrategy = 'class', suffix = '') {
   if (variantNames.length === 0) {
     return baseCss;
   }
@@ -71,8 +72,20 @@ export function applyVariantPipeline(baseCss, variantNames, variantMap, utilityN
     }
   }
 
-  // Replace the base rule's selector once, before any wrapping
-  let css = baseCss.replace(/^(\.\S+)(\s*\{)/, selector + '$2');
+  // Append the selector suffix after the composed class selector so that
+  // combinators (space/divide) follow regardless of the variant.
+  const fullSelector = selector + (suffix || '');
+
+  // Replace the base rule's selector by rebuilding from its declaration body.
+  let css = fullSelector + ' ' + baseCss.slice(baseCss.indexOf('{'));
+
+  // Apply !important when any variant in the combo is an important modifier.
+  if (variantNames.some(name => {
+    const v = variantMap.get(name);
+    return v && v.type === 'important';
+  })) {
+    css = css.replace(/;/g, ' !important;');
+  }
 
   // 2. Apply wrappers (responsive, dark) from innermost to outermost so that
   //    responsive ends up outermost and dark sits between it and the rule.

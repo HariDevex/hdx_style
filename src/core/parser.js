@@ -36,6 +36,8 @@ const VARIANT_PREFIXES = [
   'sm', 'md', 'lg', 'xl',
   // Dark
   'dark',
+  // Important/override modifier
+  'important',
   // State single-word
   'hover', 'focus', 'active', 'visited', 'disabled',
   'checked', 'required', 'invalid', 'valid',

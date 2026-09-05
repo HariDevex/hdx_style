@@ -43,21 +43,24 @@ export function bordersUtilities(config) {
     utils.push({ name: `border-${style}`, property: 'border-style', value: style, category: 'borders' });
   }
 
-  // Divide utilities (for child dividers)
+  // Divide utilities (for child dividers).
+  // The `selector` suffix emits the Tailwind child combinator so borders render
+  // between adjacent children: `.hdx_divide-x > :not([hidden]) ~ :not([hidden])`.
+  const childCombinator = ' > :not([hidden]) ~ :not([hidden])';
   utils.push(
-    { name: 'divide-x', property: 'border-inline-start-width', value: '1px', category: 'borders' },
-    { name: 'divide-y', property: 'border-block-start-width', value: '1px', category: 'borders' },
-    { name: 'divide-x-0', property: 'border-inline-start-width', value: '0px', category: 'borders' },
-    { name: 'divide-y-0', property: 'border-block-start-width', value: '0px', category: 'borders' },
-    { name: 'divide-x-2', property: 'border-inline-start-width', value: '2px', category: 'borders' },
-    { name: 'divide-y-2', property: 'border-block-start-width', value: '2px', category: 'borders' },
-    { name: 'divide-x-4', property: 'border-inline-start-width', value: '4px', category: 'borders' },
-    { name: 'divide-y-4', property: 'border-block-start-width', value: '4px', category: 'borders' },
-    { name: 'divide-x-8', property: 'border-inline-start-width', value: '8px', category: 'borders' },
-    { name: 'divide-y-8', property: 'border-block-start-width', value: '8px', category: 'borders' },
-    { name: 'divide-solid', property: 'border-style', value: 'solid', category: 'borders' },
-    { name: 'divide-dashed', property: 'border-style', value: 'dashed', category: 'borders' },
-    { name: 'divide-dotted', property: 'border-style', value: 'dotted', category: 'borders' },
+    { name: 'divide-x', property: 'border-inline-start-width', value: '1px', category: 'borders', selector: childCombinator },
+    { name: 'divide-y', property: 'border-block-start-width', value: '1px', category: 'borders', selector: childCombinator },
+    { name: 'divide-x-0', property: 'border-inline-start-width', value: '0px', category: 'borders', selector: childCombinator },
+    { name: 'divide-y-0', property: 'border-block-start-width', value: '0px', category: 'borders', selector: childCombinator },
+    { name: 'divide-x-2', property: 'border-inline-start-width', value: '2px', category: 'borders', selector: childCombinator },
+    { name: 'divide-y-2', property: 'border-block-start-width', value: '2px', category: 'borders', selector: childCombinator },
+    { name: 'divide-x-4', property: 'border-inline-start-width', value: '4px', category: 'borders', selector: childCombinator },
+    { name: 'divide-y-4', property: 'border-block-start-width', value: '4px', category: 'borders', selector: childCombinator },
+    { name: 'divide-x-8', property: 'border-inline-start-width', value: '8px', category: 'borders', selector: childCombinator },
+    { name: 'divide-y-8', property: 'border-block-start-width', value: '8px', category: 'borders', selector: childCombinator },
+    { name: 'divide-solid', property: 'border-style', value: 'solid', category: 'borders', selector: childCombinator },
+    { name: 'divide-dashed', property: 'border-style', value: 'dashed', category: 'borders', selector: childCombinator },
+    { name: 'divide-dotted', property: 'border-style', value: 'dotted', category: 'borders', selector: childCombinator },
   );
 
   return utils;

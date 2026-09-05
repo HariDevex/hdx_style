@@ -17,6 +17,7 @@ import { transformsUtilities } from './transforms.js';
 import { transitionsUtilities } from './transitions.js';
 import { animationsUtilities, getAnimationKeyframes } from './animations.js';
 import { accessibilityUtilities } from './accessibility.js';
+import { interactionUtilities } from './interaction.js';
 
 /**
  * Get all utility definitions from all categories
@@ -46,6 +47,7 @@ export function getAllUtilities(config) {
     ...transitionsUtilities(config),
     ...animationsUtilities(config),
     ...accessibilityUtilities(config),
+    ...interactionUtilities(),
     ...customUtilities,
   ];
 }
