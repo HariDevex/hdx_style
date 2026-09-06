@@ -1,4 +1,4 @@
-import { mapUtilitiesToVariants, parseClass } from '../core/parser.js';
+import { mapUtilitiesToVariants, parseClass, getVariantPrefixes } from '../core/parser.js';
 import { resolveArbitraryUtility } from '../generator/arbitrary.js';
 
 /**
@@ -16,9 +16,12 @@ import { resolveArbitraryUtility } from '../generator/arbitrary.js';
  * @param {string[]} [safelist]
  * @returns {import('../core/types.js').UtilityDefinition[]}
  */
-export function purgeUnused(allUtilities, usedClasses, prefix = 'hdx_', safelist = []) {
+export function purgeUnused(allUtilities, usedClasses, prefix = 'hdx_', safelist = [], config = null) {
   const utilMap = new Map(allUtilities.map(u => [u.name, u]));
-  const classToVariants = mapUtilitiesToVariants(usedClasses, prefix);
+  const variantPrefixes = config ? getVariantPrefixes(config) : undefined;
+  const classToVariants = variantPrefixes
+    ? mapUtilitiesToVariants(usedClasses, prefix, variantPrefixes)
+    : mapUtilitiesToVariants(usedClasses, prefix);
 
   const needed = [];
   const keptNames = new Set();
@@ -43,7 +46,9 @@ export function purgeUnused(allUtilities, usedClasses, prefix = 'hdx_', safelist
   }
 
   for (const safelistItem of safelist) {
-    const parsed = parseClass(safelistItem, prefix);
+    const parsed = variantPrefixes
+      ? parseClass(safelistItem, prefix, variantPrefixes)
+      : parseClass(safelistItem, prefix);
     if (!parsed.valid) continue;
 
     let util = utilMap.get(parsed.utility);
@@ -51,7 +56,7 @@ export function purgeUnused(allUtilities, usedClasses, prefix = 'hdx_', safelist
       util = resolveArbitraryUtility(parsed.utility);
       if (util) util._arbitrary = true;
     }
-if (!util || keptNames.has(parsed.utility)) continue;
+    if (!util || keptNames.has(parsed.utility)) continue;
 
     needed.push({ ...util, _requestedVariants: [] });
     keptNames.add(parsed.utility);
@@ -70,13 +75,16 @@ if (!util || keptNames.has(parsed.utility)) continue;
  * @param {string} prefix
  * @returns {Array<{className: string, utility: string, valid: boolean}>}
  */
-export function findUnknownClasses(allUtilities, usedClasses, prefix = 'hdx_') {
+export function findUnknownClasses(allUtilities, usedClasses, prefix = 'hdx_', config = null) {
   const utilSet = new Set(allUtilities.map(u => u.name));
+  const variantPrefixes = config ? getVariantPrefixes(config) : undefined;
   const unknown = [];
 
   for (const cls of usedClasses) {
     if (!cls.startsWith(prefix)) continue;
-    const parsed = parseClass(cls, prefix);
+    const parsed = variantPrefixes
+      ? parseClass(cls, prefix, variantPrefixes)
+      : parseClass(cls, prefix);
     const known = parsed.valid && (utilSet.has(parsed.utility) || resolveArbitraryUtility(parsed.utility));
     if (!known) {
       unknown.push({ className: cls, utility: parsed.utility, valid: parsed.valid });

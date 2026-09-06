@@ -317,6 +317,31 @@ describe('Integration: Cascade ordering (P1 regression)', () => {
     const lgPos = css.indexOf('@media (min-width: 1024px)');
     expect(hiddenPos).toBeLessThan(lgPos);
   });
+
+  it('grid-cols-N base precedes its own responsive variants in purged output', () => {
+    // The exact dashboard scenario from the audit: a base grid-cols-1 must not
+    // beat its sm/xl "show" variants at any breakpoint.
+    const config = loadConfig();
+    const allUtilities = getAllUtilities(config);
+    const utilMap = new Map(allUtilities.map(u => [u.name, u]));
+
+    const neededUtils = [
+      { ...utilMap.get('grid-cols-1'), _requestedVariants: [] },
+      { ...utilMap.get('grid-cols-2'), _requestedVariants: [['sm']] },
+      { ...utilMap.get('grid-cols-4'), _requestedVariants: [['xl']] },
+    ];
+
+    const css = generateCSS(config, { utilities: neededUtils });
+
+    const basePos = css.indexOf('.hdx_grid-cols-1 {');
+    expect(basePos).toBeGreaterThan(-1);
+
+    for (const width of ['640px', '1280px']) {
+      const mediaPos = css.indexOf('@media (min-width: ' + width + ')');
+      expect(mediaPos).toBeGreaterThan(-1);
+      expect(basePos).toBeLessThan(mediaPos);
+    }
+  });
 });
 
 describe('Integration: Media blocks grouped for inspection', () => {
@@ -372,5 +397,52 @@ describe('Integration: Dark mode strategy', () => {
     const css = generateCSS(config);
     expect(css).toContain('.hdx_dark {');
     expect(css).toContain('@media (prefers-color-scheme: dark)');
+  });
+});
+
+describe('Integration: Component layer gating (P1/1.7 regression)', () => {
+  it('built-in components are emitted by default', () => {
+    const config = loadConfig();
+    const css = generateCSS(config);
+    expect(css).toContain('/* HDX CSS — Components */');
+    expect(css).toContain('.hdx_btn {');
+  });
+
+  it('components are omitted when config.components === false', () => {
+    const config = loadConfig({ components: false });
+    const css = generateCSS(config);
+    expect(css).not.toContain('/* HDX CSS — Components */');
+    expect(css).not.toContain('.hdx_btn {');
+  });
+
+  it('purged utility output remains correct when components are disabled', () => {
+    const config = loadConfig({ components: false });
+    const css = generateCSS(config, {
+      utilities: [{
+        name: 'flex',
+        property: 'display',
+        value: 'flex',
+        category: 'display',
+        _requestedVariants: [],
+      }],
+    });
+    expect(css).toContain('.hdx_flex { display: flex; }');
+    expect(css).not.toContain('.hdx_btn');
+  });
+});
+
+describe('Integration: col-span emission (P1/1.2 regression)', () => {
+  it('purged output uses span-first shorthand for col-span-N', () => {
+    const config = loadConfig();
+    const allUtilities = getAllUtilities(config);
+    const utilMap = new Map(allUtilities.map(u => [u.name, u]));
+
+    const css = generateCSS(config, {
+      utilities: [
+        { ...utilMap.get('col-span-2'), _requestedVariants: [] },
+      ],
+    });
+    expect(css).toContain('.hdx_col-span-2 { grid-column: span 2 / span 2; }');
+    expect(css).not.toContain('grid-column: 2 / span 2');
   });
 });

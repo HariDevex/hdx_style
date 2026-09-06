@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { parseClass, isHdxClass, getUtilityName, getVariants, mapUtilitiesToVariants } from '../../src/core/parser.js';
+import { parseClass, isHdxClass, getUtilityName, getVariants, mapUtilitiesToVariants, getVariantPrefixes, DEFAULT_VARIANT_PREFIXES } from '../../src/core/parser.js';
+import { loadConfig } from '../../src/core/config.js';
 
 describe('HDX Class Parser', () => {
   it('parses simple utility', () => {
@@ -170,5 +171,45 @@ describe('mapUtilitiesToVariants', () => {
     expect(map.get('flex').has('md')).toBe(true);
     expect(map.get('bg-primary').has('hover')).toBe(true);
     expect(map.get('bg-primary').has('dark')).toBe(true);
+  });
+});
+
+describe('getVariantPrefixes (config-derived variants, P2/1.6 regression)', () => {
+  it('includes all built-in breakpoints, dark and important for the default config', () => {
+    const config = loadConfig();
+    const prefixes = getVariantPrefixes(config);
+    for (const bp of ['sm', 'md', 'lg', 'xl', '2xl']) {
+      expect(prefixes).toContain(bp);
+    }
+    expect(prefixes).toContain('dark');
+    expect(prefixes).toContain('important');
+    expect(prefixes).toContain('group-hover');
+    expect(prefixes).toContain('hover');
+  });
+
+  it('derives a custom theme breakpoint so it parses as a variant, not a utility', () => {
+    const config = loadConfig();
+    config.theme.breakpoints.xs = '480px';
+    const prefixes = getVariantPrefixes(config);
+    expect(prefixes).toContain('xs');
+
+    // Without the config-derived list, 'xs' is treated as part of the utility.
+    expect(parseClass('hdx_xs_flex', 'hdx_').utility).toBe('xs_flex');
+    // With the config-derived list, 'xs' is consumed as a variant.
+    const parsed = parseClass('hdx_xs_flex', 'hdx_', prefixes);
+    expect(parsed.valid).toBe(true);
+    expect(parsed.variants).toEqual(['xs']);
+    expect(parsed.utility).toBe('flex');
+  });
+
+  it('threads config-derived prefixes through mapUtilitiesToVariants', () => {
+    const config = loadConfig();
+    config.theme.breakpoints.xs = '480px';
+    const map = mapUtilitiesToVariants(new Set(['hdx_xs_flex']), 'hdx_', getVariantPrefixes(config));
+    expect(map.get('flex').has('xs')).toBe(true);
+  });
+
+  it('exposes a non-empty default set used when no config is supplied', () => {
+    expect(DEFAULT_VARIANT_PREFIXES.length).toBeGreaterThan(0);
   });
 });

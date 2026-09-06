@@ -28,9 +28,12 @@ export function gridUtilities(config) {
     });
   }
 
-  // Col span
+  // Col span. Tailwind/reference semantics are `span N / span N` (auto-placement,
+  // no start line pinned). Emitting `N / span N` instead pins items to start at
+  // column N, which reverses visual card order and creates phantom columns on
+  // fixed N-col layouts, so we MUST use the span-first shorthand.
   for (const n of [...cols, 'full']) {
-    const value = n === 'full' ? '1 / -1' : `${n} / span ${n}`;
+    const value = n === 'full' ? '1 / -1' : `span ${n} / span ${n}`;
     utils.push({
       name: `col-span-${n}`,
       property: 'grid-column',
@@ -55,9 +58,9 @@ export function gridUtilities(config) {
     });
   }
 
-  // Row span
+  // Row span. Same span-first semantics as col-span (no start line pinning).
   for (const n of [...rows, 'full']) {
-    const value = n === 'full' ? '1 / -1' : `${n} / span ${n}`;
+    const value = n === 'full' ? '1 / -1' : `span ${n} / span ${n}`;
     utils.push({
       name: `row-span-${n}`,
       property: 'grid-row',

@@ -65,8 +65,12 @@ export function generateCSS(config, options = {}) {
     css += generateFullCSS(allUtilities, pluginUtilities, variants, variantMap, prefix, darkStrategy);
   }
 
-  // 3. Components
-  const components = [...allComponents, ...pluginComponents];
+  // 3. Components (opt-out via config.components: false). The built-in component
+  // layer is appended after utilities/variants and would otherwise override
+  // component-level overrides a user writes in their own index.css. Disabling
+  // it lets a migration keep its custom component rules without an unpurged
+  // duplicate of every built-in component shipping on every build.
+  const components = processedConfig.components === false ? [] : [...allComponents, ...pluginComponents];
   if (components.length > 0) {
     css += '\n/* HDX CSS — Components */\n';
     for (const comp of components) {

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { purgeUnused, findUnknownClasses } from '../../src/scanner/purger.js';
+import { loadConfig } from '../../src/core/config.js';
 
 describe('purger', () => {
   const allUtilities = [
@@ -75,6 +76,29 @@ describe('purger', () => {
     const result = purgeUnused(allUtilities, used, 'hdx_', ['hdx_flex']);
     const flexes = result.filter(u => u.name === 'flex');
     expect(flexes).toHaveLength(1);
+  });
+
+  it('resolves custom breakpoint variants when the config is supplied (P2/1.6 regression)', () => {
+    const config = loadConfig();
+    config.theme.breakpoints.xs = '480px';
+
+    const used = new Set(['hdx_xs_flex']);
+    const result = purgeUnused(allUtilities, used, 'hdx_', [], config);
+
+    const flex = result.find(u => u.name === 'flex');
+    expect(flex).toBeDefined();
+    expect(flex._requestedVariants).toContainEqual(['xs']);
+  });
+
+  it('does not resolve custom breakpoint variants without the config (default parser)', () => {
+    const config = loadConfig();
+    config.theme.breakpoints.xs = '480px';
+
+    const used = new Set(['hdx_xs_flex']);
+    const result = purgeUnused(allUtilities, used, 'hdx_', []);
+
+    // Without config-derived prefixes, 'xs_flex' is an unknown utility.
+    expect(result).toHaveLength(0);
   });
 });
 

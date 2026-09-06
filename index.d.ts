@@ -22,6 +22,7 @@ export interface HdxConfig {
   plugins: PluginFunction[];
   safelist?: string[];
   reset?: boolean;
+  components?: boolean;
 }
 
 export interface GenerateOptions {
@@ -68,6 +69,8 @@ export function generateCSS(config: HdxConfig, options?: GenerateOptions): strin
 export function extractClassNames(content: string): Set<string>;
 export function getAllUtilities(config?: HdxConfig): UtilityDefinition[];
 export function getAllVariants(config?: HdxConfig): VariantDefinition[];
+export function parseClass(fullName: string, prefix?: string, variantPrefixes?: string[]): { prefix: string; variants: string[]; utility: string; valid: boolean };
+export function getVariantPrefixes(config?: HdxConfig): string[];
 export function prefixClass(name: string, prefix?: string): string;
 export function escapeClassName(name: string): string;
 export function getSelector(name: string, prefix?: string): string;

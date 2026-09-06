@@ -2,6 +2,38 @@
 
 All notable changes to HDX Style are documented in this file.
 
+## [0.2.0] — 2026-09-06
+
+### Fixed
+- **col-span-N / row-span-N emitted a start-pinned `N / span N`** instead of
+  the Tailwind/reference `span N / span N`. The old form anchored the grid
+  item at column N, reversing visual card order (right/left dashboards) and
+  creating a phantom 5th column on 4-col layouts whenever a card used
+  `col-span-1` next to `col-span-3`. Both are now emitted span-first with no
+  implicit line pinning; `-full` still spans the whole grid (`1 / -1`). A
+  regression test asserts no emitted rule ever contains the pinning form.
+- **Variant prefixes were hardcoded**, so a custom breakpoint (e.g. `xs`) or
+  a plugin `addVariant()` name could never be parsed from a class name and
+  silently generated nothing. The parser now derives prefixes from the
+  resolved config (`theme.breakpoints` + built-in variants) via
+  `getVariantPrefixes()`, threaded through `parseClass`,
+  `mapUtilitiesToVariants`, `purgeUnused`, and `findUnknownClasses`.
+- **`watch` could not purge.** `hdx_style watch` now content-scans and
+  generates only the used utilities (the same path as `build -p`), dropping
+  a full `utility × variant` matrix (hundreds of KB — 25 MB in the audit) to
+  a purged stylesheet. Add `--no-purge` to opt out.
+- **Version bumped to 0.2.0** (0.1.1's rewrite was never published as such).
+
+### Added
+- `config.components: false` opt-out for the built-in component layer, so
+  projects that carry their own component CSS (or later-occurring overrides)
+  are not shipped an unpurged duplicate of every built-in component on every
+  build.
+
+### Changed
+- Shared purge/generation logic between `build -p` and `watch` lives in
+  `src/scanner/scan.js` (`generatePurgedBuildCss`).
+
 ## [0.1.1] — 2026-09-05
 
 ### Fixed (P1 release blocker)

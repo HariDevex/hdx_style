@@ -19,12 +19,13 @@
  */
 
 /**
- * Known variant prefixes in canonical order.
- * Order matters: responsive → dark → state (inside→out CSS specificity).
- * The parser checks longer prefixes first to avoid greedy matching.
+ * Default variant prefixes used when no resolved config is available. These
+ * match the built-in variant set (responsive → dark → state/ancestor →
+ * important), ordered longest-first so greedy matching never splits a longer
+ * prefix into an unrelated shorter one.
  * @type {string[]}
  */
-const VARIANT_PREFIXES = [
+export const DEFAULT_VARIANT_PREFIXES = [
   // Responsive (must come before shorter matches)
   '2xl',
   // State (hyphenated first to avoid partial matches)
@@ -46,18 +47,52 @@ const VARIANT_PREFIXES = [
 ];
 
 /**
- * Set for O(1) lookup
+ * Derive the ordered variant-prefix list from a resolved config. Variant
+ * prefixes are NOT meant to be a hardcoded constant: a custom breakpoint added
+ * to theme.breakpoints (e.g. `xs`) or a plugin addVariant() naming must be
+ * parseable from a class name, otherwise it silently generates nothing.
+ *
+ * Order is responsive -> dark -> state/ancestor -> important, matching CSS
+ * specificity (inside→out). Longer prefixes are listed first so greedy
+ * matching consumes the whole prefix, never a partial match.
+ *
+ * @param {import('./types.js').HdxConfig} config
+ * @returns {string[]}
  */
-const VARIANT_SET = new Set(VARIANT_PREFIXES);
+export function getVariantPrefixes(config) {
+  const themeBps = config?.theme?.breakpoints || {};
+  const states = [
+    'hover', 'focus', 'active', 'visited', 'disabled',
+    'checked', 'required', 'invalid', 'valid',
+    'first', 'last', 'odd', 'even', 'empty', 'enabled',
+    'placeholder', 'focus-visible', 'read-only', 'selection', 'first-line',
+  ];
+
+  return [
+    // Responsive breakpoints (from resolved config, longest first)
+    ...Object.keys(themeBps).sort((a, b) => b.length - a.length),
+    // Dark
+    config?.darkMode !== undefined && config.darkMode !== 'none' ? 'dark' : 'dark',
+    // Important
+    'important',
+    // Group/peer ancestors
+    'group-hover', 'peer-hover',
+    // State
+    ...states,
+  ];
+}
 
 /**
  * Parse a full HDX class name into its components.
  *
  * @param {string} fullName - Full prefixed class name (e.g. 'hdx_md_hover_bg-primary')
  * @param {string} prefix - Expected prefix (default 'hdx_')
+ * @param {string[]} [variantPrefixes] - Ordered variant prefixes to match against
+ *   (defaults to DEFAULT_VARIANT_PREFIXES). Pass the result of getVariantPrefixes(config)
+ *   so custom breakpoints and plugin variants parse correctly.
  * @returns {ParsedClass}
  */
-export function parseClass(fullName, prefix = 'hdx_') {
+export function parseClass(fullName, prefix = 'hdx_', variantPrefixes = DEFAULT_VARIANT_PREFIXES) {
   if (!fullName || typeof fullName !== 'string') {
     return { prefix, variants: [], utility: '', valid: false };
   }
@@ -82,7 +117,7 @@ export function parseClass(fullName, prefix = 'hdx_') {
     let matched = false;
 
     // Try progressively shorter prefixes (longest match first)
-    for (const vp of VARIANT_PREFIXES) {
+    for (const vp of variantPrefixes) {
       if (remaining === vp || remaining.startsWith(vp + '_')) {
         variants.push(vp);
         // Calculate how many segments this prefix consumed
@@ -120,20 +155,22 @@ export function isHdxClass(className, prefix = 'hdx_') {
  * Parse a full class name and return just the utility name.
  * @param {string} fullName
  * @param {string} prefix
+ * @param {string[]} [variantPrefixes]
  * @returns {string}
  */
-export function getUtilityName(fullName, prefix = 'hdx_') {
-  return parseClass(fullName, prefix).utility;
+export function getUtilityName(fullName, prefix = 'hdx_', variantPrefixes = DEFAULT_VARIANT_PREFIXES) {
+  return parseClass(fullName, prefix, variantPrefixes).utility;
 }
 
 /**
  * Parse a full class name and return just the variant list.
  * @param {string} fullName
  * @param {string} prefix
+ * @param {string[]} [variantPrefixes]
  * @returns {string[]}
  */
-export function getVariants(fullName, prefix = 'hdx_') {
-  return parseClass(fullName, prefix).variants;
+export function getVariants(fullName, prefix = 'hdx_', variantPrefixes = DEFAULT_VARIANT_PREFIXES) {
+  return parseClass(fullName, prefix, variantPrefixes).variants;
 }
 
 /**
@@ -144,13 +181,16 @@ export function getVariants(fullName, prefix = 'hdx_') {
  *
  * @param {Set<string>|string[]} classNames - Full HDX class names
  * @param {string} prefix
+ * @param {string[]} [variantPrefixes] - Ordered variant prefixes (defaults to the
+ *   built-in set). Pass getVariantPrefixes(config) so custom breakpoints and
+ *   plugin variants resolve.
  * @returns {Map<string, Set<string>>}
  */
-export function mapUtilitiesToVariants(classNames, prefix = 'hdx_') {
+export function mapUtilitiesToVariants(classNames, prefix = 'hdx_', variantPrefixes = DEFAULT_VARIANT_PREFIXES) {
   const map = new Map();
 
   for (const cls of classNames) {
-    const parsed = parseClass(cls, prefix);
+    const parsed = parseClass(cls, prefix, variantPrefixes);
     if (!parsed.valid) continue;
 
     if (!map.has(parsed.utility)) {

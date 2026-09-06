@@ -89,6 +89,48 @@ describe('CLI', () => {
     expect(css).toContain('--hdx-color-primary');
   });
 
+  it('hdx_style build -p purges to only the used utilities across custom breakpoints', () => {
+    const testDir = path.join(tmpDir, 'build-purge-test');
+    fs.mkdirSync(testDir, { recursive: true });
+
+    fs.writeFileSync(
+      path.join(testDir, 'index.html'),
+      '<div className="hdx_grid-cols-1 hdx_sm_grid-cols-2 hdx_xs_flex"></div>'
+    );
+
+    fs.writeFileSync(
+      path.join(testDir, 'hdx.config.js'),
+      `export default {
+        prefix: 'hdx_',
+        content: ['./index.html'],
+        darkMode: 'class',
+        theme: {
+          breakpoints: { xs: '480px', sm: '640px', md: '768px', lg: '1024px', xl: '1280px', '2xl': '1536px' },
+        },
+        plugins: [],
+      };`
+    );
+
+    const output = execSync(
+      `node ${path.join(PROJECT_ROOT, 'src/cli/index.js')} build -p -o dist/hdx.css`,
+      { cwd: testDir, encoding: 'utf-8' }
+    );
+
+    expect(output).toContain('Keeping');
+
+    const css = fs.readFileSync(path.join(testDir, 'dist/hdx.css'), 'utf-8');
+
+    // Used utilities are present.
+    expect(css).toContain('.hdx_grid-cols-1');
+    expect(css).toContain('.hdx_sm_grid-cols-2');
+    // The custom breakpoint variant resolves AND emits the xs media query.
+    expect(css).toContain('@media (min-width: 480px)');
+    expect(css).toContain('.hdx_xs_flex');
+    // Unused utilities are purged away.
+    expect(css).not.toContain('.hdx_rounded-lg');
+    expect(css).not.toContain('.hdx_shadow-xl');
+  });
+
   it('hdx_style --version prints version', () => {
     const output = execSync(`node ${path.join(PROJECT_ROOT, 'src/cli/index.js')} --version`, {
       encoding: 'utf-8',

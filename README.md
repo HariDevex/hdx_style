@@ -258,7 +258,8 @@ npx hdx_style build -p          # Production build (purges unused CSS) — recom
 npx hdx_style build --production  # Production build (same as -p)
 npx hdx_style build -o out.css  # Custom output path
 npx hdx_style build -c my.config.js  # Custom config path
-npx hdx_style watch             # Watch files and rebuild
+npx hdx_style watch             # Watch and rebuild (content-scans/purges like build -p)
+npx hdx_style watch --no-purge  # Watch with a full (unpurged) rebuild
 npx hdx_style generate          # Full stylesheet — always non-purged (no -p/--production)
 npx hdx_style --version         # Print version
 npx hdx_style --help            # Print help
@@ -289,6 +290,10 @@ export default {
 
   // Include the global reset/base styles? (default true)
   reset: true,
+
+  // Emit the built-in component layer (.hdx_btn, .hdx_card, …)? (default true)
+  // Set false if you ship your own component CSS / later-declared overrides.
+  components: true,
 
   // Theme customization (deep-merged with defaults)
   theme: {

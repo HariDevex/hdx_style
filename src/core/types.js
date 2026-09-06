@@ -3,8 +3,14 @@
  * @property {string} prefix
  * @property {string[]} content
  * @property {'class'|'media'|'both'} darkMode
+ * @property {boolean} reset
+ * @property {boolean} [components]
  * @property {Theme} theme
  * @property {Function[]} plugins
+ * @property {string[]} [safelist]
+ * @property {Object[]} [_customUtilities]
+ * @property {Object[]} [_customVariants]
+ * @property {Object[]} [_customComponents]
  */
 
 /**
