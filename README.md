@@ -22,7 +22,7 @@ Every utility class starts with `hdx_` — built for SaaS, dashboards, and enter
 [![npm version](https://img.shields.io/npm/v/@haridevx/hdx-style?style=for-the-badge&logo=npm&label=version&color=%237C3AED)](https://www.npmjs.com/package/@haridevx/hdx-style)
 [![License](https://img.shields.io/badge/license-MIT-%2316A34A?style=for-the-badge&logo=opensourceinitiative)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%E2%89%A5%2018-%230EA5E9?style=for-the-badge&logo=node.js&logoColor=white)](package.json)
-[![Tests](https://img.shields.io/badge/tests-163%20passing-%23A3E635?style=for-the-badge&logo=vitest)](.github/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-244%20passing-%23A3E635?style=for-the-badge&logo=vitest)](.github/workflows/ci.yml)
 [![CI](https://img.shields.io/github/actions/workflow/status/HariDevex/hdx_style/ci.yml?branch=main&style=for-the-badge&label=CI&logo=github&color=%23F59E0B)](.github/workflows/ci.yml)
 
 </div>
@@ -35,13 +35,13 @@ Run `node stats.js` to generate from source:
 
 | Metric | Count |
 |---|---|
-| 📦 Utilities | **1,184** |
-| 🗂️ Utility categories | **19** |
+| 📦 Utilities | **1,576** |
+| 🗂️ Utility categories | **20** |
 | 🧩 Components | **58** |
-| 🎛️ Variants | **28** |
+| 🎛️ Variants | **29** |
 | 📐 Responsive breakpoints | **5** |
-| ✅ Tests | **163** |
-| 📄 Source files | **56** |
+| ✅ Tests | **244** |
+| 📄 Source files | **60** |
 | ⚙️ Runtime dependencies | **4** |
 | 🚫 PostCSS dependency | **No** |
 | 🚫 Tailwind dependency | **No** |
@@ -70,6 +70,7 @@ Run `node stats.js` to generate from source:
 - [Quick Start](#quick-start)
 - [CLI Commands](#cli-commands)
 - [Configuration](#configuration)
+- [Default Values](#default-values)
 - [Design Tokens](#design-tokens)
 - [CSS Variables](#css-variables)
 - [Utilities](#utilities)
@@ -253,12 +254,13 @@ npx hdx_style build
 
 ```bash
 npx hdx_style init              # Create hdx.config.js / .cjs / .mjs
-npx hdx_style build             # Build dist/hdx.css (full stylesheet — large output)
-npx hdx_style build -p          # Production build (purges unused CSS) — recommended
+npx hdx_style build             # Build dist/hdx.css — purges unused CSS when content is configured (recommended default)
+npx hdx_style build -p          # Production build (explicit purge; same as the default when content is set)
 npx hdx_style build --production  # Production build (same as -p)
+npx hdx_style build --no-purge  # Full utility × variant matrix (CDN/stylesheet distribution)
 npx hdx_style build -o out.css  # Custom output path
 npx hdx_style build -c my.config.js  # Custom config path
-npx hdx_style watch             # Watch and rebuild (content-scans/purges like build -p)
+npx hdx_style watch             # Watch and rebuild (content-scans/purges by default)
 npx hdx_style watch --no-purge  # Watch with a full (unpurged) rebuild
 npx hdx_style generate          # Full stylesheet — always non-purged (no -p/--production)
 npx hdx_style --version         # Print version
@@ -284,8 +286,8 @@ export default {
   // Force classes to always be included (see Safelist below)
   safelist: [],
 
-  // Dark mode strategy: 'class' | 'media' | 'both'
-  // class: .hdx_dark ancestor  |  media: prefers-color-scheme  |  both: both rules
+  // Dark mode strategy: 'class' | 'media' | 'both' | 'none'
+  // class: .hdx_dark ancestor  |  media: prefers-color-scheme  |  both: both rules  |  none: no dark styles
   darkMode: 'class',
 
   // Include the global reset/base styles? (default true)
@@ -320,6 +322,7 @@ export default {
 | `class` (default) | `.hdx_dark` on an ancestor (`<html class="hdx_dark">`) | `.hdx_dark .hdx_dark_bg-primary { ... }` |
 | `media` | OS-level `prefers-color-scheme: dark` | `@media (prefers-color-scheme: dark) { ... }` |
 | `both` | Both mechanisms; class overrides take precedence | Both rules emitted |
+| `none` | Dark styles disabled entirely | No `dark` variants or dark variables |
 
 ### Custom Reset
 
@@ -395,6 +398,135 @@ export default {
 
 ---
 
+<h2 id="default-values">📋 Default Values</h2>
+
+Everything below is generated from `src/theme/defaults.js` — the exact values shipped when `theme` is left empty. Override any key in `hdx.config.js`; user values are deep-merged over these defaults.
+
+### Default Config
+
+| Key | Default | Notes |
+|---|---|---|
+| `prefix` | `hdx_` | All utility/variant/component classes get this prefix |
+| `content` | `[]` | Empty ⇒ full (unpurged) build; set globs to enable purging |
+| `safelist` | `[]` | Complete class names always emitted |
+| `darkMode` | `'class'` | `class` \| `media` \| `both` \| `none` |
+| `reset` | `true` | Global reset + base styles (`body`, `*`, …) |
+| `components` | `true` | Built-in component layer (`.hdx_btn`, …) |
+| `plugins` | `[]` | Plugin functions (utilities, variants, components) |
+
+Base font stack (`body`): `Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`
+
+### Colors (semantic)
+
+| Token | Value | Token | Value |
+|---|---|---|---|
+| `primary` | `#2563EB` | `primary-hover` | `#1D4ED8` |
+| `primary-active` | `#1E40AF` | `secondary` | `#64748B` |
+| `secondary-hover` | `#475569` | `success` | `#16A34A` |
+| `success-hover` | `#15803D` | `danger` | `#DC2626` |
+| `danger-hover` | `#B91C1C` | `warning` | `#D97706` |
+| `warning-hover` | `#B45309` | `info` | `#0284C7` |
+| `info-hover` | `#0369A1` | `background` | `#F8FAFC` |
+| `surface` | `#FFFFFF` | `surface-secondary` | `#F1F5F9` |
+| `text` | `#0F172A` | `text-secondary` | `#475569` |
+| `text-muted` | `#64748B` | `border` | `#E2E8F0` |
+| `border-strong` | `#CBD5E1` | `white` | `#FFFFFF` |
+| `black` | `#000000` | | |
+
+### Dark Mode Colors (`darkColors`)
+
+Applied under `.hdx_dark` (or the media query when `darkMode: 'media'`).
+
+| Token | Value | Token | Value |
+|---|---|---|---|
+| `background` | `#0F172A` | `surface` | `#1E293B` |
+| `surface-secondary` | `#334155` | `text` | `#F8FAFC` |
+| `text-secondary` | `#CBD5E1` | `text-muted` | `#94A3B8` |
+| `border` | `#334155` | `border-strong` | `#475569` |
+
+### Spacing
+
+| Key | Value | Key | Value |
+|---|---|---|---|
+| `0` | `0px` | `1` | `0.25rem` (4px) |
+| `2` | `0.5rem` (8px) | `3` | `0.75rem` (12px) |
+| `4` | `1rem` (16px) | `5` | `1.25rem` (20px) |
+| `6` | `1.5rem` (24px) | `8` | `2rem` (32px) |
+| `10` | `2.5rem` (40px) | `12` | `3rem` (48px) |
+| `16` | `4rem` (64px) | `20` | `5rem` (80px) |
+| `24` | `6rem` (96px) | `32` | `8rem` (128px) |
+
+### Typography
+
+**Font size**
+
+| Key | Value | Key | Value |
+|---|---|---|---|
+| `xs` | `0.75rem` | `sm` | `0.875rem` |
+| `base` | `1rem` | `lg` | `1.125rem` |
+| `xl` | `1.25rem` | `2xl` | `1.5rem` |
+| `3xl` | `1.875rem` | `4xl` | `2.25rem` |
+| `5xl` | `3rem` | | |
+
+**Font weight**
+
+| Key | Value | Key | Value |
+|---|---|---|---|
+| `thin` | `100` | `extralight` | `200` |
+| `light` | `300` | `normal` | `400` |
+| `medium` | `500` | `semibold` | `600` |
+| `bold` | `700` | `extrabold` | `800` |
+| `black` | `900` | | |
+
+**Line height:** `none: 1`, `tight: 1.25`, `snug: 1.375`, `normal: 1.5`, `relaxed: 1.625`, `loose: 2`
+
+**Letter spacing:** `tighter: -0.05em`, `tight: -0.025em`, `normal: 0em`, `wide: 0.025em`, `wider: 0.05em`, `widest: 0.1em`
+
+### Border Radius
+
+| Key | Value | Key | Value |
+|---|---|---|---|
+| `none` | `0px` | `sm` | `0.25rem` |
+| `md` | `0.375rem` | `lg` | `0.5rem` |
+| `xl` | `0.75rem` | `2xl` | `1rem` |
+| `3xl` | `1.5rem` | `full` | `9999px` |
+
+### Shadows
+
+| Key | Value |
+|---|---|
+| `none` | `none` |
+| `sm` | `0 1px 2px rgba(15, 23, 42, 0.05)` |
+| `md` | `0 4px 6px rgba(15, 23, 42, 0.08)` |
+| `lg` | `0 10px 15px rgba(15, 23, 42, 0.10)` |
+| `xl` | `0 20px 25px rgba(15, 23, 42, 0.12)` |
+| `2xl` | `0 25px 50px rgba(15, 23, 42, 0.15)` |
+| `inner` | `inset 0 2px 4px rgba(15, 23, 42, 0.06)` |
+
+### Breakpoints
+
+| Key | Value | Key | Value |
+|---|---|---|---|
+| `sm` | `640px` | `md` | `768px` |
+| `lg` | `1024px` | `xl` | `1280px` |
+| `2xl` | `1536px` | | |
+
+### Opacity
+
+`0`→`0`, `5`→`0.05`, `10`→`0.1`, `15`→`0.15`, `20`→`0.2`, `25`→`0.25`, `30`→`0.3`, `40`→`0.4`, `50`→`0.5`, `60`→`0.6`, `70`→`0.7`, `75`→`0.75`, `80`→`0.8`, `90`→`0.9`, `95`→`0.95`, `100`→`1`
+
+### Z-Index
+
+`0`→`0`, `10`→`10`, `20`→`20`, `30`→`30`, `40`→`40`, `50`→`50`, `auto`→`auto`
+
+### Transitions
+
+**Duration:** `75`→`75ms`, `100`→`100ms`, `150`→`150ms`, `200`→`200ms`, `300`→`300ms`, `500`→`500ms`, `700`→`700ms`, `1000`→`1000ms`
+
+**Timing:** `linear`, `ease`, `ease-in`, `ease-out`, `ease-in-out`
+
+---
+
 <h2 id="design-tokens">🎨 Design Tokens</h2>
 
 ### Colors (Semantic System)
@@ -433,6 +565,17 @@ colors: {
 
   white: '#FFFFFF',
   black: '#000000',
+}
+
+darkColors: {
+  background: '#0F172A',
+  surface: '#1E293B',
+  'surface-secondary': '#334155',
+  text: '#F8FAFC',
+  'text-secondary': '#CBD5E1',
+  'text-muted': '#94A3B8',
+  border: '#334155',
+  'border-strong': '#475569',
 }
 ```
 
@@ -473,11 +616,33 @@ fontSize: {
 }
 
 fontWeight: {
+  thin: '100',
+  extralight: '200',
+  light: '300',
   normal: '400',
   medium: '500',
   semibold: '600',
   bold: '700',
   extrabold: '800',
+  black: '900',
+}
+
+lineHeight: {
+  none: '1',
+  tight: '1.25',
+  snug: '1.375',
+  normal: '1.5',
+  relaxed: '1.625',
+  loose: '2',
+}
+
+letterSpacing: {
+  tighter: '-0.05em',
+  tight: '-0.025em',
+  normal: '0em',
+  wide: '0.025em',
+  wider: '0.05em',
+  widest: '0.1em',
 }
 ```
 
@@ -491,6 +656,7 @@ radius: {
   lg: '0.5rem',
   xl: '0.75rem',
   '2xl': '1rem',
+  '3xl': '1.5rem',
   full: '9999px',
 }
 ```
@@ -504,6 +670,8 @@ shadows: {
   md: '0 4px 6px rgba(15, 23, 42, 0.08)',
   lg: '0 10px 15px rgba(15, 23, 42, 0.10)',
   xl: '0 20px 25px rgba(15, 23, 42, 0.12)',
+  '2xl': '0 25px 50px rgba(15, 23, 42, 0.15)',
+  inner: 'inset 0 2px 4px rgba(15, 23, 42, 0.06)',
 }
 ```
 
@@ -1793,12 +1961,12 @@ padding-inline: 1rem;`,
 Remove unused CSS in production:
 
 ```bash
-npx hdx_style build -p
-# or
-npx hdx_style build --production
+npx hdx_style build          # Purges unused CSS by default when content is configured
+npx hdx_style build -p       # Explicit purge (same as the default with content set)
+npx hdx_style build --production  # Same as -p
 ```
 
-> **Heads-up — `build` with no flags is huge by design.** `npx hdx_style build` generates every utility × variant combination, producing a multi-megabyte stylesheet (≈15 MB with the default theme). That is expected — it is the development convenience. The CLI now prints a warning whenever a full build runs with `content` configured. For any real project — including daily development — use `build -p` or `build --production`: the output contains only the utilities your app actually uses.
+> **Heads-up — `build --no-purge` is huge by design.** When `content` is configured, `hdx_style build` purges automatically and emits only the utilities your app uses — keep `content` populated and you'll never see the full matrix. If you pass `--no-purge` (or have an empty `content` array, e.g. when generating a CDN stylesheet), the CLI generates every utility × variant combination — a multi-megabyte file (≈25 MB with the default theme). Use `build --no-purge` only when you explicitly want a distributable stylesheet.
 
 This scans your content files and only includes utilities that are actually used:
 
@@ -2120,6 +2288,12 @@ export default function App({ Component, pageProps }) {
 
 </body>
 </html>
+```
+
+A runnable version of this page lives in [`examples/vanilla/index.html`](examples/vanilla/index.html) with its own [`examples/vanilla/hdx.config.js`](examples/vanilla/hdx.config.js). Build it with:
+
+```bash
+node src/cli/index.js build -p -c examples/vanilla/hdx.config.js
 ```
 
 ---

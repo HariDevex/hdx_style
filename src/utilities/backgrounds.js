@@ -4,6 +4,7 @@
  * @returns {import('../core/types.js').UtilityDefinition[]}
  */
 export function backgroundsUtilities(config) {
+  const stopsVar = 'var(--' + config.prefix.replace(/_/g, '-').replace(/-$/, '') + '-gradient-stops, transparent)';
   return [
     { name: 'bg-auto', property: 'background-size', value: 'auto', category: 'backgrounds' },
     { name: 'bg-cover', property: 'background-size', value: 'cover', category: 'backgrounds' },
@@ -36,15 +37,15 @@ export function backgroundsUtilities(config) {
     { name: 'bg-clip-text', property: 'background-clip', value: 'text', category: 'backgrounds' },
 
     // Gradient direction helpers (set background-image direction). Color stops
-    // (from-*/via-*/to-*) are generated in colors.js and compose
-    // --hdx-gradient-stops.
-    { name: 'bg-gradient-to-t', property: 'background-image', value: 'linear-gradient(to top, var(--hdx-gradient-stops, transparent))', category: 'backgrounds' },
-    { name: 'bg-gradient-to-tr', property: 'background-image', value: 'linear-gradient(to top right, var(--hdx-gradient-stops, transparent))', category: 'backgrounds' },
-    { name: 'bg-gradient-to-r', property: 'background-image', value: 'linear-gradient(to right, var(--hdx-gradient-stops, transparent))', category: 'backgrounds' },
-    { name: 'bg-gradient-to-br', property: 'background-image', value: 'linear-gradient(to bottom right, var(--hdx-gradient-stops, transparent))', category: 'backgrounds' },
-    { name: 'bg-gradient-to-b', property: 'background-image', value: 'linear-gradient(to bottom, var(--hdx-gradient-stops, transparent))', category: 'backgrounds' },
-    { name: 'bg-gradient-to-bl', property: 'background-image', value: 'linear-gradient(to bottom left, var(--hdx-gradient-stops, transparent))', category: 'backgrounds' },
-    { name: 'bg-gradient-to-l', property: 'background-image', value: 'linear-gradient(to left, var(--hdx-gradient-stops, transparent))', category: 'backgrounds' },
-    { name: 'bg-gradient-to-tl', property: 'background-image', value: 'linear-gradient(to top left, var(--hdx-gradient-stops, transparent))', category: 'backgrounds' },
+    // (from-*/via-*/to-*) are generated in colors.js and compose the
+    // prefix-scoped --hdx-gradient-stops variable.
+    { name: 'bg-gradient-to-t', property: 'background-image', value: 'linear-gradient(to top, ' + stopsVar + ')' , category: 'backgrounds' },
+    { name: 'bg-gradient-to-tr', property: 'background-image', value: 'linear-gradient(to top right, ' + stopsVar + ')', category: 'backgrounds' },
+    { name: 'bg-gradient-to-r', property: 'background-image', value: 'linear-gradient(to right, ' + stopsVar + ')', category: 'backgrounds' },
+    { name: 'bg-gradient-to-br', property: 'background-image', value: 'linear-gradient(to bottom right, ' + stopsVar + ')', category: 'backgrounds' },
+    { name: 'bg-gradient-to-b', property: 'background-image', value: 'linear-gradient(to bottom, ' + stopsVar + ')', category: 'backgrounds' },
+    { name: 'bg-gradient-to-bl', property: 'background-image', value: 'linear-gradient(to bottom left, ' + stopsVar + ')', category: 'backgrounds' },
+    { name: 'bg-gradient-to-l', property: 'background-image', value: 'linear-gradient(to left, ' + stopsVar + ')', category: 'backgrounds' },
+    { name: 'bg-gradient-to-tl', property: 'background-image', value: 'linear-gradient(to top left, ' + stopsVar + ')', category: 'backgrounds' },
   ];
 }

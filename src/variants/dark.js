@@ -7,11 +7,16 @@ export function darkVariants(config) {
   const strategy = config.darkMode;
   const variants = [];
 
+  // The dark marker class follows the configured prefix (e.g. `hdx_dark`,
+  // or `my_dark` with prefix: 'my_'), so the ancestor selector is derived
+  // from config.prefix rather than hardcoded.
+  const marker = `.${config.prefix || 'hdx_'}dark`;
+
   if (strategy === 'class' || strategy === 'both') {
     variants.push({
       name: 'dark',
       prefix: 'dark_',
-      selector: () => '.hdx_dark',
+      selector: () => marker,
       type: 'dark',
       strategy: 'class',
     });

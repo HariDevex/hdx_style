@@ -1,4 +1,4 @@
-import { colorVariable } from '../generator/resolver.js';
+import { colorVariable, semanticVar } from '../generator/resolver.js';
 
 /**
  * Color utilities (bg-{color}, text-{color})
@@ -9,6 +9,10 @@ export function colorsUtilities(config) {
   const { colors } = config.theme;
   const prefix = config.prefix;
   const utils = [];
+
+  // Child combinator shared with borders.js divide-* width rules so
+  // `hdx_divide-x hdx_divide-primary` colors the borders between children.
+  const childCombinator = ' > :not([hidden]) ~ :not([hidden])';
 
   for (const [key] of Object.entries(colors)) {
     const cssVar = colorVariable(key, prefix);
@@ -40,23 +44,24 @@ export function colorsUtilities(config) {
     // Ring color (for focus rings)
     utils.push({
       name: `ring-${key}`,
-      property: '--hdx-ring-color',
+      property: semanticVar('ring-color', prefix),
       value: cssVar,
       category: 'colors',
     });
 
-    // Divide color (for dividers)
+    // Divide color (borders between adjacent children, see borders.js)
     utils.push({
       name: `divide-${key}`,
-      property: '--hdx-divide-color',
+      property: 'border-color',
       value: cssVar,
       category: 'colors',
+      selector: childCombinator,
     });
 
     // Placeholder color
     utils.push({
       name: `placeholder-${key}`,
-      property: '--hdx-placeholder-color',
+      property: semanticVar('placeholder-color', prefix),
       value: cssVar,
       category: 'colors',
     });
@@ -78,20 +83,24 @@ export function colorsUtilities(config) {
     });
 
     // Gradient stops. Each rule composes the --hdx-gradient-stops variable that
-// bg-gradient-to-* consumes, mirroring Tailwind's var-based gradient model.
+    // bg-gradient-to-* consumes, mirroring Tailwind's var-based gradient model.
+    const gFrom = semanticVar('gradient-from', prefix);
+    const gVia = semanticVar('gradient-via', prefix);
+    const gTo = semanticVar('gradient-to', prefix);
+    const gStops = semanticVar('gradient-stops', prefix);
     utils.push({
       name: `from-${key}`,
-      css: '--hdx-gradient-from: ' + cssVar + ';\n--hdx-gradient-stops: var(--hdx-gradient-from), var(--hdx-gradient-to, transparent);',
+      css: `${gFrom}: ${cssVar};\n${gStops}: var(${gFrom}), var(${gTo}, transparent);`,
       category: 'colors',
     });
     utils.push({
       name: `via-${key}`,
-      css: '--hdx-gradient-via: ' + cssVar + ';\n--hdx-gradient-stops: var(--hdx-gradient-from, transparent), var(--hdx-gradient-via), var(--hdx-gradient-to, transparent);',
+      css: `${gVia}: ${cssVar};\n${gStops}: var(${gFrom}, transparent), var(${gVia}), var(${gTo}, transparent);`,
       category: 'colors',
     });
     utils.push({
       name: `to-${key}`,
-      css: '--hdx-gradient-to: ' + cssVar + ';\n--hdx-gradient-stops: var(--hdx-gradient-from, transparent), var(--hdx-gradient-to);',
+      css: `${gTo}: ${cssVar};\n${gStops}: var(${gFrom}, transparent), var(${gTo});`,
       category: 'colors',
     });
   }

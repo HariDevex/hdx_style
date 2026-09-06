@@ -26,10 +26,11 @@ export function generateCSSVariables(theme, prefix = 'hdx_') {
  */
 export function generateDarkVariables(theme, prefix = 'hdx_', strategy = 'class') {
   const varPrefix = prefix.replace(/_/g, '-').replace(/-$/, '');
+  const darkMarker = `.${prefix}dark`;
   let css = '';
 
   if (strategy === 'class' || strategy === 'both') {
-    css += '.hdx_dark {\n';
+    css += darkMarker + ' {\n';
     for (const [key, value] of Object.entries(theme.darkColors || {})) {
       const varName = `--${varPrefix}-color-${key}`;
       css += `  ${varName}: ${value};\n`;

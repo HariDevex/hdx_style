@@ -120,7 +120,10 @@ export async function loadConfigFromFile(configPath) {
     return getDefaultConfig();
   }
 
-  const fileUrl = pathToFileURL(fullPath).href;
+  // Cache-bust the import URL: Node's ESM module cache returns the FIRST
+  // evaluated module for a given (file) URL, which would make `watch` ignore
+  // config edits. A unique query string forces a fresh evaluation each call.
+  const fileUrl = pathToFileURL(fullPath).href + '?t=' + Date.now();
   installTypelessWarningFilter();
   const mod = await import(fileUrl);
   const userConfig = mod.default || mod;

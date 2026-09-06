@@ -129,4 +129,25 @@ describe('findUnknownClasses', () => {
     const unknown = findUnknownClasses(allUtilities, new Set(['hdx__weird__name']));
     expect(unknown.length).toBeGreaterThan(0);
   });
+
+  it('does not flag variant-marker classes like hdx_dark / hdx_group / hdx_peer', () => {
+    const unknown = findUnknownClasses(
+      allUtilities,
+      new Set(['hdx_dark', 'hdx_group', 'hdx_peer', 'hdx_flex']),
+      'hdx_',
+      loadConfig()
+    );
+    expect(unknown).toHaveLength(0);
+  });
+
+  it('does not flag component classes when component names are supplied', () => {
+    const unknown = findUnknownClasses(
+      allUtilities,
+      new Set(['hdx_btn-primary', 'hdx_input', 'hdx_flex']),
+      'hdx_',
+      loadConfig(),
+      new Set(['btn-primary', 'input', 'label'])
+    );
+    expect(unknown).toHaveLength(0);
+  });
 });

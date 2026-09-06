@@ -16,25 +16,29 @@ export function buildCommand(program) {
     .description('Build production CSS')
     .option('-c, --config <path>', 'Config file path (hdx.config.js / .mjs / .cjs)')
     .option('-o, --output <path>', 'Output file path', 'dist/hdx.css')
-    .option('-p, --purge', 'Enable content purging', false)
+    .option('-p, --purge', 'Enable content purging (default: on when content is configured)')
+    .option('--no-purge', 'Emit the full utility × variant matrix (for CDN/stylesheet distributions)')
     .option('--production', 'Production mode (purge + minify hints)', false)
     .action(async (opts) => {
       try {
         step('Loading configuration...');
         const config = await loadConfigFromFile(opts.config);
 
-        const isProduction = opts.production || opts.purge;
+        // Purging is now the default whenever content files are configured — the
+        // full ~25MB matrix is only produced on explicit --no-purge (or when no
+        // content is set, e.g. generating a CDN stylesheet).
+        const shouldPurge = config.content.length > 0 && (opts.production || opts.purge !== false);
 
         step('Generating CSS...');
         let css;
 
-        if (isProduction && config.content.length > 0) {
+        if (shouldPurge) {
           // Production: scan content, resolve needed utilities, generate only those
           step('Scanning content files...');
           css = await generatePurgedBuildCss(config, info, warn);
         } else {
           if (config.content.length > 0) {
-            warn('Full build — generating every utility × variant combination. Pass -p/--purge or --production for a much smaller production build.');
+            warn('Full build — generating every utility × variant combination. Omit --no-purge for a much smaller production build.');
           }
           css = generateCSS(config);
         }

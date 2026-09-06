@@ -2,7 +2,7 @@
  * @typedef {Object} HdxConfig
  * @property {string} prefix
  * @property {string[]} content
- * @property {'class'|'media'|'both'} darkMode
+ * @property {'class'|'media'|'both'|'none'} darkMode
  * @property {boolean} reset
  * @property {boolean} [components]
  * @property {Theme} theme
@@ -16,6 +16,7 @@
 /**
  * @typedef {Object} Theme
  * @property {Object<string,string>} colors
+ * @property {Object<string,string>} [darkColors]
  * @property {Object<string,string>} spacing
  * @property {Object<string,string>} fontSize
  * @property {Object<string,string>} fontWeight
@@ -46,6 +47,8 @@
  * @property {string} name
  * @property {string} prefix
  * @property {function(string): string} selector
+ * @property {'state'|'responsive'|'dark'|'ancestor'|'important'} [type]
+ * @property {'class'|'media'|'both'} [strategy]
  */
 
 /**

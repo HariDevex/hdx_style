@@ -11,6 +11,7 @@ import { borderRadiusUtilities } from '../../src/utilities/border-radius.js';
 import { opacityUtilities } from '../../src/utilities/opacity.js';
 import { zIndexUtilities } from '../../src/utilities/z-index.js';
 import { overflowUtilities } from '../../src/utilities/overflow.js';
+import { sizingUtilities } from '../../src/utilities/sizing.js';
 import { getAllUtilities } from '../../src/utilities/index.js';
 
 const config = loadConfig();
@@ -178,5 +179,18 @@ describe('getAllUtilities', () => {
     expect(categories).toContain('typography');
     expect(categories).toContain('colors');
     expect(categories).toContain('borders');
+  });
+
+  it('includes min-h-screen and min-h-full keywords (used across docs/example)', () => {
+    const utils = sizingUtilities(config);
+    expect(utils.find(u => u.name === 'min-h-screen')).toEqual({
+      name: 'min-h-screen', property: 'min-height', value: '100vh', category: 'sizing',
+    });
+    expect(utils.find(u => u.name === 'min-h-full')).toEqual({
+      name: 'min-h-full', property: 'min-height', value: '100%', category: 'sizing',
+    });
+    expect(utils.find(u => u.name === 'min-w-full')).toEqual({
+      name: 'min-w-full', property: 'min-width', value: '100%', category: 'sizing',
+    });
   });
 });

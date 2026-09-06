@@ -53,6 +53,33 @@ export function sizingUtilities(config) {
     utils.push({ name, property: 'height', value, category: 'sizing' });
   }
 
+  // Min/Max keywords (min-w-0 / min-h-0 already come from the spacing scale above)
+  const minWidthKeywords = [
+    ['min-w-px', '1px'],
+    ['min-w-full', '100%'],
+    ['min-w-screen', '100vw'],
+    ['min-w-min', 'min-content'],
+    ['min-w-max', 'max-content'],
+    ['min-w-fit', 'fit-content'],
+  ];
+
+  for (const [name, value] of minWidthKeywords) {
+    utils.push({ name, property: 'min-width', value, category: 'sizing' });
+  }
+
+  const minHeightKeywords = [
+    ['min-h-px', '1px'],
+    ['min-h-full', '100%'],
+    ['min-h-screen', '100vh'],
+    ['min-h-min', 'min-content'],
+    ['min-h-max', 'max-content'],
+    ['min-h-fit', 'fit-content'],
+  ];
+
+  for (const [name, value] of minHeightKeywords) {
+    utils.push({ name, property: 'min-height', value, category: 'sizing' });
+  }
+
   // Min/Max width breakpoints
   const maxWidthBreakpoints = [
     ['max-w-none', 'none'],

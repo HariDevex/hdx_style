@@ -1,4 +1,13 @@
 /**
+ * Escape a string for use inside a RegExp.
+ * @param {string} str
+ * @returns {string}
+ */
+function escapeRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
  * Extract class names from file content (HTML/JSX/Vue/Svelte)
  *
  * Supports:
@@ -11,10 +20,14 @@
  * - JSX expressions with string literals
  *
  * @param {string} content
+ * @param {string} [prefix='hdx_'] - class prefix used to tag template/string
+ *   literals (quoted class attributes extract every token regardless).
  * @returns {Set<string>}
  */
-export function extractClassNames(content) {
+export function extractClassNames(content, prefix = 'hdx_') {
   const classes = new Set();
+  const prefixRe = escapeRegExp(prefix);
+  const prefixClassRe = new RegExp(prefixRe + '[\\w]');
 
   // Patterns for quoted class attributes (handles multiline via [\s\S])
   const quotePatterns = [
@@ -41,14 +54,13 @@ export function extractClassNames(content) {
   while ((match = templatePattern.exec(content)) !== null) {
     const inner = match[1];
     // Only extract if it looks like it contains HDX classes
-    if (/hdx_\w/.test(inner)) {
+    if (prefixClassRe.test(inner)) {
       splitClasses(inner).forEach(c => classes.add(c));
     }
   }
 
   // String literals with HDX classes: "hdx_flex hdx_p-4" or 'hdx_flex hdx_p-4'
-  // (already covered by quote patterns above, but also catch standalone strings)
-  const stringPattern = /(["'])(hdx_[\w\s\-/\[\].:]+)\1/g;
+  const stringPattern = new RegExp('(["\'])((?:' + prefixRe + '[\\w\\s\\-/.\\[\\].:]+)+)\\1', 'g');
   while ((match = stringPattern.exec(content)) !== null) {
     splitClasses(match[2]).forEach(c => classes.add(c));
   }
@@ -58,7 +70,7 @@ export function extractClassNames(content) {
   while ((match = joinPattern.exec(content)) !== null) {
     // Look backwards for the array content
     const before = content.slice(Math.max(0, match.index - 500), match.index);
-    if (/hdx_\w/.test(before)) {
+    if (prefixClassRe.test(before)) {
       splitClasses(before).forEach(c => classes.add(c));
     }
   }

@@ -131,6 +131,40 @@ describe('CLI', () => {
     expect(css).not.toContain('.hdx_shadow-xl');
   });
 
+  it('hdx_style build purges by default when content is configured', () => {
+    const testDir = path.join(tmpDir, 'build-default-purge-test');
+    fs.mkdirSync(testDir, { recursive: true });
+
+    fs.writeFileSync(
+      path.join(testDir, 'index.html'),
+      '<div class="hdx_flex hdx_p-4"></div>'
+    );
+
+    fs.writeFileSync(
+      path.join(testDir, 'hdx.config.js'),
+      `export default {
+        prefix: 'hdx_',
+        content: ['./index.html'],
+        darkMode: 'class',
+        theme: {},
+        plugins: [],
+      };`
+    );
+
+    const output = execSync(
+      `node ${path.join(PROJECT_ROOT, 'src/cli/index.js')} build -o dist/hdx.css`,
+      { cwd: testDir, encoding: 'utf-8' }
+    );
+
+    expect(output).toContain('Keeping');
+
+    const css = fs.readFileSync(path.join(testDir, 'dist/hdx.css'), 'utf-8');
+    expect(css).toContain('.hdx_flex');
+    expect(css).toContain('.hdx_p-4');
+    expect(css).not.toContain('.hdx_rounded-lg');
+    expect(css).not.toContain('.hdx_shadow-xl');
+  });
+
   it('hdx_style --version prints version', () => {
     const output = execSync(`node ${path.join(PROJECT_ROOT, 'src/cli/index.js')} --version`, {
       encoding: 'utf-8',

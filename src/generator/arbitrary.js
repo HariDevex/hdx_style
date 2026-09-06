@@ -66,6 +66,13 @@ const ARBITRARY_UTILITIES = {
 
 const NUMBER_RE = /^-?\d+(\.\d+)?$/;
 
+// Properties that accept negative values (margins, offsets, translates).
+const NEGATABLE = new Set([
+  'm', 'mx', 'my', 'mt', 'mr', 'mb', 'ml',
+  'top', 'right', 'bottom', 'left',
+  'translate-x', 'translate-y',
+]);
+
 /**
  * Resolve an arbitrary utility name like `w-[260px]` into a viable
  * UtilityDefinition, or null when it isn't a supported arbitrary value.
@@ -77,8 +84,12 @@ export function resolveArbitraryUtility(utility) {
   const match = /^(.+)-\[(.+)\]$/.exec(utility);
   if (!match) return null;
 
-  const token = match[1];
+  let token = match[1];
   const rawValue = match[2];
+
+  // Negative form: `-mt-[13px]` negates the value and resolves to `mt`.
+  const negative = token.startsWith('-');
+  if (negative) token = token.slice(1);
 
   // Underscores inside arbitrary values stand for spaces (Tailwind semantics).
   const value = rawValue.replace(/_/g, ' ').trim();
@@ -86,6 +97,8 @@ export function resolveArbitraryUtility(utility) {
   const spec = ARBITRARY_UTILITIES[token];
   if (!spec) return null;
   const [property, kind] = spec;
+
+  if (negative && (!NEGATABLE.has(token) || kind !== 'length')) return null;
 
   // Block characters that would leak out of a single CSS declaration.
   if (/[{}\n\r;]/.test(value)) return null;
@@ -106,6 +119,11 @@ export function resolveArbitraryUtility(utility) {
       break;
     default:
       out = value;
+  }
+
+  if (negative) {
+    if (NUMBER_RE.test(out)) out = '-' + out;
+    else if (!out.startsWith('-')) out = '-' + out;
   }
 
   if (property === 'opacity' && NUMBER_RE.test(out)) {

@@ -29,10 +29,104 @@ All notable changes to HDX Style are documented in this file.
   projects that carry their own component CSS (or later-occurring overrides)
   are not shipped an unpurged duplicate of every built-in component on every
   build.
+- `min-h-screen`, `min-h-full`, `min-w-*` keyword utilities (used across the
+  docs and examples but previously missing).
+- `hdx_group` / `hdx_peer` are now recognized as bare ancestor-marker classes
+  (activators for `group-hover` / `peer-hover`), not reported as unknown.
+- `findUnknownClasses` now treats component-class names (`.hdx_btn`, …) and
+  standalone variant markers (`hdx_dark`, `hdx_group`, `hdx_peer`) as known,
+  eliminating false "unknown utility" warnings on real apps and examples.
+
+### Fixed
+- **`examples/vanilla` did not work** — three blockers removed:
+  - The stylesheet link pointed at the old package name
+    (`./node_modules/@haridevx/hdx-css/…`) with no local build; it now
+    references the repo build at `../../dist/hdx.css` with a build note.
+  - Responsive classes used Tailwind colon syntax (`md:hdx_grid-cols-2`,
+    `lg:hdx_grid-cols-3`, `md:hdx_col-span-2`), which the HDX parser and
+    scanner never match — they silently did nothing. Converted to the HDX
+    underscore form (`hdx_sm_grid-cols-2`, `hdx_lg_grid-cols-3`,
+    `hdx_sm_col-span-2`) so the grid actually reflows at each breakpoint.
+  - Replaced non-existent utilities `hdx_bg-outline` / `hdx_bg-ghost` with
+    valid ones (`hdx_bg-surface` / transparent default).
 
 ### Changed
 - Shared purge/generation logic between `build -p` and `watch` lives in
   `src/scanner/scan.js` (`generatePurgedBuildCss`).
+- **`build` now purges by default** whenever `content` is configured (the
+  `init` config always sets it), so an app never needs `-p` for a small
+  output. `build --no-purge` (or an empty `content` array) produces the full
+  utility × variant matrix for CDN/stylesheet distribution.
+- **Faster full-matrix generation (~2.5×).** Full-mode output is byte-identical
+  but builds in ~0.7s instead of ~1.9s:
+  - Chunk-array emission with a single join (avoids O(n²) string concat).
+  - Memoized `escapeClassName`; variant combos escape only the (cached)
+    utility name instead of the full class per combination.
+  - Hoisted variant filtering out of the per-utility loop; combo rules reuse
+    the already-generated base rule instead of regenerating it (~200k fewer
+    rule generations).
+  - Cheaper media detection in `groupEmit` and a single-replace `indent`.
+
+### Fixed
+- **Corner radius collapsed during purge.** Individual corners
+  (`hdx_rounded-t-md`, `hdx_rounded-l-lg`, …) were defined as `{border-top-radius,
+  border-top-left-radius}` and the purger's name→definition map kept only the
+  last property, silently dropping the paired corner. Each corner is now emitted
+  as one multi-property rule, so `hdx_rounded-t-md` reliably sets both top-left
+  and top-right. Regression test included.
+- **`scale-*` scaled only one axis.** `hdx_scale-150` emitted just `--scale-x`,
+  so non-uniform transforms (`transform-gpu`) stretched content horizontally and
+  `hover:scale-105` wobbled. `scale-*` now sets both `--scale-x` and `--scale-y`,
+  and dedicated single-axis `scale-x-*` / `scale-y-*` utilities were added.
+- **Dead `translate-*` names + missing fractions.** Fixed typo names
+  (`translate-x--full`, `translate-y--1/2`, …) that could never match a class,
+  completed the negative y-axis fraction set (`-translate-y-1/4`, …), and kept
+  the theme-driven negative spacing translates (`-translate-x-4`, …).
+- **`gap-0` / `gap-x-0` / `gap-y-0` were missing** (barely-used `0` was skipped
+  in the spacing-driven gap generator); `min-w-0` / `min-h-0` were duplicated
+  by a `keywords` list and the spacing scale.
+- **`divide-{color}` did nothing.** It only wrote an unused `--hdx-divide-color`
+  variable. It now emits a real `border-color` rule scoped with the same child
+  combinator (`> :not([hidden]) ~ :not([hidden])`) used by `divide-x`/`divide-y`.
+- **The dark-mode marker was hardcoded to `.hdx_dark`**, so a custom prefix
+  (`prefix: 'my_'`) produced `.my_dark_bg-primary` rules that nothing activated.
+  The marker is now prefix-aware (`.${prefix}dark`) across the dark variant, dark
+  variables, and the variant pipeline; ring/placeholder/gradient stop variables
+  are likewise prefix-scoped (`--my-ring-color`, `--my-gradient-stops`, …).
+- **Plugin utilities/variants were invisible to the purger.** `scan.js` now runs
+  plugins and merges their utilities into the purge set; plugin `addVariant()`
+  prefixes are threaded through `purgeUnused`/`findUnknownClasses` so
+  `hdx_swipe_bg-primary` parses instead of floating away ungenerated.
+- **`darkMode: 'none'` still produced dark variants** (dead ternary). It now
+  excludes `dark` from all variant prefixes.
+- **Negative arbitrary values were ignored.** `-mt-[13px]`, `-translate-x-[4px]`
+  are now resolved (negated margin/offset/translate lengths); non-negatable keys
+  like `-text-[13px]` are rejected.
+- **`extractClassNames` ignored a custom prefix** for template literals, string
+  literals, and array-join patterns. It now takes the prefix and builds its
+  regexes from it; a broken string-literal capture group was fixed too.
+- **`watch` used a stale config after edits.** ESM config imports are now
+  cache-busted, so `hdx_style watch` picks up `theme`/`content` changes.
+- **`container-{breakpoint}` used hardcoded widths.** It now derives each
+  `hdx_container-{breakpoint}` max-width from `theme.breakpoints`, so a custom
+  `3xl` breakpoint automatically gets `hdx_container-3xl`.
+- CLI output/fully-static imports in `generate.js` (dynamic `await import` of
+  node built-ins removed); dead `variantPrefixMap` deleted from the generator.
+
+### Added
+- Full regression suite `tests/regression/audit-fixes.test.js` (28 tests)
+  locking in every fix above — suite now **244 passing**.
+- README **Default Values** section (complete shipped theme: colors, darkColors,
+  spacing, typography, radius, shadows, breakpoints, opacity, z-index,
+  transitions, default config) and corrected statistics/badges; extended
+  `examples/vanilla/index.html` + `examples/vanilla/hdx.config.js`.
+
+### Changed
+- **Dark-mode strategy variants are now arrays in the generator.** When a name
+  has several registered strategies (dark mode `both`), the variant pipeline
+  emits one rule per strategy instead of dropping one; combos dedupe by name so
+  nothing double-emits.
+- `darkMode` type widened to include `'none'` (`HdxConfig.darkMode`).
 
 ## [0.1.1] — 2026-09-05
 

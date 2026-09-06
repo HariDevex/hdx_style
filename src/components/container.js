@@ -4,7 +4,7 @@
  * @returns {import('../core/types.js').ComponentDefinition[]}
  */
 export function containerComponent(config) {
-  return [
+  const components = [
     {
       name: 'container',
       css: `width: 100%;
@@ -12,30 +12,17 @@ margin-inline: auto;
 padding-inline: 1rem;`,
       category: 'components',
     },
-    {
-      name: 'container-sm',
-      css: `max-width: 640px;`,
-      category: 'components',
-    },
-    {
-      name: 'container-md',
-      css: `max-width: 768px;`,
-      category: 'components',
-    },
-    {
-      name: 'container-lg',
-      css: `max-width: 1024px;`,
-      category: 'components',
-    },
-    {
-      name: 'container-xl',
-      css: `max-width: 1280px;`,
-      category: 'components',
-    },
-    {
-      name: 'container-2xl',
-      css: `max-width: 1536px;`,
-      category: 'components',
-    },
   ];
+
+  // container-{breakpoint} max-widths are derived from theme.breakpoints so a
+  // custom breakpoint (e.g. 3xl) automatically gets an hdx_container-3xl.
+  for (const [key, width] of Object.entries(config.theme.breakpoints || {})) {
+    components.push({
+      name: `container-${key}`,
+      css: `max-width: ${width};`,
+      category: 'components',
+    });
+  }
+
+  return components;
 }

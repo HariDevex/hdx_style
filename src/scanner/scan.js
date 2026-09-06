@@ -5,6 +5,8 @@ import { getAnimationKeyframes } from '../utilities/index.js';
 import { extractClassNames } from './extractor.js';
 import { purgeUnused, findUnknownClasses } from './purger.js';
 import { getAllUtilities } from '../utilities/index.js';
+import { getAllComponents } from '../components/index.js';
+import { runPlugins } from '../plugins/index.js';
 
 /**
  * Escape a string for use inside a RegExp.
@@ -58,7 +60,7 @@ export async function generatePurgedBuildCss(config, info = () => {}, warn = () 
     for (const file of files) {
       const filePath = path.resolve(process.cwd(), file);
       const content = fs.readFileSync(filePath, 'utf-8');
-      const classes = extractClassNames(content);
+      const classes = extractClassNames(content, config.prefix || 'hdx_');
       classes.forEach((c) => allUsedClasses.add(c));
 
       const positions = locateClasses(content, classes);
@@ -72,11 +74,23 @@ export async function generatePurgedBuildCss(config, info = () => {}, warn = () 
 
   info(`Found ${allUsedClasses.size} unique class names in content`);
 
-  const allUtilities = getAllUtilities(config);
-  const prefix = config.prefix || 'hdx_';
-  const neededUtils = purgeUnused(allUtilities, allUsedClasses, prefix, config.safelist || [], config);
+  // Run plugins once so plugin utilities are purge-resolvable and plugin
+  // variant prefixes parse correctly (e.g. hdx_swipe_bg-primary).
+  const { registry } = runPlugins(config);
+  const pluginUtilities = registry.utilities;
+  const extraVariantPrefixes = registry.variants.map(v => v.prefix.replace(/_$/, ''));
 
-  const unknownUtils = findUnknownClasses(allUtilities, allUsedClasses, prefix, config);
+  const allUtilities = [...getAllUtilities(config), ...pluginUtilities];
+  const componentNames = config.components === false
+    ? new Set()
+    : new Set([
+        ...getAllComponents(config).map(c => c.name),
+        ...registry.components.map(c => c.name),
+      ]);
+  const prefix = config.prefix || 'hdx_';
+  const neededUtils = purgeUnused(allUtilities, allUsedClasses, prefix, config.safelist || [], config, extraVariantPrefixes);
+
+  const unknownUtils = findUnknownClasses(allUtilities, allUsedClasses, prefix, config, componentNames, extraVariantPrefixes);
   for (const u of unknownUtils) {
     const loc = unknownLocs.get(u.className);
     const where = loc ? ` (${loc.file}:${loc.line}:${loc.column})` : '';

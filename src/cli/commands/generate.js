@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { loadConfigFromFile } from '../../core/config.js';
 import { generateCSS } from '../../generator/index.js';
 import { getAnimationKeyframes } from '../../utilities/index.js';
@@ -19,12 +21,9 @@ export function generateCommand(program) {
       let css = generateCSS(config);
       css += '\n/* HDX CSS — Keyframes */\n' + getAnimationKeyframes();
 
-      const fs = await import('node:fs');
-      const path = await import('node:path');
-
-      const outDir = path.default.dirname(path.default.resolve(process.cwd(), opts.output));
-      fs.default.mkdirSync(outDir, { recursive: true });
-      fs.default.writeFileSync(path.default.resolve(process.cwd(), opts.output), css, 'utf-8');
+      const outDir = path.dirname(path.resolve(process.cwd(), opts.output));
+      fs.mkdirSync(outDir, { recursive: true });
+      fs.writeFileSync(path.resolve(process.cwd(), opts.output), css, 'utf-8');
 
       success(`Generated ${opts.output}`);
     });

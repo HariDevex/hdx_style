@@ -33,6 +33,9 @@ export const DEFAULT_VARIANT_PREFIXES = [
   'read-only',
   'group-hover',
   'peer-hover',
+  // Bare ancestor markers (activate group/peer/dark; never emitted as rules)
+  'group',
+  'peer',
   // Responsive single-char
   'sm', 'md', 'lg', 'xl',
   // Dark
@@ -71,12 +74,14 @@ export function getVariantPrefixes(config) {
   return [
     // Responsive breakpoints (from resolved config, longest first)
     ...Object.keys(themeBps).sort((a, b) => b.length - a.length),
-    // Dark
-    config?.darkMode !== undefined && config.darkMode !== 'none' ? 'dark' : 'dark',
+    // Dark (only when a dark strategy is configured; 'none' disables it)
+    ...(config?.darkMode === 'none' ? [] : ['dark']),
     // Important
     'important',
     // Group/peer ancestors
     'group-hover', 'peer-hover',
+    // Bare ancestor markers (activate group/peer; never emitted as rules)
+    'group', 'peer',
     // State
     ...states,
   ];

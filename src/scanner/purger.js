@@ -1,4 +1,4 @@
-import { mapUtilitiesToVariants, parseClass, getVariantPrefixes } from '../core/parser.js';
+import { mapUtilitiesToVariants, parseClass, getVariantPrefixes, DEFAULT_VARIANT_PREFIXES } from '../core/parser.js';
 import { resolveArbitraryUtility } from '../generator/arbitrary.js';
 
 /**
@@ -14,14 +14,16 @@ import { resolveArbitraryUtility } from '../generator/arbitrary.js';
  * @param {Set<string>|string[]} usedClasses - HDX class names found in content
  * @param {string} prefix
  * @param {string[]} [safelist]
+ * @param {import('../core/types.js').HdxConfig|null} [config]
+ * @param {string[]} [extraVariantPrefixes] - plugin addVariant() prefixes, so
+ *   purged builds can parse variant combos that only exist via plugins.
  * @returns {import('../core/types.js').UtilityDefinition[]}
  */
-export function purgeUnused(allUtilities, usedClasses, prefix = 'hdx_', safelist = [], config = null) {
+export function purgeUnused(allUtilities, usedClasses, prefix = 'hdx_', safelist = [], config = null, extraVariantPrefixes = []) {
   const utilMap = new Map(allUtilities.map(u => [u.name, u]));
-  const variantPrefixes = config ? getVariantPrefixes(config) : undefined;
-  const classToVariants = variantPrefixes
-    ? mapUtilitiesToVariants(usedClasses, prefix, variantPrefixes)
-    : mapUtilitiesToVariants(usedClasses, prefix);
+  const basePrefixes = config ? getVariantPrefixes(config) : DEFAULT_VARIANT_PREFIXES;
+  const variantPrefixes = [...basePrefixes, ...extraVariantPrefixes];
+  const classToVariants = mapUtilitiesToVariants(usedClasses, prefix, variantPrefixes);
 
   const needed = [];
   const keptNames = new Set();
@@ -46,9 +48,7 @@ export function purgeUnused(allUtilities, usedClasses, prefix = 'hdx_', safelist
   }
 
   for (const safelistItem of safelist) {
-    const parsed = variantPrefixes
-      ? parseClass(safelistItem, prefix, variantPrefixes)
-      : parseClass(safelistItem, prefix);
+    const parsed = parseClass(safelistItem, prefix, variantPrefixes);
     if (!parsed.valid) continue;
 
     let util = utilMap.get(parsed.utility);
@@ -67,25 +67,51 @@ export function purgeUnused(allUtilities, usedClasses, prefix = 'hdx_', safelist
 
 /**
  * Identify classes that start with the HDX prefix but do NOT resolve to any
- * known utility (or arbitrary value), so builds can warn with file:line instead
- * of silently dropping them (a common footgun during Tailwind→HDX migration).
+ * known utility (or arbitrary value or component), so builds can warn with
+ * file:line instead of silently dropping them (a common footgun during
+ * Tailwind→HDX migration).
+ *
+ * Three things are intentionally NOT reported as unknown:
+ * - Standalone variant-marker classes (`hdx_dark`, `hdx_group`, `hdx_peer`)
+ *   that parse entirely into variants with an empty utility — they activate
+ *   dark mode / group / peer and are never generated as a rule.
+ * - Component classes (`.hdx_btn`, `.hdx_input`, …) — the component layer is
+ *   emitted (unpurged) on every build, so they resolve to real CSS.
+ * - Unknown-but-plain CSS classes are ignored (they are not HDX-prefixed).
  *
  * @param {import('../core/types.js').UtilityDefinition[]} allUtilities
  * @param {Set<string>|string[]} usedClasses - HDX class names found in content
  * @param {string} prefix
+ * @param {import('../core/types.js').HdxConfig|null} [config]
+ * @param {Set<string>} [componentNames] - names of the component layer (so
+ *   component classes are not reported as unknown).
+ * @param {string[]} [extraVariantPrefixes] - plugin addVariant() prefixes, so
+ *   plugin-variant classes are not reported as unknown.
  * @returns {Array<{className: string, utility: string, valid: boolean}>}
  */
-export function findUnknownClasses(allUtilities, usedClasses, prefix = 'hdx_', config = null) {
+export function findUnknownClasses(allUtilities, usedClasses, prefix = 'hdx_', config = null, componentNames = null, extraVariantPrefixes = []) {
   const utilSet = new Set(allUtilities.map(u => u.name));
-  const variantPrefixes = config ? getVariantPrefixes(config) : undefined;
+  const basePrefixes = config ? getVariantPrefixes(config) : DEFAULT_VARIANT_PREFIXES;
+  const variantPrefixes = [...basePrefixes, ...extraVariantPrefixes];
+  const knownComponents = componentNames || new Set();
   const unknown = [];
 
   for (const cls of usedClasses) {
     if (!cls.startsWith(prefix)) continue;
-    const parsed = variantPrefixes
-      ? parseClass(cls, prefix, variantPrefixes)
-      : parseClass(cls, prefix);
-    const known = parsed.valid && (utilSet.has(parsed.utility) || resolveArbitraryUtility(parsed.utility));
+    const parsed = parseClass(cls, prefix, variantPrefixes);
+
+    // Variant-marker classes (e.g. hdx_dark, hdx_group, hdx_peer) never need
+    // a rule — the variants consume the whole class name and the utility is
+    // empty. Treat them as known.
+    const isMarker = !parsed.utility && parsed.variants.length > 0;
+
+    const known = isMarker
+      || (parsed.valid && (
+        utilSet.has(parsed.utility)
+        || resolveArbitraryUtility(parsed.utility)
+        || knownComponents.has(parsed.utility)
+      ));
+
     if (!known) {
       unknown.push({ className: cls, utility: parsed.utility, valid: parsed.valid });
     }

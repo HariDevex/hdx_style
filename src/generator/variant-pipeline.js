@@ -13,7 +13,7 @@
  * @module generator/variant-pipeline
  */
 
-import { getSelector } from '../core/prefix.js';
+import { escapeClassName } from '../core/prefix.js';
 
 /**
  * Indent each line of a CSS string
@@ -22,7 +22,10 @@ import { getSelector } from '../core/prefix.js';
  * @returns {string}
  */
 export function indent(css, indentStr = '  ') {
-  return css.split('\n').map(l => indentStr + l).join('\n');
+  // Fast path: single-line rules (the common case) avoid split/map/join.
+  return css.includes('\n')
+    ? indentStr + css.replace(/\n/g, '\n' + indentStr)
+    : indentStr + css;
 }
 
 /**
@@ -37,78 +40,109 @@ export function indent(css, indentStr = '  ') {
  *     .hdx_dark .hdx_md_dark_hover_flex:hover { display: flex; }
  *   }
  *
+ * The variantMap maps a name to ALL registered definitions (usually one).
+ * When a name has several (dark mode 'both' registers a class strategy and a
+ * media strategy under the same name), each combination is emitted as its own
+ * rule — so a `dark_` class produces both the `.hdx_dark` ancestor rule and
+ * the `@media (prefers-color-scheme: dark)` rule.
+ *
  * @param {string} baseCss - The base CSS rule (e.g. '.hdx_flex { display: flex; }')
  * @param {string[]} variantNames - Ordered variant names (e.g. ['md', 'hover'])
- * @param {Map<string, import('../core/types.js').VariantDefinition>} variantMap - Name→definition map
+ * @param {Map<string, import('../core/types.js').VariantDefinition[]>} variantMap - Name→definitions map
  * @param {string} utilityName - The utility name (e.g. 'flex')
  * @param {string} prefix - HDX prefix
  * @param {'class'|'media'|'both'} [darkStrategy='class']
  * @param {string} [suffix=''] - Optional selector suffix (e.g. ' > :not([hidden]) ~ :not([hidden])')
- * @returns {string} Wrapped CSS
+ * @returns {string[]} Wrapped CSS rules (one per registered strategy)
  */
 export function applyVariantPipeline(baseCss, variantNames, variantMap, utilityName, prefix = 'hdx_', darkStrategy = 'class', suffix = '') {
   if (variantNames.length === 0) {
-    return baseCss;
+    return [baseCss];
   }
 
   // Build full class name for selector generation
   const variantPrefix = variantNames.join('_') + '_';
   const fullClassName = variantPrefix + utilityName;
-  const escaped = getSelector(fullClassName, prefix);
 
-  // 1. Compose the inner selector. State/ancestor variants mutate the selector
-  //    closest to the rule, so walk variants innermost (last) → outermost (first)
-  //    and only rewrite the selector of the bare rule, never the wrappers.
-  let selector = '.' + escaped;
-  for (let i = variantNames.length - 1; i >= 0; i--) {
-    const variant = variantMap.get(variantNames[i]);
-    if (!variant) continue;
+  // Escape only the utility name (memoized) and prepend the variant prefix:
+  // variant names are alphanumeric/hyphenated so they never need escaping, and
+  // escaping is per-character so escape(a+b) === escape(a)+escape(b).
+  const escaped = prefix + variantPrefix + escapeClassName(utilityName);
 
-    if (variant.type === 'state' || variant.type === 'ancestor') {
-      const variantSelector = variant.selector(fullClassName);
-      selector = variantSelector.includes('&')
-        ? variantSelector.replace('&', selector)
-        : selector + variantSelector;
+  // Resolve variant groups once up-front. Each name may map to several defs
+  // (e.g. dark 'both'); take the cartesian product so every strategy is emitted.
+  const resolvedGroups = [];
+  for (const name of variantNames) {
+    const defs = variantMap.get(name);
+    if (defs && defs.length > 0) resolvedGroups.push(defs);
+  }
+  if (resolvedGroups.length === 0) {
+    return ['.' + escaped + (suffix || '') + ' ' + baseCss.slice(baseCss.indexOf('{'))];
+  }
+
+  let combinations = [[]];
+  for (const group of resolvedGroups) {
+    const next = [];
+    for (const combination of combinations) {
+      for (const def of group) next.push([...combination, def]);
     }
+    combinations = next;
   }
 
-  // Append the selector suffix after the composed class selector so that
-  // combinators (space/divide) follow regardless of the variant.
-  const fullSelector = selector + (suffix || '');
+  const rules = [];
 
-  // Replace the base rule's selector by rebuilding from its declaration body.
-  let css = fullSelector + ' ' + baseCss.slice(baseCss.indexOf('{'));
-
-  // Apply !important when any variant in the combo is an important modifier.
-  if (variantNames.some(name => {
-    const v = variantMap.get(name);
-    return v && v.type === 'important';
-  })) {
-    css = css.replace(/;/g, ' !important;');
-  }
-
-  // 2. Apply wrappers (responsive, dark) from innermost to outermost so that
-  //    responsive ends up outermost and dark sits between it and the rule.
-  for (let i = variantNames.length - 1; i >= 0; i--) {
-    const variant = variantMap.get(variantNames[i]);
-    if (!variant) continue;
-
-    if (variant.type === 'responsive') {
-      const mediaQuery = variant.selector(utilityName);
-      css = mediaQuery + ' {\n' + indent(css) + '\n}\n';
-    } else if (variant.type === 'dark') {
-      const strategy = variant.strategy || darkStrategy;
-
-      if (strategy === 'media') {
-        css = '@media (prefers-color-scheme: dark) {\n' + indent(css) + '\n}\n';
-      } else if (strategy === 'both') {
-        css = '.hdx_dark ' + css + '\n@media (prefers-color-scheme: dark) {\n' + indent(css) + '\n}\n';
-      } else {
-        // class strategy: prepend .hdx_dark
-        css = '.hdx_dark ' + css;
+  for (const resolved of combinations) {
+    // 1. Compose the inner selector. State/ancestor variants mutate the selector
+    //    closest to the rule, so walk variants innermost (last) → outermost
+    //    (first) and only rewrite the selector of the bare rule, never the
+    //    wrappers.
+    let selector = '.' + escaped;
+    for (let i = resolved.length - 1; i >= 0; i--) {
+      const variant = resolved[i];
+      if (variant.type === 'state' || variant.type === 'ancestor') {
+        const variantSelector = variant.selector(fullClassName);
+        selector = variantSelector.includes('&')
+          ? variantSelector.replace('&', selector)
+          : selector + variantSelector;
       }
     }
+
+    // Append the selector suffix after the composed class selector so that
+    // combinators (space/divide) follow regardless of the variant.
+    const fullSelector = selector + (suffix || '');
+
+    // Replace the base rule's selector by rebuilding from its declaration body.
+    let css = fullSelector + ' ' + baseCss.slice(baseCss.indexOf('{'));
+
+    // Apply !important when any variant in the combo is an important modifier.
+    if (resolved.some(v => v.type === 'important')) {
+      css = css.replace(/;/g, ' !important;');
+    }
+
+    // 2. Apply wrappers (responsive, dark) from innermost to outermost so that
+    //    responsive ends up outermost and dark sits between it and the rule.
+    for (let i = resolved.length - 1; i >= 0; i--) {
+      const variant = resolved[i];
+      if (variant.type === 'responsive') {
+        const mediaQuery = variant.selector(utilityName);
+        css = mediaQuery + ' {\n' + indent(css) + '\n}\n';
+      } else if (variant.type === 'dark') {
+        const strategy = variant.strategy || darkStrategy;
+
+        if (strategy === 'media') {
+          css = '@media (prefers-color-scheme: dark) {\n' + indent(css) + '\n}\n';
+        } else if (strategy === 'both') {
+          const marker = `.${prefix}dark`;
+          css = marker + ' ' + css + '\n@media (prefers-color-scheme: dark) {\n' + indent(css) + '\n}\n';
+        } else {
+          // class strategy: prepend .hdx_dark (prefix-aware marker)
+          css = `.${prefix}dark ` + css;
+        }
+      }
+    }
+
+    rules.push(css);
   }
 
-  return css;
+  return rules;
 }

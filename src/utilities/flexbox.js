@@ -67,24 +67,20 @@ export function flexboxUtilities(config) {
     'place-items-start': ['place-items', 'start'],
     'place-items-end': ['place-items', 'end'],
     'place-items-stretch': ['place-items', 'stretch'],
-
-    // Gap
-    'gap-x-0': ['column-gap', '0px'],
-    'gap-y-0': ['row-gap', '0px'],
   };
 
   for (const [name, [property, value]] of Object.entries(props)) {
     utils.push({ name, property, value, category: 'flexbox' });
   }
 
-  // Dynamic gap from spacing
-  const { spacing } = config.theme;
-  for (const [key, value] of Object.entries(spacing)) {
-    if (key === '0') continue;
-    utils.push({ name: `gap-${key}`, property: 'gap', value, category: 'flexbox' });
-    utils.push({ name: `gap-x-${key}`, property: 'column-gap', value, category: 'flexbox' });
-    utils.push({ name: `gap-y-${key}`, property: 'row-gap', value, category: 'flexbox' });
-  }
+  // Dynamic gap from spacing (gap-0, gap-x-0, gap-y-0 included — the spacing
+    // scale drives all three; no static duplicates).
+    const { spacing } = config.theme;
+    for (const [key, value] of Object.entries(spacing)) {
+      utils.push({ name: `gap-${key}`, property: 'gap', value, category: 'flexbox' });
+      utils.push({ name: `gap-x-${key}`, property: 'column-gap', value, category: 'flexbox' });
+      utils.push({ name: `gap-y-${key}`, property: 'row-gap', value, category: 'flexbox' });
+    }
 
   return utils;
 }

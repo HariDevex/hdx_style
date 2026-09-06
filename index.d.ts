@@ -1,5 +1,6 @@
 export interface Theme {
   colors: Record<string, string>;
+  darkColors?: Record<string, string>;
   spacing: Record<string, string>;
   fontSize: Record<string, string>;
   fontWeight: Record<string, string>;
@@ -17,7 +18,7 @@ export interface Theme {
 export interface HdxConfig {
   prefix: string;
   content: string[];
-  darkMode: 'class' | 'media' | 'both';
+  darkMode: 'class' | 'media' | 'both' | 'none';
   theme: Theme;
   plugins: PluginFunction[];
   safelist?: string[];
@@ -34,13 +35,15 @@ export interface UtilityDefinition {
   property?: string;
   value?: string;
   css?: string;
+  selector?: string;
   category?: string;
 }
 
 export interface VariantDefinition {
   name: string;
   prefix: string;
-  type?: 'state' | 'responsive' | 'dark' | 'ancestor';
+  type?: 'state' | 'responsive' | 'dark' | 'ancestor' | 'important';
+  strategy?: 'class' | 'media' | 'both';
   selector: (...args: unknown[]) => string;
 }
 
@@ -66,7 +69,7 @@ export const defaultTheme: Theme;
 export const defaultConfig: HdxConfig;
 
 export function generateCSS(config: HdxConfig, options?: GenerateOptions): string;
-export function extractClassNames(content: string): Set<string>;
+export function extractClassNames(content: string, prefix?: string): Set<string>;
 export function getAllUtilities(config?: HdxConfig): UtilityDefinition[];
 export function getAllVariants(config?: HdxConfig): VariantDefinition[];
 export function parseClass(fullName: string, prefix?: string, variantPrefixes?: string[]): { prefix: string; variants: string[]; utility: string; valid: boolean };
