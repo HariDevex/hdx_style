@@ -1503,8 +1503,32 @@ Supported prefixes: `w h min-w min-h max-w max-h rounded text leading
 tracking p px py pt pr pb pl m mx my mt mr mb ml gap gap-x gap-y top right
 bottom left opacity z delay duration rotate translate-x translate-y scale-x
 scale-y blur`. A bare number in a length/angle position gets `px`/`deg`
-appended automatically. Underscores inside the brackets are treated as
-spaces (`blur-[1_rem]`).
+appended automatically.
+
+**Underscores are spaces.** Inside the brackets, every `_` becomes a space, so
+multi-word CSS values can be written as a single class:
+
+```html
+<div class="hdx_blur-[1_rem]"></div>
+```
+
+```css
+.hdx_blur-\[1_rem\] { filter: blur(1 rem); }
+```
+
+Tailwind's `\_` escape is **not** supported and there is no way to emit a
+literal underscore, so keep underscore-containing filenames out of brackets:
+
+```html
+<!-- Correct — underscore becomes the space inside the url() -->
+<div class="hdx_bg-[url(/img/cool_background.png)]"></div>
+
+<!-- Wrong when the filename needs a real underscore: it renders as a space -->
+<div class="hdx_bg-[url(/img/my_logo.png)]"></div>
+```
+
+Underscore-as-space also composes with the negative and numeric modifiers:
+`hdx_-translate-x-[4px]` → `--translate-x: -4px`, `hdx_opacity-[.5]` → `opacity: 0.5`.
 
 ### Negative Values
 
