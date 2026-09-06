@@ -2,6 +2,41 @@
 
 All notable changes to HDX Style are documented in this file.
 
+## [0.2.2] — 2026-09-07
+
+### Fixed
+- **`!important` corrupted semicolons inside quoted string values.** The
+  `important` variant flagged every `;` it saw, including ones inside string
+  literals, so `content: 'a;b'` (reached via a plugin utility) silently became
+  `content: 'a !important;b'`. `markImportant()` is now a single-pass,
+  quote-aware sweeper (`'…'`/`"…"` tracking with backslash-escape support) that
+  only marks declarations outside of strings, preserving the existing
+  "don't double-mark already-important declarations" guard.
+
+### Changed
+- **CI now guards generated artifacts.** Two drift sources went undetected:
+  `src/theme/defaults.js` could change without `default-values.txt` being
+  regenerated, and the README "Verified Statistics" table could fall out of
+  sync with the source (it claimed 244 tests while `stats.js` computed 259).
+  - `npm run defaults && git diff --exit-code default-values.txt` fails the
+    build when the dump is stale.
+  - New `npm run stats:verify` recomputes every README-table metric from
+    source (utilities, categories, components, variants, breakpoints, tests,
+    source files, runtime deps, PostCSS/Tailwind-dependency claims) via the
+    shared `collectStats()` exported from `stats.js`, and exits nonzero on any
+    mismatch. README's stale Tests count is corrected to 259.
+
+### Docs
+- The README arbitrary-values section documents the color-aware
+  `bg`/`border`/`ring`/`text` prefixes (added in 0.2.1): color-shaped values
+  map to their color property, non-color values in a `bg`/`border`/`ring`
+  slot are rejected with an "Unknown utility" warning, and the stale
+  `hdx_bg-[url(...)]` underscore example was replaced with the valid
+  `hdx_w-[calc(100%_-_2rem)]`.
+- `examples/vanilla` gains a feature-showcase block exercising arbitrary
+  values (`hdx_w-[180px]`, `hdx_bg-[#6366F1]`, `hdx_text-[12px]`),
+  `hdx_important_*`, `hdx_dark_*`, and negative/numeric modifiers.
+
 ## [0.2.1] — 2026-09-07
 
 ### Fixed
