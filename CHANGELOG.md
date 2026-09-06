@@ -2,6 +2,51 @@
 
 All notable changes to HDX Style are documented in this file.
 
+## [0.2.1] — 2026-09-07
+
+### Fixed
+- **Plugins executed twice per purged build.** `generatePurgedBuildCss`
+  called `runPlugins()` and then `generateCSS()` called it again, so plugin
+  side effects (registries, counters, external calls) ran twice per build.
+  The scan path now hands its plugin registry to the generator, which skips
+  its own run — a plugin runs exactly once.
+- **Arbitrary `text-[…]` was hardcoded to `font-size`**, so `text-[#ff0000]`
+  emitted `font-size: #ff0000` (invalid CSS). `text` (and `bg`/`border`/`ring`)
+  now disambiguate by value shape: color-shaped values map to the color
+  property, length-shaped values keep their length behavior.
+- **Arbitrary `leading-[…]` forced `px` units.** `leading-[1.2]` emitted
+  `line-height: 1.2px`. It is now a unitless-or-length value: bare numbers
+  stay unitless and explicit units/percentages pass through unchanged.
+- **Arbitrary `opacity-[…]` scale mismatch.** `opacity-[50]` emitted
+  `opacity: 50` (invalid — opacity is 0–1). Values above 1 and up to 100 are
+  now divided by 100 to match the built-in `hdx_opacity-N` scale; 0–1 decimals
+  pass through and `1` is treated as already-normalized (Tailwind's convention).
+- **`bg`/`border`/`ring` arbitrary colors were inconsistent with `text`.**
+  `hdx_bg-[#123456]` now emits `background-color`, `border-[…]` →
+  `border-color`, `ring-[…]` → `--ring-color`, and genuinely non-color values
+  for those tokens surface via the "Unknown utility" warning instead of
+  emitting invalid CSS.
+- **`watch` leaked a config module per rebuild.** Every
+  `loadConfigFromFile()` call cache-busted with a unique import query, and
+  Node's ESM module map never evicts those entries. Busting is now opt-in via
+  `bustCache` (default false) and is only enabled in the watch rebuild path,
+  so one-shot builds reuse the cached module.
+- **`!important` was injected twice.** The important variant appended the flag
+  via a global `replace(/;/g, ' !important;')`, so declarations already ending
+  in `!important` (plugin `css` bodies, arbitrary values like
+  `w-[auto_!important]`) became invalid `!important !important`. A shared
+  `markImportant()` now only flags declarations that are not already important.
+
+### Changed
+- `default-values.txt` is now a generated artifact: `npm run defaults` dumps
+  `src/theme/defaults.js` deterministically (all sections, aligned keys). The
+  stale 52 KB tracked `read.txt` (an unreferenced README duplicate) was
+  removed.
+- The README documents the underscore-for-space arbitrary value convention
+  (`blur-[1_rem]` → `blur(1 rem)`), including that Tailwind's `\_` escape is
+  not supported, so underscore-containing `url()` paths must stay out of
+  brackets.
+
 ## [0.2.0] — 2026-09-06
 
 ### Fixed

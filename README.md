@@ -22,7 +22,7 @@ Every utility class starts with `hdx_` — built for SaaS, dashboards, and enter
 [![npm version](https://img.shields.io/npm/v/@haridevx/hdx-style?style=for-the-badge&logo=npm&label=version&color=%237C3AED)](https://www.npmjs.com/package/@haridevx/hdx-style)
 [![License](https://img.shields.io/badge/license-MIT-%2316A34A?style=for-the-badge&logo=opensourceinitiative)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%E2%89%A5%2018-%230EA5E9?style=for-the-badge&logo=node.js&logoColor=white)](package.json)
-[![Tests](https://img.shields.io/badge/tests-244%20passing-%23A3E635?style=for-the-badge&logo=vitest)](.github/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-256%20passing-%23A3E635?style=for-the-badge&logo=vitest)](.github/workflows/ci.yml)
 [![CI](https://img.shields.io/github/actions/workflow/status/HariDevex/hdx_style/ci.yml?branch=main&style=for-the-badge&label=CI&logo=github&color=%23F59E0B)](.github/workflows/ci.yml)
 
 </div>
