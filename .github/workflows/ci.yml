@@ -24,5 +24,7 @@ jobs:
         run: npm test
       - name: Verify build
         run: npm run build
-      - name: Verify stats
-        run: npm run stats
+      - name: Verify stats match README
+        run: npm run stats:verify
+      - name: Verify default-values.txt is up to date
+        run: npm run defaults && git diff --exit-code default-values.txt
