@@ -1499,11 +1499,31 @@ A safe subset of Tailwind-style arbitrary values resolves at build time
 <div class="hdx_rotate-[90deg] hdx_md_translate-x-[-50%]">Badge</div>
 ```
 
-Supported prefixes: `w h min-w min-h max-w max-h rounded text leading
-tracking p px py pt pr pb pl m mx my mt mr mb ml gap gap-x gap-y top right
-bottom left opacity z delay duration rotate translate-x translate-y scale-x
-scale-y blur`. A bare number in a length/angle position gets `px`/`deg`
-appended automatically.
+Supported prefixes: `w h min-w min-h max-w max-h rounded text bg border ring
+leading tracking p px py pt pr pb pl m mx my mt mr mb ml gap gap-x gap-y top
+right bottom left opacity z delay duration rotate translate-x translate-y
+scale-x scale-y blur`. A bare number in a length/angle position gets
+`px`/`deg` appended automatically.
+
+**Color-aware prefixes.** `bg`, `border`, `ring`, and `text` disambiguate by
+value shape: a color-shaped value — `#hex`, `rgb()/rgba()/hsl()/hsla()`,
+`var()`, or a known CSS color keyword — maps to `background-color`,
+`border-color`, `--ring-color`, and `color` respectively. Any other value in
+a `text` slot is treated as `font-size`; any other value in a `bg`/`border`/
+`ring` slot is genuinely unsupported and is rejected with an "Unknown
+utility" build warning — so `hdx_bg-[url(...)]` is *not* a valid way to
+declare a background image.
+
+```html
+<div class="hdx_bg-[#123456] hdx_text-[red] hdx_text-[14px] hdx_ring-[#ff0000]"></div>
+```
+
+```css
+.hdx_bg-\[#123456\] { background-color: #123456; }
+.hdx_text-\[red\] { color: red; }
+.hdx_text-\[14px\] { font-size: 14px; }
+.hdx_ring-\[#ff0000\] { --ring-color: #ff0000; }
+```
 
 **Underscores are spaces.** Inside the brackets, every `_` becomes a space, so
 multi-word CSS values can be written as a single class:
@@ -1517,14 +1537,17 @@ multi-word CSS values can be written as a single class:
 ```
 
 Tailwind's `\_` escape is **not** supported and there is no way to emit a
-literal underscore, so keep underscore-containing filenames out of brackets:
+literal underscore, so write multi-word values with real `_` placeholders.
+`bg`/`border`/`ring` are color-only, so prefer a registered background
+utility or plain CSS for `url()` backgrounds — `hdx_bg-[url(...)]` warns as
+an unknown utility:
 
 ```html
-<!-- Correct — underscore becomes the space inside the url() -->
-<div class="hdx_bg-[url(/img/cool_background.png)]"></div>
+<!-- Correct — each underscore becomes a space inside the calc() -->
+<div class="hdx_w-[calc(100%_-_2rem)]"></div>
 
-<!-- Wrong when the filename needs a real underscore: it renders as a space -->
-<div class="hdx_bg-[url(/img/my_logo.png)]"></div>
+<!-- Not a valid arbitrary value: url() is not a color -->
+<div class="hdx_bg-[url(/img/layout_background.png)]"></div>
 ```
 
 Underscore-as-space also composes with the negative and numeric modifiers:
