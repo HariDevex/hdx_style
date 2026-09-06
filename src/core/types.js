@@ -68,6 +68,9 @@
 
 /**
  * @typedef {Object} GenerateOptions
- * @property {boolean} [purge]
- * @property {string[]} [content]
+ * @property {UtilityDefinition[]} [utilities] - demand-driven (purged) generation
+ * @property {import('../plugins/index.js').createRegistry} [_registry] - an
+ *   already-computed plugin registry (from runPlugins). When supplied,
+ *   generateCSS skips re-running plugins so side-effecting plugins run once
+ *   per build.
  */

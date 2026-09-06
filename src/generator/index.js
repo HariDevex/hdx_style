@@ -15,7 +15,19 @@ import { runPlugins } from '../plugins/index.js';
  * @returns {string}
  */
 export function generateCSS(config, options = {}) {
-  const { registry, config: processedConfig } = runPlugins(config);
+  // If the caller (e.g. scan.js's generatePurgedBuildCss) already ran plugins
+  // to purge-match plugin utilities/variants, reuse that registry instead of
+  // running plugins again. This guarantees a plugin executes exactly once per
+  // build, even when it has side effects.
+  let processedConfig = config;
+  let registry = options._registry;
+  if (!registry) {
+    const result = runPlugins(config);
+    registry = result.registry;
+    processedConfig = result.config;
+  } else {
+    processedConfig = config;
+  }
 
   const darkStrategy = processedConfig.darkMode || 'class';
   const reset = processedConfig.reset !== false;

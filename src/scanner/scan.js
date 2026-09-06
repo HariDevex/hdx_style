@@ -99,7 +99,7 @@ export async function generatePurgedBuildCss(config, info = () => {}, warn = () 
 
   info(`Keeping ${neededUtils.length} of ${allUtilities.length} utilities`);
 
-  let css = generateCSS(config, { utilities: neededUtils });
+  let css = generateCSS(config, { utilities: neededUtils, _registry: registry });
   css += '\n/* HDX CSS — Keyframes */\n' + getAnimationKeyframes();
 
   return css;
