@@ -173,4 +173,52 @@ describe('config file loading', () => {
 
     expect(config.prefix).toBe('hdx_');
   });
+
+  it('loadConfigFromFile reuses the module cache by default (no accumulation)', async () => {
+    const dir = path.join(tmpDir, 'load-reuse');
+    fs.mkdirSync(dir, { recursive: true });
+    const key = '__hdxReuse' + Date.now();
+    globalThis[key] = 0;
+    const counter = `globalThis['${key}'] = (globalThis['${key}'] || 0) + 1`;
+    fs.writeFileSync(
+      path.join(dir, 'hdx.config.mjs'),
+      `${counter}; export default { prefix: 'eval-' + globalThis['${key}'], content: [], darkMode: 'class', theme: {}, plugins: [] };`
+    );
+
+    const prevCwd = process.cwd();
+    process.chdir(dir);
+    const a = await loadConfigFromFile();
+    const b = await loadConfigFromFile();
+    process.chdir(prevCwd);
+
+    // Without bustCache the second load reuses the evaluated module — the
+    // module is evaluated exactly once, so nothing is accumulated per call.
+    expect(a.prefix).toBe('eval-1');
+    expect(b.prefix).toBe('eval-1');
+    expect(globalThis[key]).toBe(1);
+  });
+
+  it('loadConfigFromFile bustCache forces a fresh evaluation per call (watch)', async () => {
+    const dir = path.join(tmpDir, 'load-bust');
+    fs.mkdirSync(dir, { recursive: true });
+    const key = '__hdxBust' + Date.now();
+    globalThis[key] = 0;
+    const counter = `globalThis['${key}'] = (globalThis['${key}'] || 0) + 1`;
+    fs.writeFileSync(
+      path.join(dir, 'hdx.config.mjs'),
+      `${counter}; export default { prefix: 'eval-' + globalThis['${key}'], content: [], darkMode: 'class', theme: {}, plugins: [] };`
+    );
+
+    const prevCwd = process.cwd();
+    process.chdir(dir);
+    const a = await loadConfigFromFile(undefined, { bustCache: true });
+    const b = await loadConfigFromFile(undefined, { bustCache: true });
+    process.chdir(prevCwd);
+
+    // Watch rebuilds bust the cache so config edits are picked up: each call
+    // is its own module evaluation.
+    expect(a.prefix).toBe('eval-1');
+    expect(b.prefix).toBe('eval-2');
+    expect(globalThis[key]).toBe(2);
+  });
 });

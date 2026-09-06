@@ -24,7 +24,11 @@ export function watchCommand(program) {
 
       async function rebuild() {
         try {
-          const config = await loadConfigFromFile(opts.config);
+          // Fresh config on every rebuild so config edits are picked up in
+          // watch mode. bustCache is scoped to this path: the ESM cache-bust
+          // accumulates module-map entries, so it must not be used by the
+          // one-shot build/generate commands.
+          const config = await loadConfigFromFile(opts.config, { bustCache: true });
 
           let css;
           const purge = opts.purge !== false;

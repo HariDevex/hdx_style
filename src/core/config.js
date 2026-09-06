@@ -77,6 +77,7 @@ export async function resolveConfigPath(explicitPath) {
 
 let typelessWarningFilterInstalled = false;
 const warningDelegates = [];
+let bustSeq = 0;
 
 /**
  * Route Node's 'warning' events through the original handlers, swallowing the
@@ -109,21 +110,37 @@ function installTypelessWarningFilter() {
 
 /**
  * Load config from file path
+ *
+ * By default a plain (file) URL is imported, so Node's ESM module cache is
+ * reused and repeated loads neither re-evaluate the config nor accumulate
+ * module-map entries. This is the memory-safe choice for one-shot builds and
+ * programmatic use.
+ *
+ * When `bustCache` is true, a unique query string is appended to the import
+ * URL, forcing a fresh evaluation each call. This is required for correctness
+ * in watch mode (config edits must be picked up), but it trades memory for
+ * freshness — each bust inserts a module-map entry that is never evicted — so
+ * it must only be enabled where stale config is a real problem.
  * @param {string} [configPath]
+ * @param {object} [options]
+ * @param {boolean} [options.bustCache] Force a fresh config evaluation per
+ *   call. Only used by the watch command's rebuilds.
  * @returns {Promise<HdxConfig>}
  */
-export async function loadConfigFromFile(configPath) {
+export async function loadConfigFromFile(configPath, options = {}) {
   const { pathToFileURL } = await import('node:url');
+  const { bustCache = false } = options;
 
   const fullPath = await resolveConfigPath(configPath);
   if (!fullPath) {
     return getDefaultConfig();
   }
 
-  // Cache-bust the import URL: Node's ESM module cache returns the FIRST
-  // evaluated module for a given (file) URL, which would make `watch` ignore
-  // config edits. A unique query string forces a fresh evaluation each call.
-  const fileUrl = pathToFileURL(fullPath).href + '?t=' + Date.now();
+  // The query must be unique per bust: Date.now() alone can collide for two
+  // calls within the same millisecond, which would silently reuse a module.
+  const fileUrl = bustCache
+    ? `${pathToFileURL(fullPath).href}?t=${Date.now()}-${++bustSeq}`
+    : pathToFileURL(fullPath).href;
   installTypelessWarningFilter();
   const mod = await import(fileUrl);
   const userConfig = mod.default || mod;
