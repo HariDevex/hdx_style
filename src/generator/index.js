@@ -1,6 +1,6 @@
 import { getSelector } from '../core/prefix.js';
 import { generateRule, generateMultiPropertyRule } from './utility-generator.js';
-import { applyVariantPipeline, indent } from './variant-pipeline.js';
+import { applyVariantPipeline, indent, markImportant } from './variant-pipeline.js';
 import { getAllUtilities } from '../utilities/index.js';
 import { getAllVariants } from '../variants/index.js';
 import { getAllComponents } from '../components/index.js';
@@ -301,7 +301,7 @@ function appendVariantCSS(css, baseRule, variant, fullClassName, utilityName, pr
   // Important/override variant: keep the class selector but mark declarations
   // !important so they beat component-layer rules of equal specificity.
   if (variant.type === 'important') {
-    return css + rule(withSuffix).replace(/;/g, ' !important;');
+    return css + markImportant(rule(withSuffix));
   }
 
   // State or ancestor

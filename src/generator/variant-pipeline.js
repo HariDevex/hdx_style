@@ -29,6 +29,23 @@ export function indent(css, indentStr = '  ') {
 }
 
 /**
+ * Mark every declaration in a rule `!important`, leaving declarations that
+ * already carry an `!important` flag untouched.
+ *
+ * A naive `css.replace(/;/g, ' !important;')` double-marks declarations that
+ * already end in `!important` (reached via a plugin utility `css` body or an
+ * arbitrary value such as `w-[auto_!important]`), producing invalid
+ * `!important !important` CSS that browsers drop entirely.
+ * @param {string} css - A CSS rule (selector + declaration block)
+ * @returns {string} The rule with each unmarked declaration made !important
+ */
+export function markImportant(css) {
+  return css.replace(/;|!\s*important\s*;/gi, (match) =>
+    match.startsWith('!') ? match : ' !important;'
+  );
+}
+
+/**
  * Apply a pipeline of variants to a base CSS rule.
  *
  * Variants are applied from outermost to innermost in CSS terms:
@@ -116,7 +133,7 @@ export function applyVariantPipeline(baseCss, variantNames, variantMap, utilityN
 
     // Apply !important when any variant in the combo is an important modifier.
     if (resolved.some(v => v.type === 'important')) {
-      css = css.replace(/;/g, ' !important;');
+      css = markImportant(css);
     }
 
     // 2. Apply wrappers (responsive, dark) from innermost to outermost so that

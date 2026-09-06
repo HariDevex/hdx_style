@@ -7,6 +7,7 @@ import { backgroundsUtilities } from '../../src/utilities/backgrounds.js';
 import { colorsUtilities } from '../../src/utilities/colors.js';
 import { interactionUtilities } from '../../src/utilities/interaction.js';
 import { parseClass } from '../../src/core/parser.js';
+import { markImportant } from '../../src/generator/variant-pipeline.js';
 
 const config = loadConfig();
 
@@ -138,5 +139,37 @@ describe('P2: important variant', () => {
     expect(css).toContain('@media (min-width: 768px) {');
     expect(css).toContain('.hdx_md_important_flex { display: flex !important; }');
     expect(css).toContain('.hdx_hover_important_text-primary:hover { color: var(--hdx-color-primary) !important; }');
+  });
+
+  it('does not double-mark declarations that already carry !important', () => {
+    // A value (plugin utility or arbitrary value) that already ends in
+    // !important must not be injected with a second one — `!important !important`
+    // is invalid CSS that browsers drop. (Task 6 hardening)
+    const css = generateCSS(config, {
+      utilities: [
+        { name: 'w-auto', property: 'width', value: 'auto !important', category: 'sizing', _requestedVariants: [['important']] },
+        { name: 'p-1', css: 'padding: 0 !important;\nmargin: 0;', category: 'spacing', _requestedVariants: [['important']] },
+      ],
+    });
+
+    expect(css).toContain('.hdx_important_w-auto { width: auto !important; }');
+    expect(css).not.toContain('!important !important');
+
+    // Multi-declaration rules: only unmarked declarations gain the flag.
+    expect(css).toContain('padding: 0 !important;');
+    expect(css).toContain('margin: 0 !important;');
+  });
+});
+
+describe('markImportant helper', () => {
+  it('leaves already-important declarations untouched', () => {
+    expect(markImportant('.a { x: 1 !important; }')).toBe('.a { x: 1 !important; }');
+    expect(markImportant('.a { x: 1 ! important; }')).toBe('.a { x: 1 ! important; }');
+    expect(markImportant('.a { x: 1 !IMPORTANT; }')).toBe('.a { x: 1 !IMPORTANT; }');
+  });
+
+  it('marks unmarked declarations once', () => {
+    expect(markImportant('.a { x: 1 !important; y: 2; }')).toBe('.a { x: 1 !important; y: 2 !important; }');
+    expect(markImportant('.a { x: 1; }')).toBe('.a { x: 1 !important; }');
   });
 });
