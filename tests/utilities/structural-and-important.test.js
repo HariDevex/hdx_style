@@ -159,6 +159,21 @@ describe('P2: important variant', () => {
     expect(css).toContain('padding: 0 !important;');
     expect(css).toContain('margin: 0 !important;');
   });
+
+  it('does not corrupt semicolons inside quoted string values', () => {
+    const css = generateCSS(config, {
+      utilities: [
+        { name: 'content', property: 'content', value: "';'", category: 'content', _requestedVariants: [['important']] },
+        { name: 'msg', property: 'content', value: "'a;b'", category: 'content', _requestedVariants: [['important']] },
+      ],
+    });
+    // The literal `;` inside the quoted value must survive untouched; only the
+    // declaration-terminating `;` gains the flag. (Task: harden markImportant
+    // against quoted semicolons.)
+    expect(css).toContain(".hdx_important_content { content: ';' !important; }");
+    expect(css).toContain(".hdx_important_msg { content: 'a;b' !important; }");
+    expect(css).not.toContain("content: ' !important;'");
+  });
 });
 
 describe('markImportant helper', () => {
@@ -171,5 +186,16 @@ describe('markImportant helper', () => {
   it('marks unmarked declarations once', () => {
     expect(markImportant('.a { x: 1 !important; y: 2; }')).toBe('.a { x: 1 !important; y: 2 !important; }');
     expect(markImportant('.a { x: 1; }')).toBe('.a { x: 1 !important; }');
+  });
+
+  it('preserves semicolons inside quoted strings', () => {
+    expect(markImportant(".a { content: ';'; }")).toBe(".a { content: ';' !important; }");
+    expect(markImportant('.a { content: "a;b"; }')).toBe('.a { content: "a;b" !important; }');
+  });
+
+  it('honors backslash-escaped quotes inside strings', () => {
+    const css = String.raw`.a { content: "he said \"hi\"; go"; }`;
+    const expected = String.raw`.a { content: "he said \"hi\"; go" !important; }`;
+    expect(markImportant(css)).toBe(expected);
   });
 });

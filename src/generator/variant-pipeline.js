@@ -32,17 +32,48 @@ export function indent(css, indentStr = '  ') {
  * Mark every declaration in a rule `!important`, leaving declarations that
  * already carry an `!important` flag untouched.
  *
- * A naive `css.replace(/;/g, ' !important;')` double-marks declarations that
- * already end in `!important` (reached via a plugin utility `css` body or an
- * arbitrary value such as `w-[auto_!important]`), producing invalid
- * `!important !important` CSS that browsers drop entirely.
+ * A naive `css.replace(/;/g, ' !important;')` has two flaws corrected here:
+ * - It double-marks declarations that already end in `!important` (reached via
+ *   a plugin utility `css` body or an arbitrary value such as
+ *   `w-[auto_!important]`), producing invalid `!important !important` CSS that
+ *   browsers drop entirely.
+ * - It injects the flag into `;` characters inside quoted string literals
+ *   (e.g. `content: 'a;b'`), silently corrupting the value.
+ *
+ * This implementation does a single pass, tracking `'...'`/`"..."` quote state
+ * (honoring backslash escapes) and only marking `;` that terminate a
+ * declaration outside of a string.
  * @param {string} css - A CSS rule (selector + declaration block)
  * @returns {string} The rule with each unmarked declaration made !important
  */
 export function markImportant(css) {
-  return css.replace(/;|!\s*important\s*;/gi, (match) =>
-    match.startsWith('!') ? match : ' !important;'
-  );
+  let out = '';
+  let quote = null;
+  for (let i = 0; i < css.length; i++) {
+    const ch = css[i];
+    if (quote) {
+      out += ch;
+      if (ch === '\\') {
+        i++;
+        if (i < css.length) out += css[i];
+      } else if (ch === quote) {
+        quote = null;
+      }
+      continue;
+    }
+    if (ch === "'" || ch === '"') {
+      quote = ch;
+      out += ch;
+      continue;
+    }
+    if (ch === ';') {
+      if (!/!\s*important\s*$/i.test(out)) out += ' !important';
+      out += ';';
+      continue;
+    }
+    out += ch;
+  }
+  return out;
 }
 
 /**
