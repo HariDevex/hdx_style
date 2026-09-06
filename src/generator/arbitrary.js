@@ -24,8 +24,15 @@ const ARBITRARY_UTILITIES = {
   // Radius
   'rounded': ['border-radius', 'length'],
   // Typography
+  // 'text' is disambiguated at resolve time (Task 2): a color-shaped value maps
+  // to 'color: …', otherwise it behaves as 'font-size' length. 'bg'/'border'/
+  // 'ring' (Task 7) accept color-shaped values (and only those), resolved to
+  // their color property.
   'text': ['font-size', 'length'],
-  'leading': ['line-height', 'length'],
+  'bg': ['background-color', 'raw'],
+  'border': ['border-color', 'raw'],
+  'ring': ['--ring-color', 'raw'],
+  'leading': ['line-height', 'unitless-or-length'],
   'tracking': ['letter-spacing', 'length'],
   // Spacing
   'p': ['padding', 'length'],
@@ -65,6 +72,36 @@ const ARBITRARY_UTILITIES = {
 };
 
 const NUMBER_RE = /^-?\d+(\.\d+)?$/;
+// Like NUMBER_RE but also accepts leading-dot decimals (`.5`).
+const NUMERIC_RE = /^-?(?:\d+(?:\.\d+)?|\.\d+)$/;
+
+// Value kinds that can hold a CSS color.
+const COLOR_KIND = 'color';
+// Value kind used only for 'leading': a bare number stays unitless, but
+// explicit units / percentages pass through unchanged.
+const UNITLESS_OR_LENGTH_KIND = 'unitless-or-length';
+
+// Web color keywords (used by isColorValue for non-hex non-function colors).
+const COLOR_KEYWORDS = new Set([
+  'currentcolor', 'transparent', 'inherit', 'initial', 'revert', 'unset',
+  'black', 'white', 'red', 'orange', 'yellow', 'green', 'blue', 'purple',
+  'gray', 'grey', 'silver', 'maroon', 'olive', 'lime', 'aqua', 'teal',
+  'navy', 'fuchsia', 'pink', 'brown', 'coral', 'crimson', 'gold', 'indigo',
+  'ivory', 'khaki', 'lavender', 'magenta', 'orchid', 'plum', 'salmon',
+  'sienna', 'tan', 'tomato', 'violet', 'wheat', 'cyan', 'beige', 'chocolate',
+]);
+
+// Color-shaped values: hex, rgb/rgba/hsl/hsla functions, var(), and known
+// CSS color keywords.
+function isColorValue(value) {
+  const v = value.trim().toLowerCase();
+  const first = v[0];
+  return first === '#'
+    || v.startsWith('rgb(') || v.startsWith('rgba(')
+    || v.startsWith('hsl(') || v.startsWith('hsla(')
+    || (v.startsWith('var(') && v.endsWith(')'))
+    || COLOR_KEYWORDS.has(v);
+}
 
 // Properties that accept negative values (margins, offsets, translates).
 const NEGATABLE = new Set([
@@ -72,6 +109,21 @@ const NEGATABLE = new Set([
   'top', 'right', 'bottom', 'left',
   'translate-x', 'translate-y',
 ]);
+
+// Color-backed arbitrary tokens (Task 7) share the same value-shape detection
+// as 'text'. Tokens NOT listed here — but present in ARBITRARY_UTILITIES —
+// derive their value-kind from ARBITRARY_UTILITIES.
+const COLOR_TOKENS = new Set(['text', 'bg', 'border', 'ring']);
+
+// Token → color property. For most color tokens spec[0] already holds the
+// color property (bg/border/ring); 'text' is the exception — its default
+// property is font-size, so color-shaped values must switch to `color`.
+const COLOR_PROPERTY = {
+  text: 'color',
+  bg: 'background-color',
+  border: 'border-color',
+  ring: '--ring-color',
+};
 
 /**
  * Resolve an arbitrary utility name like `w-[260px]` into a viable
@@ -96,7 +148,22 @@ export function resolveArbitraryUtility(utility) {
 
   const spec = ARBITRARY_UTILITIES[token];
   if (!spec) return null;
-  const [property, kind] = spec;
+  let [property, kind] = spec;
+
+  // 'text' (and the color tokens from Task 7) are disambiguated by value
+  // shape: a color-shaped value maps to the color property, otherwise it keeps
+  // its default kind (font-size/length for 'text', etc.).
+  if (COLOR_TOKENS.has(token)) {
+    if (isColorValue(value)) {
+      property = COLOR_PROPERTY[token];
+      kind = COLOR_KIND;
+    } else if (token !== 'text') {
+      // bg/border/ring only accept color-shaped values. A non-color value is
+      // genuinely unsupported and should resolve to null so it surfaces via
+      // the "Unknown utility" warning path instead of emitting invalid CSS.
+      return null;
+    }
+  }
 
   if (negative && (!NEGATABLE.has(token) || kind !== 'length')) return null;
 
@@ -108,6 +175,12 @@ export function resolveArbitraryUtility(utility) {
     case 'length':
       out = NUMBER_RE.test(value) ? value + 'px' : value;
       break;
+    case 'unitless-or-length':
+      // Tailwind convention for line-height: a bare number stays unitless
+      // (line-height: 1.4), while explicit units / percentages pass through
+      // unchanged. Neither case appends px.
+      out = value;
+      break;
     case 'angle':
       out = NUMBER_RE.test(value) ? value + 'deg' : value;
       break;
@@ -116,6 +189,9 @@ export function resolveArbitraryUtility(utility) {
       break;
     case 'blur':
       out = 'blur(' + (NUMBER_RE.test(value) ? value + 'px' : value) + ')';
+      break;
+    case 'color':
+      out = value;
       break;
     default:
       out = value;
@@ -126,9 +202,21 @@ export function resolveArbitraryUtility(utility) {
     else if (!out.startsWith('-')) out = '-' + out;
   }
 
-  if (property === 'opacity' && NUMBER_RE.test(out)) {
+  if (property === 'opacity' && NUMERIC_RE.test(out)) {
     const n = parseFloat(out);
-    if (n >= 0 && n <= 1) out = String(n);
+    // Normalize to the built-in opacity scale (0–1). Values already expressed
+    // as a 0–1 decimal stay as-is; integer/float values within 0–100 are
+    // treated as a percentage and divided by 100 to match how the built-in
+    // hdx_opacity-N utilities work (hdx_opacity-50 → 0.5).
+    //
+    // Ambiguous edge case: `opacity-[1]` could mean 1% or 100%. Mirroring
+    // Tailwind's own convention, `1` is treated as already-normalized (1.0),
+    // which is the safer default than silently collapsing it to 0.01.
+    if (n >= 0 && n <= 1) {
+      out = String(n);
+    } else if (n > 1 && n <= 100) {
+      out = String(n / 100);
+    }
   }
 
   return {

@@ -54,6 +54,50 @@ describe('P3: arbitrary values', () => {
     const unknown = findUnknownClasses(all, new Set(['hdx_w-[260px]', 'hdx_total-yolo']), 'hdx_');
     expect(unknown.map(u => u.className)).toEqual(['hdx_total-yolo']);
   });
+
+  it('disambiguates text-[...] between color and font-size (Task 2)', () => {
+    expect(resolveArbitraryUtility('text-[#ff0000]')).toEqual({ name: 'text-[#ff0000]', property: 'color', value: '#ff0000', category: 'arbitrary' });
+    expect(resolveArbitraryUtility('text-[#ABC]')).toEqual({ name: 'text-[#ABC]', property: 'color', value: '#ABC', category: 'arbitrary' });
+    expect(resolveArbitraryUtility('text-[14px]')).toEqual({ name: 'text-[14px]', property: 'font-size', value: '14px', category: 'arbitrary' });
+    expect(resolveArbitraryUtility('text-[1.5rem]').property).toBe('font-size');
+    expect(resolveArbitraryUtility('text-[var(--brand)]')).toEqual({ name: 'text-[var(--brand)]', property: 'color', value: 'var(--brand)', category: 'arbitrary' });
+    expect(resolveArbitraryUtility('text-[rgb(255,0,0)]').property).toBe('color');
+    expect(resolveArbitraryUtility('text-[red]').property).toBe('color');
+  });
+
+  it('keeps leading-[...] unitless for bare numbers (Task 3)', () => {
+    expect(resolveArbitraryUtility('leading-[1.2]')).toEqual({ name: 'leading-[1.2]', property: 'line-height', value: '1.2', category: 'arbitrary' });
+    expect(resolveArbitraryUtility('leading-[150%]')).toEqual({ name: 'leading-[150%]', property: 'line-height', value: '150%', category: 'arbitrary' });
+  });
+
+  it('normalizes opacity-[...] against the built-in 0–100 scale (Task 4)', () => {
+    expect(resolveArbitraryUtility('opacity-[50]')).toEqual({ name: 'opacity-[50]', property: 'opacity', value: '0.5', category: 'arbitrary' });
+    expect(resolveArbitraryUtility('opacity-[.5]')).toEqual({ name: 'opacity-[.5]', property: 'opacity', value: '0.5', category: 'arbitrary' });
+    expect(resolveArbitraryUtility('opacity-[0.5]').value).toBe('0.5');
+    // `1` is treated as already-normalized (matching Tailwind's convention).
+    expect(resolveArbitraryUtility('opacity-[1]')).toEqual({ name: 'opacity-[1]', property: 'opacity', value: '1', category: 'arbitrary' });
+  });
+
+  it('supports arbitrary colors for bg/border/ring (Task 7)', () => {
+    expect(resolveArbitraryUtility('bg-[#123456]')).toEqual({ name: 'bg-[#123456]', property: 'background-color', value: '#123456', category: 'arbitrary' });
+    expect(resolveArbitraryUtility('border-[#123456]')).toEqual({ name: 'border-[#123456]', property: 'border-color', value: '#123456', category: 'arbitrary' });
+    expect(resolveArbitraryUtility('ring-[#123456]')).toEqual({ name: 'ring-[#123456]', property: '--ring-color', value: '#123456', category: 'arbitrary' });
+  });
+
+  it('flags genuinely unsupported arbitrary values as unknown (Task 7)', () => {
+    // Non-color values for color-only tokens resolve to null so they surface
+    // via the "Unknown utility" warning path instead of emitting invalid CSS.
+    expect(resolveArbitraryUtility('bg-[14px]')).toBeNull();
+    expect(resolveArbitraryUtility('xyz-[123]')).toBeNull();
+
+    const all = getAllUtilities(config);
+    const unknown = findUnknownClasses(all, new Set(['hdx_xyz-[123]', 'hdx_bg-[14px]']), 'hdx_');
+    expect(unknown.map(u => u.className).sort()).toEqual(['hdx_bg-[14px]', 'hdx_xyz-[123]']);
+
+    // Color-shaped arbitrary values are NOT reported as unknown.
+    const knownSet = findUnknownClasses(all, new Set(['hdx_bg-[#123456]', 'hdx_ring-[red]']), 'hdx_');
+    expect(knownSet.map(u => u.className)).toEqual([]);
+  });
 });
 
 describe('P3: negative values', () => {
