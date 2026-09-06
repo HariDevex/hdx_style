@@ -47,6 +47,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "stats": "node stats.js",
+    "defaults": "node scripts/generate-defaults.js",
     "build": "node src/cli/index.js build",
     "build:dev": "node src/cli/index.js build",
     "dev": "node src/cli/index.js watch",
