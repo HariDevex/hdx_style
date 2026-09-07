@@ -5,7 +5,7 @@ export default {
   prefix: 'hdx_',
 
   // Files to scan for used classes (enables production purging)
-  content: ['./examples/**/*.html'],
+  content: ['./examples/vanilla/**/*.html'],
 
   // Force these classes into the output even if not detected above
   safelist: [],

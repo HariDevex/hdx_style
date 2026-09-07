@@ -159,19 +159,7 @@ Key design decisions:
 
 <h2 id="installation">📥 Installation</h2>
 
-> **Not published to npm yet.** `@haridevx/hdx-style` is not on the public npm registry yet (checking `registry.npmjs.org` returns 404), so the `npm install`, unpkg CDN link, and `@haridevx/hdx-style/...` imports below only work **after the package is published** (`npm publish --access public`). Until then, reference the local build — the CLI writes it to `dist/hdx.css`:
-
-```html
-<!-- in your page (after running npx hdx_style build) -->
-<link rel="stylesheet" href="./dist/hdx.css">
-```
-
-```js
-// or in your app entry
-import "./dist/hdx.css";
-```
-
-Once published, the standard install paths are:
+> **Published on npm.** `@haridevx/hdx-style` is on the public npm registry, so `npm install`, the unpkg CDN link, and `@haridevx/hdx-style/...` imports below work out of the box:
 
 ```bash
 npm install @haridevx/hdx-style
@@ -2198,6 +2186,14 @@ behaves correctly and the generated file is easy to inspect.
 
 <h2 id="framework-integration">🧩 Framework Integration</h2>
 
+Framework variants of the examples live in the [`examples/`](examples/) folder — each with its own scoped `hdx.config.js` showing demand-driven purging for that file type:
+
+| Example | Content scanned | Build command |
+|---|---|---|
+| [Vanilla](examples/vanilla/) | `examples/vanilla/**/*.html` | `node src/cli/index.js build -p -c examples/vanilla/hdx.config.js` |
+| [React/JSX](examples/react/) | `examples/react/**/*.{html,jsx,tsx}` | `node src/cli/index.js build -p -c examples/react/hdx.config.js` |
+| [Vue](examples/vue/) | `examples/vue/**/*.{vue,html}` | `node src/cli/index.js build -p -c examples/vue/hdx.config.js` |
+
 ### Vanilla HTML
 
 ```html
@@ -2215,6 +2211,8 @@ behaves correctly and the generated file is easy to inspect.
 ```
 
 ### React
+
+> Full runnable example: [`examples/react/App.jsx`](examples/react/App.jsx). Note that component class name maps must stay static — the scanner resolves `['hdx_btn', 'hdx_btn-primary'].join(' ')` but cannot discover template-literal interpolation.
 
 ```jsx
 import "@haridevx/hdx-style/css";
@@ -2236,6 +2234,8 @@ export default function App() {
 ```
 
 ### Vue
+
+> Full runnable example: [`examples/vue/App.vue`](examples/vue/App.vue).
 
 ```vue
 <template>
@@ -2409,6 +2409,8 @@ A runnable version of this page lives in [`examples/vanilla/index.html`](example
 ```bash
 node src/cli/index.js build -p -c examples/vanilla/hdx.config.js
 ```
+
+React and Vue variants are in [`examples/react/`](examples/react/) and [`examples/vue/`](examples/vue/) — see the [Framework Integration](#framework-integration) section for the full list of examples and build commands.
 
 ---
 

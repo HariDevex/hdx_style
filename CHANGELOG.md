@@ -2,6 +2,26 @@
 
 All notable changes to HDX Style are documented in this file.
 
+## [0.2.4] — 2026-09-07
+
+### Added
+- **React and Vue example folders.** `examples/react/` (`App.jsx`) and
+  `examples/vue/` (`App.vue`) join the vanilla example, each with its own
+  scoped `hdx.config.js` demonstrating demand-driven purging for JSX/TSX and
+  Vue single-file components. Both show component + state-variant interplay,
+  responsive reflow, arbitrary values, and a live dark-mode toggle (Vue).
+  `examples/README.md` lists all three examples and their build commands.
+- **Per-example READMEs** (`examples/vanilla|react|vue/README.md`) explaining
+  how to build and mount each example.
+
+### Changed
+- Each example config now scans only its own content files
+  (`./examples/<name>/**`) instead of a shared glob, so each example is
+  self-contained.
+- README now declares the package **published on npm** (the stale "Not
+  published to npm yet" notice is removed) and the Framework Integration
+  section links the live React/Vue examples alongside the vanilla one.
+
 ## [0.2.3] — 2026-09-07
 
 ### Added
