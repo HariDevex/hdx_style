@@ -63,7 +63,9 @@ export const defaultTheme = {
 
   spacing: {
     0: '0px',
+    0.5: '0.125rem',
     1: '0.25rem',
+    1.5: '0.375rem',
     2: '0.5rem',
     3: '0.75rem',
     4: '1rem',

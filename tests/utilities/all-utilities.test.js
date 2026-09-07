@@ -82,6 +82,15 @@ describe('spacing utilities', () => {
       name: 'm-auto', property: 'margin', value: 'auto', category: 'spacing',
     });
   });
+
+  it('generates sub-4px half-step spacing including negatives', () => {
+    const utils = spacingUtilities(config);
+    expect(utils.find(u => u.name === 'p-0.5').value).toBe('0.125rem');
+    expect(utils.find(u => u.name === 'py-1.5').value).toBe('0.375rem');
+    expect(utils.find(u => u.name === '-m-0.5').value).toBe('-0.125rem');
+    expect(utils.find(u => u.name === '-mx-1.5').value).toBe('-0.375rem');
+    expect(utils.find(u => u.name === 'space-y-1.5').value).toBe('0.375rem');
+  });
 });
 
 describe('typography utilities', () => {
