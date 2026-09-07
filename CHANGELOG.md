@@ -2,6 +2,40 @@
 
 All notable changes to HDX Style are documented in this file.
 
+## [0.2.3] — 2026-09-07
+
+### Added
+- **Full three-stage state shapes for every action color.** `primary` was the
+  only color with a `-active` token; `secondary`/`success`/`danger`/`warning`/
+  `info` now each have `{color}-hover` and `{color}-active` (800-level shades
+  mirroring primary's 600→700→800 cadence).
+- **`:hover` / `:active` rules on the solid button variants**
+  (`btn-primary` … `btn-info`) resolve the matching `-hover`/`-active` tokens
+  through CSS variables, so user color overrides keep flowing into the press
+  states. Components gain an optional `states[]` (`{selector, css}`) field;
+  each state rule is emitted after the component base rule. Opt-out remains
+  available via `config.components: false`.
+- **Semantic z-index layer.** Theme `zIndex` gains a named layering scale —
+  `dropdown` (1000), `sticky` (1100), `overlay` (1200), `modal` (1300),
+  `popover` (1400), `toast` (1500) — alongside the existing numeric scale.
+  `z-{name}` utilities generate automatically, and the modal overlay now reads
+  `z-index` from `theme.zIndex.overlay` instead of a hardcoded `50`, so a user
+  theme overrides the shipped component.
+- **Dark-mode action colors.** `darkColors` gains lightened, desaturated
+  variants of `primary`/`success`/`danger`/`warning`/`info`, each verified to
+  hit WCAG AA (~4.5:1) against `#0F172A` and `#1E293B`; the contrast ratio is
+  recomputed in-suite so future drift fails CI.
+- **Flat slate-gray `50–900` scale.** `bg-`/`text-`/`border-`/`ring-`/
+  `divide-`/`placeholder-gray-N` utilities generate with no generator change —
+  the color utility iterates `theme.colors` generically.
+- **Sub-4px spacing half-steps** `0.5` (2px) and `1.5` (6px), including the
+  negative (`-m-0.5`), directional, and `space-y/x` forms.
+
+### Changed
+- Utility count rose to **1,850** across **20** categories; test suite grew to
+  **272**; the `--no-purge` (~25 MB in the current theme) caveat and README
+  stats/badges are updated to match.
+
 ## [0.2.2] — 2026-09-07
 
 ### Fixed

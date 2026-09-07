@@ -22,7 +22,7 @@ Every utility class starts with `hdx_` — built for SaaS, dashboards, and enter
 [![npm version](https://img.shields.io/npm/v/@haridevx/hdx-style?style=for-the-badge&logo=npm&label=version&color=%237C3AED)](https://www.npmjs.com/package/@haridevx/hdx-style)
 [![License](https://img.shields.io/badge/license-MIT-%2316A34A?style=for-the-badge&logo=opensourceinitiative)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%E2%89%A5%2018-%230EA5E9?style=for-the-badge&logo=node.js&logoColor=white)](package.json)
-[![Tests](https://img.shields.io/badge/tests-259%20passing-%23A3E635?style=for-the-badge&logo=vitest)](.github/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-272%20passing-%23A3E635?style=for-the-badge&logo=vitest)](.github/workflows/ci.yml)
 [![CI](https://img.shields.io/github/actions/workflow/status/HariDevex/hdx_style/ci.yml?branch=main&style=for-the-badge&label=CI&logo=github&color=%23F59E0B)](.github/workflows/ci.yml)
 
 </div>
@@ -35,12 +35,12 @@ Run `node stats.js` to generate from source; `npm run stats:verify` (also part o
 
 | Metric | Count |
 |---|---|
-| 📦 Utilities | **1,576** |
+| 📦 Utilities | **1,850** |
 | 🗂️ Utility categories | **20** |
 | 🧩 Components | **58** |
 | 🎛️ Variants | **29** |
 | 📐 Responsive breakpoints | **5** |
-| ✅ Tests | **259** |
+| ✅ Tests | **272** |
 | 📄 Source files | **60** |
 | ⚙️ Runtime dependencies | **4** |
 | 🚫 PostCSS dependency | **No** |
@@ -141,14 +141,14 @@ Layered design:
 | Layer | Responsibility |
 |---|---|
 | **Tokens** | Colors, spacing, radius, shadows, breakpoints, transitions |
-| **Utilities** | 19 categories, 1,184 utilities across display, flexbox, grid, spacing, etc. |
+| **Utilities** | 20 categories, 1,850 utilities across display, flexbox, grid, spacing, etc. |
 | **Components** | Base + variant + size classes for buttons, cards, modals, etc. |
 | **Variants** | State, responsive, dark, ancestor — compose via the variant pipeline |
 | **Generator** | Produces deterministic CSS. Demand-driven in production mode |
 
 Key design decisions:
 
-- **Demand-driven generation**: In production (`--purge`), only utilities actually used in your content are generated. The full 15 MB development stylesheet becomes a minimal production file with only the classes you used.
+- **Demand-driven generation**: In production (`--purge`), only utilities actually used in your content are generated. The full ≈25 MB development stylesheet becomes a minimal production file with only the classes you used.
 - **Class parser**: Any class like `hdx_md_hover_bg-primary` is decomposed into `variants: ['md', 'hover']` + `utility: 'bg-primary'` without assuming a fixed number of variants.
 - **Variant pipeline**: Variants compose in ordered layers — responsive wraps media queries, dark adds the `hdx_dark` ancestor, state adds pseudo-classes. The pipeline is extensible: future variants (e.g. `supports`, `container`) drop into the same mechanism.
 - **Registry-based plugins**: Plugins write to an isolated registry instead of mutating the original config. Invalid definitions are rejected with actionable errors.
@@ -448,7 +448,8 @@ Applied under `.hdx_dark` (or the media query when `darkMode: 'media'`).
 
 | Key | Value | Key | Value |
 |---|---|---|---|
-| `0` | `0px` | `1` | `0.25rem` (4px) |
+| `0` | `0px` | `0.5` | `0.125rem` (2px) |
+| `1` | `0.25rem` (4px) | `1.5` | `0.375rem` (6px) |
 | `2` | `0.5rem` (8px) | `3` | `0.75rem` (12px) |
 | `4` | `1rem` (16px) | `5` | `1.25rem` (20px) |
 | `6` | `1.5rem` (24px) | `8` | `2rem` (32px) |
@@ -517,7 +518,9 @@ Applied under `.hdx_dark` (or the media query when `darkMode: 'media'`).
 
 ### Z-Index
 
-`0`→`0`, `10`→`10`, `20`→`20`, `30`→`30`, `40`→`40`, `50`→`50`, `auto`→`auto`
+Numeric scale: `0`→`0`, `10`→`10`, `20`→`20`, `30`→`30`, `40`→`40`, `50`→`50`, `auto`→`auto`
+
+Semantic layers: `dropdown`→`1000`, `sticky`→`1100`, `overlay`→`1200`, `modal`→`1300`, `popover`→`1400`, `toast`→`1500`
 
 ### Transitions
 
@@ -565,6 +568,17 @@ colors: {
 
   white: '#FFFFFF',
   black: '#000000',
+
+  'gray-50': '#F8FAFC',
+  'gray-100': '#F1F5F9',
+  'gray-200': '#E2E8F0',
+  'gray-300': '#CBD5E1',
+  'gray-400': '#94A3B8',
+  'gray-500': '#64748B',
+  'gray-600': '#475569',
+  'gray-700': '#334155',
+  'gray-800': '#1E293B',
+  'gray-900': '#0F172A',
 }
 
 darkColors: {
@@ -584,8 +598,10 @@ darkColors: {
 ```js
 spacing: {
   0: '0px',
-  1: '0.25rem',   // 4px
-  2: '0.5rem',    // 8px
+  0.5: '0.125rem', // 2px
+  1: '0.25rem',    // 4px
+  1.5: '0.375rem', // 6px
+  2: '0.5rem',     // 8px
   3: '0.75rem',   // 12px
   4: '1rem',      // 16px
   5: '1.25rem',   // 20px
@@ -1098,6 +1114,17 @@ combinator so borders render **between** adjacent children only.
 <div class="hdx_z-40">Z-40</div>
 <div class="hdx_z-50">Z-50</div>
 <div class="hdx_z-auto">Z-Auto</div>
+```
+
+Semantic layering utilities are generated from the same theme scale:
+
+```html
+<div class="hdx_z-dropdown">Dropdown (1000)</div>
+<div class="hdx_z-sticky">Sticky (1100)</div>
+<div class="hdx_z-overlay">Overlay (1200)</div>
+<div class="hdx_z-modal">Modal (1300)</div>
+<div class="hdx_z-popover">Popover (1400)</div>
+<div class="hdx_z-toast">Toast (1500)</div>
 ```
 
 ### Transforms
