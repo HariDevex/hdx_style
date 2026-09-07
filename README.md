@@ -112,6 +112,7 @@ Run `node stats.js` to generate from source; `npm run stats:verify` (also part o
 - [Content Purging](#content-purging)
 - [Framework Integration](#framework-integration)
 - [Complete Page Example](#complete-page-example)
+- [Git Workflow](#git-workflow)
 - [License](#license)
 
 ---
@@ -2411,6 +2412,129 @@ node src/cli/index.js build -p -c examples/vanilla/hdx.config.js
 ```
 
 React and Vue variants are in [`examples/react/`](examples/react/) and [`examples/vue/`](examples/vue/) — see the [Framework Integration](#framework-integration) section for the full list of examples and build commands.
+
+---
+
+<h2 id="git-workflow">🔀 Git Workflow</h2>
+
+HDX Style uses **Trunk-Based Development** — optimized for NPM library distribution with rapid iteration and clean release history.
+
+### Branching Model
+
+| Branch | Purpose | Lifetime |
+|---|---|---|
+| `main` | Stable, always-shippable source. CI must pass before merge. | Permanent |
+| `next` | Pre-release testing (optional; for major breaking changes) | Until stable |
+| `release/*` | Backport patches to older majors (if needed) | Until EOL |
+| `feat/*` / `fix/*` | Short-lived feature or bugfix branches | Deleted after merge |
+| `hotfix/*` | Urgent production fixes | Deleted after release |
+
+**Rules:**
+- `main` is protected — all changes go through PR (no direct push).
+- Feature branches are **short-lived** (< 2 days ideally); rebase daily.
+- Delete branches immediately after merge.
+
+### Conventional Commits
+
+Every commit message must follow the [Conventional Commits](https://www.conventionalcommits.org/) spec:
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+**Types:**
+
+| Type | When to Use | Version Bump |
+|---|---|---|
+| `feat` | New utility, component, variant, or API | `minor` |
+| `fix` | Bug fix in generator, parser, scanner, etc. | `patch` |
+| `docs` | README, JSDoc, inline comments only | None |
+| `refactor` | Code restructuring without behavior change | None |
+| `perf` | Performance improvement | None |
+| `test` | Adding or updating tests | None |
+| `ci` | CI/CD workflow changes | None |
+| `chore` | Build scripts, deps, tooling | None |
+| `BREAKING CHANGE` | Any breaking API or class-prefix change | `major` |
+
+**Scope** (optional but encouraged): `core`, `generator`, `scanner`, `parser`, `theme`, `cli`, `components`, `utilities`, `variants`, `vite`, `plugin`, `deps`, `ci`, `docs`
+
+**Examples:**
+
+```text
+feat(utilities): add text-fluid-* clamp() typography utilities
+fix(generator): prevent markImportant from corrupting quoted semicolons
+feat(theme): add semantic z-index tokens (dropdown, sticky, overlay, modal)
+docs: document color-aware arbitrary value prefixes
+chore(deps): bump vitest to ^2.0.0
+BREAKING CHANGE: class prefix hdx_ → hdx- (set prefix:'hdx_' to keep old syntax)
+```
+
+### Release Process
+
+HDX Style follows **Semantic Versioning** (semver):
+
+| Change Type | Version Bump | Example |
+|---|---|---|
+| New feature (backwards-compatible) | `0.x.0` → `0.(x+1).0` | 0.2.3 → 0.3.0 |
+| Bug fix / patch | `0.x.y` → `0.x.(y+1)` | 0.2.3 → 0.2.4 |
+| Breaking change | `0.x.y` → `1.0.0` (or next major) | 0.2.x → 1.0.0 |
+
+**Release checklist (manual or CI-automated):**
+
+```bash
+# 1. Ensure main is up to date and CI passes
+git checkout main && git pull
+
+# 2. Run the full verification suite
+npm test && npm run build && npm run stats:verify && npm run defaults && npm run token-docs:verify
+
+# 3. Bump version in package.json (or use npm)
+npm version patch   # 0.2.3 → 0.2.4
+# or: npm version minor
+# or: npm version major
+
+# 4. Update CHANGELOG.md with the new version heading and date
+# 5. Regenerate default-values.txt (CI guards drift)
+npm run defaults
+
+# 6. Commit the release
+git add -A
+git commit -m "chore: release <version>"
+git tag v<version>
+
+# 7. Push with tags
+git push && git push --tags
+
+# 8. Publish to npm (prepack runs build + build:css automatically)
+npm publish --access public
+```
+
+**CI guards (already enforced in `.github/workflows/ci.yml`):**
+- `npm run stats:verify` — fails if README statistics table drifts from source.
+- `npm run defaults && git diff --exit-code default-values.txt` — fails if `default-values.txt` is stale.
+- `npm run token-docs:verify` — fails if token documentation mismatches `defaults.js`.
+
+### Commit Isolation Guidelines
+
+- **One logical change per commit.** Don't mix a bug fix with a refactor.
+- **Never commit generated files** (`dist/`, `css/index.css`) — they are built by `prepack` / CI.
+- **Stage selectively** — use `git add <specific-files>` rather than `git add -A` for feature commits.
+- **Use `.gitignore`** to exclude `node_modules/`, `dist/`, and editor artifacts.
+
+### Branch Naming Convention
+
+```
+feat/add-fluid-typography
+fix/scanner-template-literal-capture
+chore/bump-vitest
+docs/add-vite-plugin-section
+hotfix/critical-purge-regression
+release/0.2.x-backport
+```
 
 ---
 
