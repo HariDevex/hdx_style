@@ -19,6 +19,6 @@ import "./dist/hdx.css";          // local build
 ## What it shows
 
 - Vue template + script scanning (`<template>`, `:class`, string literals in `<script setup>`)
-- Components with hover state rows (`hdx_table`, `hdx_alert-*`, `hdx_badge-*`)
-- A live dark-mode toggle driven by a ref (`:class="dark ? 'hdx_dark' : ''"`)
-- Responsive reflow (`hdx_flex-col hdx_md_flex-row`) and arbitrary values (`hdx_w-[180px]`, `hdx_rounded-[14px]`)
+- Components with hover state rows (`hdx-table`, `hdx-alert-*`, `hdx-badge-*`)
+- A live dark-mode toggle driven by a ref (`:class="dark ? 'hdx-dark' : ''"`)
+- Responsive reflow (`hdx-flex-col hdx-md_flex-row`) and arbitrary values (`hdx-w-[180px]`, `hdx-rounded-[14px]`)
