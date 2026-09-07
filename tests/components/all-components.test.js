@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { loadConfig } from '../../src/core/config.js';
 import { getAllComponents } from '../../src/components/index.js';
+import { generateCSS } from '../../src/generator/index.js';
 
 const config = loadConfig();
 
@@ -75,5 +76,25 @@ describe('components', () => {
   it('components have CSS variable references for semantic colors', () => {
     const btn = components.find(c => c.name === 'btn-primary');
     expect(btn.css).toContain('var(--hdx-color-primary)');
+  });
+
+  it('solid button variants carry :hover/:active state rules', () => {
+    for (const base of ['primary', 'secondary', 'success', 'danger', 'warning', 'info']) {
+      const variant = components.find(c => c.name === `btn-${base}`);
+      expect(variant.states).toBeDefined();
+      expect(variant.states.map(s => s.selector)).toEqual([':hover', ':active']);
+      expect(variant.states[0].css).toContain(`var(--hdx-color-${base}-hover)`);
+      expect(variant.states[1].css).toContain(`var(--hdx-color-${base}-active)`);
+    }
+  });
+
+  it('emits :hover/:active rules resolving -hover/-active variables', () => {
+    const css = generateCSS(config);
+    for (const base of ['danger', 'info', 'success', 'primary']) {
+      expect(css).toContain(`.hdx_btn-${base}:hover`);
+      expect(css).toContain(`var(--hdx-color-${base}-hover)`);
+      expect(css).toContain(`.hdx_btn-${base}:active`);
+      expect(css).toContain(`var(--hdx-color-${base}-active)`);
+    }
   });
 });

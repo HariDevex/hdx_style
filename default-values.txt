@@ -68,14 +68,19 @@
   primary-active   : #1E40AF
   secondary        : #64748B
   secondary-hover  : #475569
+  secondary-active : #334155
   success          : #16A34A
   success-hover    : #15803D
+  success-active   : #166534
   danger           : #DC2626
   danger-hover     : #B91C1C
+  danger-active    : #991B1B
   warning          : #D97706
   warning-hover    : #B45309
+  warning-active   : #92400E
   info             : #0284C7
   info-hover       : #0369A1
+  info-active      : #075985
   background       : #F8FAFC
   surface          : #FFFFFF
   surface-secondary: #F1F5F9

@@ -52,9 +52,18 @@
  */
 
 /**
+ * @typedef {Object} ComponentState
+ * @property {string} selector - Selector suffix appended to the component
+ *   class, e.g. ':hover' or ':active'.
+ * @property {string} css
+ */
+
+/**
  * @typedef {Object} ComponentDefinition
  * @property {string} name
  * @property {string} css
+ * @property {ComponentState[]} [states] - Optional interactive-state rules
+ *   (e.g. ':hover', ':active') emitted after the base component rule.
  * @property {string} [category]
  */
 

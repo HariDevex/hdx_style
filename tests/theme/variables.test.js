@@ -37,6 +37,14 @@ describe('theme defaults', () => {
     expect(defaultTheme.shadows.sm).toContain('rgba');
     expect(defaultTheme.shadows.none).toBe('none');
   });
+
+  it('has a full 3-stage state shape for all six action colors', () => {
+    for (const base of ['primary', 'secondary', 'success', 'danger', 'warning', 'info']) {
+      expect(defaultTheme.colors[base]).toBeTruthy();
+      expect(defaultTheme.colors[`${base}-hover`]).toBeTruthy();
+      expect(defaultTheme.colors[`${base}-active`]).toBeTruthy();
+    }
+  });
 });
 
 describe('CSS variables generation', () => {

@@ -11,6 +11,31 @@ export function buttonComponents(config) {
 
   const cv = (key) => colorVariable(key, prefix);
 
+  // Solid variants are interactive: each gets :hover and :active states that
+  // resolve the matching -hover/-active tokens from the theme (so user color
+  // overrides flow through the CSS variable, not baked-in hex values).
+  const solid = (name, key) => ({
+    name: `btn-${name}`,
+    css: `background-color: ${cv(key)};
+color: ${cv('white')};
+border-color: ${cv(key)};`,
+    states: [
+      {
+        selector: ':hover',
+        css: `background-color: ${cv(`${key}-hover`)};
+color: ${cv('white')};
+border-color: ${cv(`${key}-hover`)};`,
+      },
+      {
+        selector: ':active',
+        css: `background-color: ${cv(`${key}-active`)};
+color: ${cv('white')};
+border-color: ${cv(`${key}-active`)};`,
+      },
+    ],
+    category: 'components',
+  });
+
   return [
     // Base button
     {
@@ -33,49 +58,13 @@ outline: none;`,
       category: 'components',
     },
 
-    // Variants
-    {
-      name: 'btn-primary',
-      css: `background-color: ${cv('primary')};
-color: ${cv('white')};
-border-color: ${cv('primary')};`,
-      category: 'components',
-    },
-    {
-      name: 'btn-secondary',
-      css: `background-color: ${cv('secondary')};
-color: ${cv('white')};
-border-color: ${cv('secondary')};`,
-      category: 'components',
-    },
-    {
-      name: 'btn-success',
-      css: `background-color: ${cv('success')};
-color: ${cv('white')};
-border-color: ${cv('success')};`,
-      category: 'components',
-    },
-    {
-      name: 'btn-danger',
-      css: `background-color: ${cv('danger')};
-color: ${cv('white')};
-border-color: ${cv('danger')};`,
-      category: 'components',
-    },
-    {
-      name: 'btn-warning',
-      css: `background-color: ${cv('warning')};
-color: ${cv('white')};
-border-color: ${cv('warning')};`,
-      category: 'components',
-    },
-    {
-      name: 'btn-info',
-      css: `background-color: ${cv('info')};
-color: ${cv('white')};
-border-color: ${cv('info')};`,
-      category: 'components',
-    },
+    // Variants (solid variants carry :hover/:active states)
+    solid('primary', 'primary'),
+    solid('secondary', 'secondary'),
+    solid('success', 'success'),
+    solid('danger', 'danger'),
+    solid('warning', 'warning'),
+    solid('info', 'info'),
     {
       name: 'btn-outline',
       css: `background-color: transparent;

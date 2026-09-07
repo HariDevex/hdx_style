@@ -92,6 +92,11 @@ export function generateCSS(config, options = {}) {
       const lines = comp.css.trim().split('\n');
       const formatted = lines.map(l => '  ' + l.trim()).join('\n');
       css += selector + ' {\n' + formatted + '\n}\n';
+      for (const state of comp.states || []) {
+        const stateLines = state.css.trim().split('\n');
+        const stateFormatted = stateLines.map(l => '  ' + l.trim()).join('\n');
+        css += selector + state.selector + ' {\n' + stateFormatted + '\n}\n';
+      }
     }
   }
 
