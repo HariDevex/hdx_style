@@ -22,7 +22,7 @@ Every utility class starts with `hdx_` — built for SaaS, dashboards, and enter
 [![npm version](https://img.shields.io/npm/v/@haridevx/hdx-style?style=for-the-badge&logo=npm&label=version&color=%237C3AED)](https://www.npmjs.com/package/@haridevx/hdx-style)
 [![License](https://img.shields.io/badge/license-MIT-%2316A34A?style=for-the-badge&logo=opensourceinitiative)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%E2%89%A5%2018-%230EA5E9?style=for-the-badge&logo=node.js&logoColor=white)](package.json)
-[![Tests](https://img.shields.io/badge/tests-272%20passing-%23A3E635?style=for-the-badge&logo=vitest)](.github/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-283%20passing-%23A3E635?style=for-the-badge&logo=vitest)](.github/workflows/ci.yml)
 [![CI](https://img.shields.io/github/actions/workflow/status/HariDevex/hdx_style/ci.yml?branch=main&style=for-the-badge&label=CI&logo=github&color=%23F59E0B)](.github/workflows/ci.yml)
 
 </div>
@@ -40,7 +40,7 @@ Run `node stats.js` to generate from source; `npm run stats:verify` (also part o
 | 🧩 Components | **58** |
 | 🎛️ Variants | **29** |
 | 📐 Responsive breakpoints | **5** |
-| ✅ Tests | **272** |
+| ✅ Tests | **283** |
 | 📄 Source files | **60** |
 | ⚙️ Runtime dependencies | **4** |
 | 🚫 PostCSS dependency | **No** |
@@ -57,7 +57,7 @@ Run `node stats.js` to generate from source; `npm run stats:verify` (also part o
 | 📐 **Responsive prefixes** | `sm` `md` `lg` `xl` `2xl` on every single utility |
 | 🔌 **Plugin API** | Registry-based: add utilities, variants, and components |
 | 🧱 **Components** | 58 drop-in components — buttons, cards, modals, tables, and more |
-| 🧹 **Auto purging** | Scans HTML/JS/JSX/TS/Vue/Svelte and keeps only what's used |
+| 🧹 **Auto purging** | Scans HTML/JS/JSX/TS/Vue/Svelte and keeps only the utilities *and components* you use |
 | ♿ **Accessible** | Focus rings, `sr-only`, and reduced-motion support built in |
 | 🔒 **Deterministic** | Identical input → identical CSS. No timestamps, no surprises |
 
@@ -148,7 +148,7 @@ Layered design:
 
 Key design decisions:
 
-- **Demand-driven generation**: In production (`--purge`), only utilities actually used in your content are generated. The full ≈25 MB development stylesheet becomes a minimal production file with only the classes you used.
+- **Demand-driven generation**: In production (`--purge`, the default when `content` is set), only utilities *and components* actually used in your content are generated. The full ≈25 MB development stylesheet becomes a minimal production file with only the classes you used.
 - **Class parser**: Any class like `hdx_md_hover_bg-primary` is decomposed into `variants: ['md', 'hover']` + `utility: 'bg-primary'` without assuming a fixed number of variants.
 - **Variant pipeline**: Variants compose in ordered layers — responsive wraps media queries, dark adds the `hdx_dark` ancestor, state adds pseudo-classes. The pipeline is extensible: future variants (e.g. `supports`, `container`) drop into the same mechanism.
 - **Registry-based plugins**: Plugins write to an isolated registry instead of mutating the original config. Invalid definitions are rejected with actionable errors.
@@ -422,16 +422,23 @@ Base font stack (`body`): `Inter, ui-sans-serif, system-ui, -apple-system, Blink
 |---|---|---|---|
 | `primary` | `#2563EB` | `primary-hover` | `#1D4ED8` |
 | `primary-active` | `#1E40AF` | `secondary` | `#64748B` |
-| `secondary-hover` | `#475569` | `success` | `#16A34A` |
-| `success-hover` | `#15803D` | `danger` | `#DC2626` |
-| `danger-hover` | `#B91C1C` | `warning` | `#D97706` |
-| `warning-hover` | `#B45309` | `info` | `#0284C7` |
-| `info-hover` | `#0369A1` | `background` | `#F8FAFC` |
-| `surface` | `#FFFFFF` | `surface-secondary` | `#F1F5F9` |
-| `text` | `#0F172A` | `text-secondary` | `#475569` |
-| `text-muted` | `#64748B` | `border` | `#E2E8F0` |
-| `border-strong` | `#CBD5E1` | `white` | `#FFFFFF` |
-| `black` | `#000000` | | |
+| `secondary-hover` | `#475569` | `secondary-active` | `#334155` |
+| `success` | `#16A34A` | `success-hover` | `#15803D` |
+| `success-active` | `#166534` | `danger` | `#DC2626` |
+| `danger-hover` | `#B91C1C` | `danger-active` | `#991B1B` |
+| `warning` | `#D97706` | `warning-hover` | `#B45309` |
+| `warning-active` | `#92400E` | `info` | `#0284C7` |
+| `info-hover` | `#0369A1` | `info-active` | `#075985` |
+| `background` | `#F8FAFC` | `surface` | `#FFFFFF` |
+| `surface-secondary` | `#F1F5F9` | `text` | `#0F172A` |
+| `text-secondary` | `#475569` | `text-muted` | `#64748B` |
+| `border` | `#E2E8F0` | `border-strong` | `#CBD5E1` |
+| `white` | `#FFFFFF` | `black` | `#000000` |
+| `gray-50` | `#F8FAFC` | `gray-100` | `#F1F5F9` |
+| `gray-200` | `#E2E8F0` | `gray-300` | `#CBD5E1` |
+| `gray-400` | `#94A3B8` | `gray-500` | `#64748B` |
+| `gray-600` | `#475569` | `gray-700` | `#334155` |
+| `gray-800` | `#1E293B` | `gray-900` | `#0F172A` |
 
 ### Dark Mode Colors (`darkColors`)
 
@@ -443,6 +450,9 @@ Applied under `.hdx_dark` (or the media query when `darkMode: 'media'`).
 | `surface-secondary` | `#334155` | `text` | `#F8FAFC` |
 | `text-secondary` | `#CBD5E1` | `text-muted` | `#94A3B8` |
 | `border` | `#334155` | `border-strong` | `#475569` |
+| `primary` | `#60A5FA` | `success` | `#22C55E` |
+| `danger` | `#F87171` | `warning` | `#FBBF24` |
+| `info` | `#0EA5E9` | | |
 
 ### Spacing
 
@@ -542,18 +552,23 @@ colors: {
 
   secondary: '#64748B',
   'secondary-hover': '#475569',
+  'secondary-active': '#334155',
 
   success: '#16A34A',
   'success-hover': '#15803D',
+  'success-active': '#166534',
 
   danger: '#DC2626',
   'danger-hover': '#B91C1C',
+  'danger-active': '#991B1B',
 
   warning: '#D97706',
   'warning-hover': '#B45309',
+  'warning-active': '#92400E',
 
   info: '#0284C7',
   'info-hover': '#0369A1',
+  'info-active': '#075985',
 
   background: '#F8FAFC',
   surface: '#FFFFFF',
@@ -590,6 +605,11 @@ darkColors: {
   'text-muted': '#94A3B8',
   border: '#334155',
   'border-strong': '#475569',
+  primary: '#60A5FA',
+  success: '#22C55E',
+  danger: '#F87171',
+  warning: '#FBBF24',
+  info: '#0EA5E9',
 }
 ```
 
@@ -1126,6 +1146,10 @@ Semantic layering utilities are generated from the same theme scale:
 <div class="hdx_z-popover">Popover (1400)</div>
 <div class="hdx_z-toast">Toast (1500)</div>
 ```
+
+Built-in components read from the same scale: the modal overlay (`hdx_modal-overlay`)
+emits its `z-index` from the theme's `zIndex.overlay` token, so customizing the
+z-index scale flows through to the component layer's overlay.
 
 ### Transforms
 
@@ -2040,9 +2064,9 @@ npx hdx_style build -p       # Explicit purge (same as the default with content 
 npx hdx_style build --production  # Same as -p
 ```
 
-> **Heads-up — `build --no-purge` is huge by design.** When `content` is configured, `hdx_style build` purges automatically and emits only the utilities your app uses — keep `content` populated and you'll never see the full matrix. If you pass `--no-purge` (or have an empty `content` array, e.g. when generating a CDN stylesheet), the CLI generates every utility × variant combination — a multi-megabyte file (≈25 MB with the default theme). Use `build --no-purge` only when you explicitly want a distributable stylesheet.
+> **Heads-up — `build --no-purge` is huge by design.** When `content` is configured, `hdx_style build` purges automatically and emits only the utilities and components your app uses — keep `content` populated and you'll never see the full matrix. If you pass `--no-purge` (or have an empty `content` array, e.g. when generating a CDN stylesheet), the CLI generates every utility × variant combination — a multi-megabyte file (≈25 MB with the default theme). Use `build --no-purge` only when you explicitly want a distributable stylesheet.
 
-This scans your content files and only includes utilities that are actually used:
+This scans your content files and only includes utilities and components that are actually used:
 
 ```html
 <!-- These classes will be kept -->
@@ -2065,10 +2089,24 @@ Class Parser (hdx_md_hover_bg-primary → { variants: [md, hover], utility: bg-p
     ↓
 Registry lookup (resolve needed utilities + their variant combos)
     ↓
+Component registry lookup (resolve needed components by their base class)
+    ↓
 Generator (produces ONLY the requested rules, no combinatorial explosion)
 ```
 
 If your content contains only `<div class="hdx_flex hdx_p-4 hdx_text-primary"></div>`, the production output contains `.hdx_flex`, `.hdx_p-4`, `.hdx_text-primary` — and **not** `.hdx_grid`, `.hdx_shadow-xl`, `.hdx_rotate-45`, or any unrelated variant combinations.
+
+### Component Purging
+
+The component layer is purged exactly like utilities. A component definition — including its `states` blocks (`:hover`, `:active`, …) — is emitted only when its base class name appears in content:
+
+```html
+<button class="hdx_btn hdx_btn-primary">Go</button>
+<!-- keeps .hdx_btn and .hdx_btn-primary (+ :hover/:active states) -->
+<!-- drops .hdx_card, .hdx_modal*, .hdx_input, .hdx_badge*, … -->
+```
+
+Composed usage resolves independently: `hdx_btn hdx_btn-primary` keeps both `btn` and `btn-primary` (each is a separate definition today). Because components are demand-driven, an unused component in a minimal build no longer dominates output — a build that only ships `<div class="hdx_flex hdx_p-4"></div>` contains **no** component CSS at all. Safelisted component classes (e.g. `safelist: ['hdx_modal']`) are kept on every purged build, and `components: false` still disables the whole component layer for pure-utility builds.
 
 ### Configuration
 
@@ -2134,9 +2172,11 @@ className={isActive ? "hdx_flex" : "hdx_block"}
 
 | Mode | Command | Output |
 |---|---|---|
-| Development | `npx hdx_style build` | Complete stylesheet (all utilities × all variants) |
-| Production | `npx hdx_style build -p` | Only used utilities + their variants |
+| Default (`content` configured) | `npx hdx_style build` | **Purges unused CSS** — only the utilities (and components) your content uses, plus their variants |
+| Default (no `content`) | `npx hdx_style build` | Complete stylesheet (all utilities × all variants — for CDN/stylesheet distribution) |
+| Production | `npx hdx_style build -p` | Explicit purge (same as the default when `content` is set) |
 | Production (alias) | `npx hdx_style build --production` | Same as `-p` |
+| Full stylesheet | `npx hdx_style build --no-purge` | Unpurged utility × variant matrix even when `content` is configured |
 | Full stylesheet | `npx hdx_style generate` | Always the complete stylesheet — ignores `-p`/`--production` |
 
 **Unknown-utility warnings.** In production mode the build reports any HDX

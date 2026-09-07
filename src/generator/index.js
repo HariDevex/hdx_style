@@ -84,7 +84,14 @@ export function generateCSS(config, options = {}) {
   // component-level overrides a user writes in their own index.css. Disabling
   // it lets a migration keep its custom component rules without an unpurged
   // duplicate of every built-in component shipping on every build.
-  const components = processedConfig.components === false ? [] : [...allComponents, ...pluginComponents];
+  //
+  // options.components lets the purged-build path (scanner/scan.js) pass the
+  // exact subset of components whose classes appear in content (or safelist)
+  // instead of every built-in component — each definition carries its own
+  // `states` blocks, so hover/active/etc. are included with the base.
+  const components = processedConfig.components === false
+    ? []
+    : (options.components || [...allComponents, ...pluginComponents]);
   if (components.length > 0) {
     css += '\n/* HDX CSS — Components */\n';
     for (const comp of components) {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { purgeUnused, findUnknownClasses } from '../../src/scanner/purger.js';
+import { purgeUnused, purgeComponents, findUnknownClasses } from '../../src/scanner/purger.js';
 import { loadConfig } from '../../src/core/config.js';
 
 describe('purger', () => {
@@ -149,5 +149,53 @@ describe('findUnknownClasses', () => {
       new Set(['btn-primary', 'input', 'label'])
     );
     expect(unknown).toHaveLength(0);
+  });
+});
+
+describe('purgeComponents', () => {
+  const allComponents = [
+    { name: 'btn', css: 'display: inline-flex;' },
+    { name: 'btn-primary', states: [{ selector: ':hover', css: 'color: white;' }] },
+    { name: 'input', css: 'border-radius: 0.5rem;' },
+    { name: 'modal-overlay', css: 'z-index: 1200;' },
+    { name: 'modal', css: 'max-width: 28rem;' },
+  ];
+
+  it('keeps only components whose base class appears in content', () => {
+    const used = new Set(['hdx_btn', 'hdx_btn-primary', 'hdx_flex']);
+    const result = purgeComponents(allComponents, used);
+    expect(result.map(c => c.name)).toEqual(['btn', 'btn-primary']);
+  });
+
+  it('removes unused components (e.g. modal when no hdx_modal* is present)', () => {
+    const used = new Set(['hdx_btn']);
+    const result = purgeComponents(allComponents, used);
+    expect(result.map(c => c.name)).not.toContain('modal');
+    expect(result.map(c => c.name)).not.toContain('modal-overlay');
+  });
+
+  it('resolves composed component usage independently (btn + btn-primary)', () => {
+    const used = new Set(['hdx_btn', 'hdx_btn-primary']);
+    const result = purgeComponents(allComponents, used);
+    expect(result.map(c => c.name)).toEqual(['btn', 'btn-primary']);
+  });
+
+  it('keeps components referenced by a variant-prefixed class', () => {
+    const used = new Set(['hdx_hover_btn', 'hdx_dark_input']);
+    const result = purgeComponents(allComponents, used, 'hdx_', [], loadConfig());
+    expect(result.map(c => c.name)).toEqual(['btn', 'input']);
+  });
+
+  it('keeps safelisted component classes even when absent from content', () => {
+    const used = new Set(['hdx_flex']);
+    const result = purgeComponents(allComponents, used, 'hdx_', ['hdx_modal']);
+    expect(result.map(c => c.name)).toContain('modal');
+    expect(result.map(c => c.name)).not.toContain('btn');
+  });
+
+  it('returns an empty list when no components are used', () => {
+    const used = new Set(['hdx_flex', 'navbar-brand']);
+    const result = purgeComponents(allComponents, used);
+    expect(result).toHaveLength(0);
   });
 });

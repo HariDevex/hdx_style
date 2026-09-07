@@ -1,9 +1,13 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { loadConfig } from '../src/core/config.js';
 import { generateCSS } from '../src/generator/index.js';
 import { getAllUtilities } from '../src/utilities/index.js';
 import { extractClassNames } from '../src/scanner/extractor.js';
 import { purgeUnused } from '../src/scanner/purger.js';
+import { generatePurgedBuildCss } from '../src/scanner/scan.js';
 import { parseClass, mapUtilitiesToVariants } from '../src/core/parser.js';
 
 describe('Integration: Purge actually reduces output', () => {
@@ -478,5 +482,77 @@ describe('Integration: col-span emission (P1/1.2 regression)', () => {
     });
     expect(css).toContain('.hdx_col-span-2 { grid-column: span 2 / span 2; }');
     expect(css).not.toContain('grid-column: 2 / span 2');
+  });
+});
+
+describe('Integration: Component purging (demand-driven components)', () => {
+  let tmpDir;
+
+  beforeEach(() => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'hdx-comp-purge-'));
+  });
+
+  afterEach(() => {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  const buildWithContent = async (html) => {
+    const htmlPath = path.join(tmpDir, 'index.html');
+    fs.writeFileSync(htmlPath, html);
+    const config = loadConfig();
+    config.content = [path.join(tmpDir, '*.html')];
+    return generatePurgedBuildCss(config);
+  };
+
+  it('drops an unused component (modal) from a purged build when no hdx_modal* appears in content', async () => {
+    const css = await buildWithContent('<div class="hdx_flex hdx_p-4"></div>');
+
+    expect(css).toContain('.hdx_flex');
+    expect(css).not.toContain('.hdx_modal-overlay');
+    expect(css).not.toContain('.hdx_modal {');
+    expect(css).not.toContain('.hdx_modal-header');
+    // Unused utility-only components are equally purged.
+    expect(css).not.toContain('.hdx_btn {');
+    expect(css).not.toContain('.hdx_card');
+  });
+
+  it('keeps a component (and its states blocks) when its class appears in content', async () => {
+    const css = await buildWithContent('<button class="hdx_btn hdx_btn-primary">Go</button>');
+
+    expect(css).toContain('.hdx_btn {');
+    expect(css).toContain('.hdx_btn-primary {');
+    // Interactive states ship with their base definition.
+    expect(css).toContain('.hdx_btn-primary:hover');
+    expect(css).toContain('.hdx_btn-primary:active');
+    // Unrelated components stay out of the purged build.
+    expect(css).not.toContain('.hdx_modal-overlay');
+    expect(css).not.toContain('.hdx_input');
+  });
+
+  it('composed components resolve independently (btn + btn-primary)', async () => {
+    const css = await buildWithContent('<button class="hdx_btn hdx_btn-primary"></button>');
+
+    expect(css).toContain('.hdx_btn {');
+    expect(css).toContain('.hdx_btn-primary {');
+  });
+
+  it('keeps a component when only its class name is the sole usage', async () => {
+    const css = await buildWithContent('<div class="hdx_modal-overlay"><div class="hdx_modal">x</div></div>');
+
+    expect(css).toContain('.hdx_modal-overlay');
+    expect(css).toContain('.hdx_modal {');
+    expect(css).not.toContain('.hdx_btn {');
+  });
+
+  it('keeps safelisted components even when absent from content', async () => {
+    const htmlPath = path.join(tmpDir, 'index.html');
+    fs.writeFileSync(htmlPath, '<div class="hdx_flex"></div>');
+    const config = loadConfig();
+    config.content = [path.join(tmpDir, '*.html')];
+    config.safelist = ['hdx_modal'];
+
+    const css = await generatePurgedBuildCss(config);
+    expect(css).toContain('.hdx_modal {');
+    expect(css).not.toContain('.hdx_btn {');
   });
 });

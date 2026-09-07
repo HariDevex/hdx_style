@@ -66,6 +66,43 @@ export function purgeUnused(allUtilities, usedClasses, prefix = 'hdx_', safelist
 }
 
 /**
+ * Compute the components (base definition + their `states` blocks) referenced
+ * by content, plus safelisted component classes.
+ *
+ * Composed usage resolves naturally: `hdx_btn hdx_btn-primary` parses to the
+ * independent `btn` and `btn-primary` component names, so each is kept if (and
+ * only if) its own class appears in content. Variant-prefixed forms (e.g.
+ * `hdx_hover_btn`) resolve to their base component name too.
+ *
+ * @param {import('../core/types.js').ComponentDefinition[]} allComponents
+ * @param {Set<string>|string[]} usedClasses - HDX class names found in content
+ * @param {string} prefix
+ * @param {string[]} [safelist]
+ * @param {import('../core/types.js').HdxConfig|null} [config]
+ * @param {string[]} [extraVariantPrefixes] - plugin addVariant() prefixes.
+ * @returns {import('../core/types.js').ComponentDefinition[]}
+ */
+export function purgeComponents(allComponents, usedClasses, prefix = 'hdx_', safelist = [], config = null, extraVariantPrefixes = []) {
+  const nameToComp = new Map(allComponents.map(c => [c.name, c]));
+  const basePrefixes = config ? getVariantPrefixes(config) : DEFAULT_VARIANT_PREFIXES;
+  const variantPrefixes = [...basePrefixes, ...extraVariantPrefixes];
+  const usedNames = new Set();
+
+  const collect = (cls) => {
+    if (!cls.startsWith(prefix)) return;
+    const parsed = parseClass(cls, prefix, variantPrefixes);
+    if (parsed.valid && nameToComp.has(parsed.utility)) {
+      usedNames.add(parsed.utility);
+    }
+  };
+
+  for (const cls of usedClasses) collect(cls);
+  for (const item of safelist) collect(item);
+
+  return allComponents.filter(c => usedNames.has(c.name));
+}
+
+/**
  * Identify classes that start with the HDX prefix but do NOT resolve to any
  * known utility (or arbitrary value or component), so builds can warn with
  * file:line instead of silently dropping them (a common footgun during
@@ -75,8 +112,8 @@ export function purgeUnused(allUtilities, usedClasses, prefix = 'hdx_', safelist
  * - Standalone variant-marker classes (`hdx_dark`, `hdx_group`, `hdx_peer`)
  *   that parse entirely into variants with an empty utility — they activate
  *   dark mode / group / peer and are never generated as a rule.
- * - Component classes (`.hdx_btn`, `.hdx_input`, …) — the component layer is
- *   emitted (unpurged) on every build, so they resolve to real CSS.
+ * - Component classes (`.hdx_btn`, `.hdx_input`, …) — component classes found
+ *   in content resolve to real (purged) CSS, so they are never "unknown".
  * - Unknown-but-plain CSS classes are ignored (they are not HDX-prefixed).
  *
  * @param {import('../core/types.js').UtilityDefinition[]} allUtilities

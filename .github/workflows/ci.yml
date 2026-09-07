@@ -28,3 +28,5 @@ jobs:
         run: npm run stats:verify
       - name: Verify default-values.txt is up to date
         run: npm run defaults && git diff --exit-code default-values.txt
+      - name: Verify token documentation matches defaults.js
+        run: npm run token-docs:verify

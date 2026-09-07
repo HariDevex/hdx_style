@@ -3,7 +3,7 @@ import path from 'node:path';
 import { generateCSS } from '../generator/index.js';
 import { getAnimationKeyframes } from '../utilities/index.js';
 import { extractClassNames } from './extractor.js';
-import { purgeUnused, findUnknownClasses } from './purger.js';
+import { purgeUnused, purgeComponents, findUnknownClasses } from './purger.js';
 import { getAllUtilities } from '../utilities/index.js';
 import { getAllComponents } from '../components/index.js';
 import { runPlugins } from '../plugins/index.js';
@@ -81,14 +81,18 @@ export async function generatePurgedBuildCss(config, info = () => {}, warn = () 
   const extraVariantPrefixes = registry.variants.map(v => v.prefix.replace(/_$/, ''));
 
   const allUtilities = [...getAllUtilities(config), ...pluginUtilities];
-  const componentNames = config.components === false
-    ? new Set()
-    : new Set([
-        ...getAllComponents(config).map(c => c.name),
-        ...registry.components.map(c => c.name),
-      ]);
+  const allComponents = config.components === false
+    ? []
+    : [...getAllComponents(config), ...registry.components];
+  const componentNames = new Set(allComponents.map(c => c.name));
   const prefix = config.prefix || 'hdx_';
-  const neededUtils = purgeUnused(allUtilities, allUsedClasses, prefix, config.safelist || [], config, extraVariantPrefixes);
+  const safelist = config.safelist || [];
+  const neededUtils = purgeUnused(allUtilities, allUsedClasses, prefix, safelist, config, extraVariantPrefixes);
+  // Components ride the same demand-driven path as utilities: a component (and
+  // its `states` blocks) is emitted only when its base class appears in content
+  // or the safelist. Composed usage like `hdx_btn hdx_btn-primary` keeps both
+  // `btn` and `btn-primary` independently (each is its own definition).
+  const neededComponents = purgeComponents(allComponents, allUsedClasses, prefix, safelist, config, extraVariantPrefixes);
 
   const unknownUtils = findUnknownClasses(allUtilities, allUsedClasses, prefix, config, componentNames, extraVariantPrefixes);
   for (const u of unknownUtils) {
@@ -98,8 +102,9 @@ export async function generatePurgedBuildCss(config, info = () => {}, warn = () 
   }
 
   info(`Keeping ${neededUtils.length} of ${allUtilities.length} utilities`);
+  info(`Keeping ${neededComponents.length} of ${allComponents.length} components`);
 
-  let css = generateCSS(config, { utilities: neededUtils, _registry: registry });
+  let css = generateCSS(config, { utilities: neededUtils, components: neededComponents, _registry: registry });
   css += '\n/* HDX CSS — Keyframes */\n' + getAnimationKeyframes();
 
   return css;
