@@ -11,6 +11,19 @@ describe('theme defaults', () => {
     expect(defaultTheme.colors.border).toBe('#E2E8F0');
   });
 
+  it('has a 50-900 slate-gray scale', () => {
+    expect(defaultTheme.colors['gray-50']).toBe('#F8FAFC');
+    expect(defaultTheme.colors['gray-100']).toBe('#F1F5F9');
+    expect(defaultTheme.colors['gray-200']).toBe('#E2E8F0');
+    expect(defaultTheme.colors['gray-300']).toBe('#CBD5E1');
+    expect(defaultTheme.colors['gray-400']).toBe('#94A3B8');
+    expect(defaultTheme.colors['gray-500']).toBe('#64748B');
+    expect(defaultTheme.colors['gray-600']).toBe('#475569');
+    expect(defaultTheme.colors['gray-700']).toBe('#334155');
+    expect(defaultTheme.colors['gray-800']).toBe('#1E293B');
+    expect(defaultTheme.colors['gray-900']).toBe('#0F172A');
+  });
+
   it('has dark color overrides', () => {
     expect(defaultTheme.darkColors.background).toBe('#0F172A');
     expect(defaultTheme.darkColors.surface).toBe('#1E293B');

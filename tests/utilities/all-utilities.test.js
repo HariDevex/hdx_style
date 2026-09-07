@@ -117,6 +117,18 @@ describe('color utilities', () => {
     expect(utils.find(u => u.name === 'text-primary')).toBeDefined();
     expect(utils.find(u => u.name === 'bg-primary').value).toContain('var(--hdx-color-primary)');
   });
+
+  it('generates gray-scale utilities for every family', () => {
+    const utils = colorsUtilities(config);
+    for (const tone of ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900']) {
+      expect(utils.find(u => u.name === `bg-gray-${tone}`)).toBeDefined();
+      expect(utils.find(u => u.name === `text-gray-${tone}`)).toBeDefined();
+      expect(utils.find(u => u.name === `border-gray-${tone}`)).toBeDefined();
+      expect(utils.find(u => u.name === `ring-gray-${tone}`)).toBeDefined();
+      expect(utils.find(u => u.name === `divide-gray-${tone}`)).toBeDefined();
+      expect(utils.find(u => u.name === `placeholder-gray-${tone}`)).toBeDefined();
+    }
+  });
 });
 
 describe('shadow utilities', () => {
