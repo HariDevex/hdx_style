@@ -46,11 +46,6 @@ export const defaultTheme = {
   },
 
   darkColors: {
-    primary: '#60A5FA',
-    success: '#22C55E',
-    danger: '#F87171',
-    warning: '#FBBF24',
-    info: '#0EA5E9',
     background: '#0F172A',
     surface: '#1E293B',
     'surface-secondary': '#334155',
@@ -59,6 +54,11 @@ export const defaultTheme = {
     'text-muted': '#94A3B8',
     border: '#334155',
     'border-strong': '#475569',
+    primary: '#60A5FA',
+    success: '#22C55E',
+    danger: '#F87171',
+    warning: '#FBBF24',
+    info: '#0EA5E9',
   },
 
   spacing: {

@@ -99,6 +99,40 @@ describe('Integration: Purge actually reduces output', () => {
     expect(purgedCss).not.toContain('.hdx_grid');
     expect(purgedCss).not.toContain('.hdx_shadow-xl');
   });
+
+  it('design-token completeness additions survive a purge build end to end', () => {
+    const html = `<div class="hdx_z-toast hdx_bg-gray-500 hdx_p-0.5 hdx_hover_bg-primary">
+  <button class="hdx_btn-danger">Delete</button>
+</div>`;
+    const classes = extractClassNames(html);
+    expect(classes.has('hdx_z-toast')).toBe(true);
+    expect(classes.has('hdx_bg-gray-500')).toBe(true);
+    expect(classes.has('hdx_p-0.5')).toBe(true);
+
+    const config = loadConfig();
+    const allUtilities = getAllUtilities(config);
+    const purged = purgeUnused(allUtilities, classes, config.prefix);
+
+    expect(purged.find(u => u.name === 'z-toast')).toBeDefined();
+    expect(purged.find(u => u.name === 'bg-gray-500')).toBeDefined();
+    expect(purged.find(u => u.name === 'p-0.5')).toBeDefined();
+    expect(purged.find(u => u.name === 'bg-primary')._requestedVariants).toContainEqual(['hover']);
+
+    const css = generateCSS(config, { utilities: purged });
+    expect(css).toContain('.hdx_z-toast { z-index: 1500; }');
+    expect(css).toContain('.hdx_bg-gray-500 { background-color: var(--hdx-color-gray-500); }');
+    expect(css).toContain('.hdx_p-0\\.5 { padding: 0.125rem; }');
+    expect(css).toContain('.hdx_hover_bg-primary:hover');
+    // Button component + its press states ship regardless of used utilities.
+    expect(css).toContain('.hdx_btn-danger:hover');
+    expect(css).toContain('.hdx_btn-danger:active');
+    // Dark action color and gray token land in the .hdx_dark token layer.
+    expect(css).toContain('--hdx-color-danger: #F87171');
+    expect(css).toContain('--hdx-color-gray-500: #64748B');
+    // Unrelated utilities still stay out.
+    expect(css).not.toContain('.hdx_z-50');
+    expect(css).not.toContain('.hdx_bg-danger');
+  });
 });
 
 describe('Integration: Dark mode uses hdx_dark', () => {
