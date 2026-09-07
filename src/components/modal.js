@@ -7,7 +7,7 @@ import { colorVariable } from '../generator/resolver.js';
  */
 export function modalComponents(config) {
   const prefix = config.prefix;
-  const { radius, shadows } = config.theme;
+  const { radius, shadows, zIndex } = config.theme;
   const cv = (key) => colorVariable(key, prefix);
 
   return [
@@ -19,7 +19,7 @@ background-color: rgba(0, 0, 0, 0.5);
 display: flex;
 align-items: center;
 justify-content: center;
-z-index: 50;
+z-index: ${zIndex.overlay};
 padding: 1rem;`,
       category: 'components',
     },

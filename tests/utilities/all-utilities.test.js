@@ -153,6 +153,23 @@ describe('z-index utilities', () => {
     expect(utils.find(u => u.name === 'z-50')).toBeDefined();
     expect(utils.find(u => u.name === 'z-auto')).toBeDefined();
   });
+
+  it('generates semantic z-index utilities', () => {
+    const utils = zIndexUtilities(config);
+    const expected = {
+      'z-dropdown': '1000',
+      'z-sticky': '1100',
+      'z-overlay': '1200',
+      'z-modal': '1300',
+      'z-popover': '1400',
+      'z-toast': '1500',
+    };
+    for (const [name, value] of Object.entries(expected)) {
+      expect(utils.find(u => u.name === name)).toEqual({
+        name, property: 'z-index', value, category: 'z-index',
+      });
+    }
+  });
 });
 
 describe('overflow utilities', () => {

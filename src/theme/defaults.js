@@ -161,6 +161,12 @@ export const defaultTheme = {
     40: '40',
     50: '50',
     auto: 'auto',
+    dropdown: '1000',
+    sticky: '1100',
+    overlay: '1200',
+    modal: '1300',
+    popover: '1400',
+    toast: '1500',
   },
 
   transitionDuration: {

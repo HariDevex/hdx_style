@@ -97,4 +97,22 @@ describe('components', () => {
       expect(css).toContain(`var(--hdx-color-${base}-active)`);
     }
   });
+
+  it('modal overlay reads its z-index from theme.zIndex.overlay', () => {
+    const overlay = components.find(c => c.name === 'modal-overlay');
+    expect(overlay.css).toContain('z-index: 1200');
+  });
+
+  it('modal overlay z-index follows a user theme overrides', () => {
+    const overridden = loadConfig({ theme: { zIndex: { overlay: '777' } } });
+    const overlay = getAllComponents(overridden).find(c => c.name === 'modal-overlay');
+    expect(overlay.css).toContain('z-index: 777');
+  });
+
+  it('other overlay layers keep their hardcoded z-indexes', () => {
+    // Modal panel (content) intentionally rides at the overlay layer so it is not
+    // stacked independently; dropdown/sticky/etc. stay theme-driven utilities.
+    const modal = components.find(c => c.name === 'modal');
+    expect(modal.css).not.toContain('z-index');
+  });
 });
