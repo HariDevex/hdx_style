@@ -17,19 +17,19 @@ export function buttonComponents(config) {
   const solid = (name, key) => ({
     name: `btn-${name}`,
     css: `background-color: ${cv(key)};
-color: ${cv('white')};
+color: ${cv('on-accent')};
 border-color: ${cv(key)};`,
     states: [
       {
         selector: ':hover',
         css: `background-color: ${cv(`${key}-hover`)};
-color: ${cv('white')};
+color: ${cv('on-accent')};
 border-color: ${cv(`${key}-hover`)};`,
       },
       {
         selector: ':active',
         css: `background-color: ${cv(`${key}-active`)};
-color: ${cv('white')};
+color: ${cv('on-accent')};
 border-color: ${cv(`${key}-active`)};`,
       },
     ],

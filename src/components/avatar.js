@@ -20,7 +20,7 @@ width: 2.5rem;
 height: 2.5rem;
 border-radius: ${radius.full};
 background-color: ${cv('primary')};
-color: ${cv('white')};
+color: ${cv('on-accent')};
 font-weight: 600;
 font-size: 0.875rem;
 overflow: hidden;`,

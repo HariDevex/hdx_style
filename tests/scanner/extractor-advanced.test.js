@@ -5,41 +5,41 @@ describe('Scanner: Multiline class attributes', () => {
   it('extracts classes from multiline class attribute', () => {
     const html = `
 <div class="
-  hdx_flex
-  hdx_items-center
-  hdx_gap-4
+  hdx-flex
+  hdx-items-center
+  hdx-gap-4
 ">
   Hello
 </div>`;
     const classes = extractClassNames(html);
-    expect(classes.has('hdx_flex')).toBe(true);
-    expect(classes.has('hdx_items-center')).toBe(true);
-    expect(classes.has('hdx_gap-4')).toBe(true);
+    expect(classes.has('hdx-flex')).toBe(true);
+    expect(classes.has('hdx-items-center')).toBe(true);
+    expect(classes.has('hdx-gap-4')).toBe(true);
   });
 
   it('extracts classes from multiline className attribute', () => {
     const jsx = `
 <div
   className="
-    hdx_bg-primary
-    hdx_text-white
-    hdx_p-4
+    hdx-bg-primary
+    hdx-text-white
+    hdx-p-4
   "
 >
 </div>`;
     const classes = extractClassNames(jsx);
-    expect(classes.has('hdx_bg-primary')).toBe(true);
-    expect(classes.has('hdx_text-white')).toBe(true);
-    expect(classes.has('hdx_p-4')).toBe(true);
+    expect(classes.has('hdx-bg-primary')).toBe(true);
+    expect(classes.has('hdx-text-white')).toBe(true);
+    expect(classes.has('hdx-p-4')).toBe(true);
   });
 });
 
 describe('Scanner: Template literals', () => {
   it('extracts HDX classes from template literals', () => {
-    const js = 'const cls = `hdx_flex hdx_p-4`;';
+    const js = 'const cls = `hdx-flex hdx-p-4`;';
     const classes = extractClassNames(js);
-    expect(classes.has('hdx_flex')).toBe(true);
-    expect(classes.has('hdx_p-4')).toBe(true);
+    expect(classes.has('hdx-flex')).toBe(true);
+    expect(classes.has('hdx-p-4')).toBe(true);
   });
 
   it('does not extract non-HDX template literals', () => {
@@ -51,10 +51,10 @@ describe('Scanner: Template literals', () => {
 
 describe('Scanner: Vue and Svelte', () => {
   it('extracts from :class (Vue)', () => {
-    const vue = '<div :class="hdx_flex hdx_p-4">Vue</div>';
+    const vue = '<div :class="hdx-flex hdx-p-4">Vue</div>';
     const classes = extractClassNames(vue);
-    expect(classes.has('hdx_flex')).toBe(true);
-    expect(classes.has('hdx_p-4')).toBe(true);
+    expect(classes.has('hdx-flex')).toBe(true);
+    expect(classes.has('hdx-p-4')).toBe(true);
   });
 });
 
@@ -71,7 +71,7 @@ describe('Scanner: Edge cases', () => {
   });
 
   it('deduplicates classes', () => {
-    const html = '<div class="hdx_flex"></div><div class="hdx_flex"></div>';
+    const html = '<div class="hdx-flex"></div><div class="hdx-flex"></div>';
     const classes = extractClassNames(html);
     expect(classes.size).toBe(1);
   });

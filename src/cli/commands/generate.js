@@ -19,7 +19,7 @@ export function generateCommand(program) {
       step('Generating CSS...');
       const config = await loadConfigFromFile(opts.config);
       let css = generateCSS(config);
-      css += '\n/* HDX CSS — Keyframes */\n' + getAnimationKeyframes();
+      css += '\n/* HDX CSS — Keyframes */\n' + getAnimationKeyframes(config.prefix);
 
       const outDir = path.dirname(path.resolve(process.cwd(), opts.output));
       fs.mkdirSync(outDir, { recursive: true });

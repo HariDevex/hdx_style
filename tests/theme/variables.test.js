@@ -57,8 +57,8 @@ describe('theme defaults', () => {
     }
   });
 
-  it('dark action colors emit under .hdx_dark', () => {
-    const css = generateAllVariables(defaultTheme, 'hdx_', 'class');
+  it('dark action colors emit under .hdx-dark', () => {
+    const css = generateAllVariables(defaultTheme, 'hdx-', 'class');
     for (const key of ['primary', 'success', 'danger', 'warning', 'info']) {
       expect(css).toContain(`--hdx-color-${key}: ${defaultTheme.darkColors[key]}`);
     }
@@ -97,28 +97,28 @@ describe('theme defaults', () => {
 
 describe('CSS variables generation', () => {
   it('generates :root variables', () => {
-    const css = generateAllVariables(defaultTheme, 'hdx_', 'class');
+    const css = generateAllVariables(defaultTheme, 'hdx-', 'class');
     expect(css).toContain(':root {');
     expect(css).toContain('--hdx-color-primary: #2563EB');
     expect(css).toContain('--hdx-color-background: #F8FAFC');
   });
 
-  it('generates .hdx_dark class variables', () => {
-    const css = generateAllVariables(defaultTheme, 'hdx_', 'class');
-    expect(css).toContain('.hdx_dark {');
+  it('generates .hdx-dark class variables', () => {
+    const css = generateAllVariables(defaultTheme, 'hdx-', 'class');
+    expect(css).toContain('.hdx-dark {');
     expect(css).toContain('--hdx-color-background: #0F172A');
   });
 
   it('generates dark media query variables with media strategy', () => {
-    const css = generateAllVariables(defaultTheme, 'hdx_', 'media');
+    const css = generateAllVariables(defaultTheme, 'hdx-', 'media');
     expect(css).toContain('@media (prefers-color-scheme: dark)');
     expect(css).toContain(':root {');
-    expect(css).not.toContain('.hdx_dark {');
+    expect(css).not.toContain('.hdx-dark {');
   });
 
   it('generates both class and media variables with both strategy', () => {
-    const css = generateAllVariables(defaultTheme, 'hdx_', 'both');
-    expect(css).toContain('.hdx_dark {');
+    const css = generateAllVariables(defaultTheme, 'hdx-', 'both');
+    expect(css).toContain('.hdx-dark {');
     expect(css).toContain('@media (prefers-color-scheme: dark)');
   });
 

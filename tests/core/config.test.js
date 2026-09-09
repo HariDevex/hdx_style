@@ -12,7 +12,7 @@ const tmpDir = path.join(os.tmpdir(), 'hdx-config-test-' + Date.now());
 describe('config', () => {
   it('getDefaultConfig returns valid config', () => {
     const config = getDefaultConfig();
-    expect(config.prefix).toBe('hdx_');
+    expect(config.prefix).toBe('hdx-');
     expect(config.darkMode).toBe('class');
     expect(config.theme).toBeDefined();
     expect(config.theme.colors).toBeDefined();
@@ -22,7 +22,7 @@ describe('config', () => {
 
   it('loadConfig merges with defaults', () => {
     const config = loadConfig({});
-    expect(config.prefix).toBe('hdx_');
+    expect(config.prefix).toBe('hdx-');
     expect(config.theme.colors.primary).toBe('#2563EB');
   });
 
@@ -171,7 +171,7 @@ describe('config file loading', () => {
     const config = await loadConfigFromFile();
     process.chdir(prevCwd);
 
-    expect(config.prefix).toBe('hdx_');
+    expect(config.prefix).toBe('hdx-');
   });
 
   it('loadConfigFromFile reuses the module cache by default (no accumulation)', async () => {

@@ -2,7 +2,7 @@
 // Build with: node src/cli/index.js build -p -c examples/vanilla/hdx.config.js
 export default {
   // Prefix for every utility/variant/component class
-  prefix: 'hdx_',
+  prefix: 'hdx-',
 
   // Files to scan for used classes (enables production purging)
   content: ['./examples/vanilla/**/*.html'],
@@ -16,7 +16,7 @@ export default {
   // Global reset + base styles
   reset: true,
 
-  // Built-in component layer (.hdx_btn, .hdx_card, .hdx_input, …)
+  // Built-in component layer (.hdx-btn, .hdx-card, .hdx-input, …)
   components: true,
 
   // Theme customization (deep-merged over the defaults — see README

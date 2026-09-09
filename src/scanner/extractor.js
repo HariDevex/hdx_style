@@ -20,11 +20,11 @@ function escapeRegExp(str) {
  * - JSX expressions with string literals
  *
  * @param {string} content
- * @param {string} [prefix='hdx_'] - class prefix used to tag template/string
+ * @param {string} [prefix='hdx-'] - class prefix used to tag template/string
  *   literals (quoted class attributes extract every token regardless).
  * @returns {Set<string>}
  */
-export function extractClassNames(content, prefix = 'hdx_') {
+export function extractClassNames(content, prefix = 'hdx-') {
   const classes = new Set();
   const prefixRe = escapeRegExp(prefix);
   const prefixClassRe = new RegExp(prefixRe + '[\\w]');
@@ -44,11 +44,19 @@ export function extractClassNames(content, prefix = 'hdx_') {
   for (const regex of quotePatterns) {
     let match;
     while ((match = regex.exec(content)) !== null) {
-      splitClasses(match[1]).forEach(c => classes.add(c));
+      let value = match[1];
+      // Vue/Angular bindings may wrap a plain string in a second quote layer
+      // (`:class="'hdx-flex hdx-p-4'"`, `ngClass="'hdx-btn'"`). Strip it so we
+      // don't get `'hdx-flex` / `` hdx-p-4' `` tokens.
+      const first = value[0];
+      if ((first === '"' || first === "'") && value[value.length - 1] === first) {
+        value = value.slice(1, -1);
+      }
+      splitClasses(value).forEach(c => classes.add(c));
     }
   }
 
-  // Template literals: `hdx_flex hdx_p-4`
+  // Template literals: `hdx-flex hdx-p-4`
   const templatePattern = /`([^`]*?)`/g;
   let match;
   while ((match = templatePattern.exec(content)) !== null) {
@@ -59,19 +67,28 @@ export function extractClassNames(content, prefix = 'hdx_') {
     }
   }
 
-  // String literals with HDX classes: "hdx_flex hdx_p-4" or 'hdx_flex hdx_p-4'
-  const stringPattern = new RegExp('(["\'])((?:' + prefixRe + '[\\w\\s\\-/.\\[\\].:]+)+)\\1', 'g');
+  // String literals with HDX classes: "hdx-flex hdx-p-4" or 'hdx-flex hdx-p-4'
+  // The char class covers every character the generator emits in selector /
+  // arbitrary values: word chars, spaces, hyphen, dot, slash, brackets, colon,
+  // percent, hash, parens, comma, star.
+  const arbitraryChars = '\\w\\s\\-/.\\[\\].:%#(),*';
+  const stringPattern = new RegExp('(["\'])((?:' + prefixRe + '[' + arbitraryChars + ']+)+)\\1', 'g');
   while ((match = stringPattern.exec(content)) !== null) {
     splitClasses(match[2]).forEach(c => classes.add(c));
   }
 
-  // Array join patterns: [...].join(' ') containing HDX classes
+  // Array join patterns: ['hdx-flex', 'hdx-p-4'].join(' ') containing HDX
+  // classes. Only the quoted literals are read — never a raw slice of the
+  // surrounding source — so tokens like `const`/`=`,`,`` don't enter the set.
   const joinPattern = /\.join\(\s*(['"])\s*(\S+)?\s*\1\s*\)/g;
   while ((match = joinPattern.exec(content)) !== null) {
-    // Look backwards for the array content
     const before = content.slice(Math.max(0, match.index - 500), match.index);
-    if (prefixClassRe.test(before)) {
-      splitClasses(before).forEach(c => classes.add(c));
+    const itemRe = /(["'])([^"']*?)\1/g;
+    let item;
+    while ((item = itemRe.exec(before)) !== null) {
+      if (prefixClassRe.test(item[2])) {
+        splitClasses(item[2]).forEach(c => classes.add(c));
+      }
     }
   }
 

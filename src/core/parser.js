@@ -2,17 +2,19 @@
  * HDX CSS Class Parser
  *
  * Parses HDX class names into structured data:
- *   hdx_flex               → { prefix: 'hdx_', variants: [], utility: 'flex' }
- *   hdx_md_flex            → { prefix: 'hdx_', variants: ['md'], utility: 'flex' }
- *   hdx_md_hover_bg-primary → { prefix: 'hdx_', variants: ['md', 'hover'], utility: 'bg-primary' }
- *   hdx_lg_dark_hover_bg-primary → { prefix: 'hdx_', variants: ['lg', 'dark', 'hover'], utility: 'bg-primary' }
+ *   hdx-flex               → { prefix: 'hdx-', variants: [], utility: 'flex' }
+ *   hdx-md_flex            → { prefix: 'hdx-', variants: ['md'], utility: 'flex' }
+ *   hdx-md_hover_bg-primary → { prefix: 'hdx-', variants: ['md', 'hover'], utility: 'bg-primary' }
+ *   hdx-lg_dark_hover_bg-primary → { prefix: 'hdx-', variants: ['lg', 'dark', 'hover'], utility: 'bg-primary' }
  *
  * @module core/parser
  */
 
+import { matchArbitraryMediaSegment } from '../variants/arbitrary.js';
+
 /**
  * @typedef {Object} ParsedClass
- * @property {string} prefix - The prefix (e.g. 'hdx_')
+ * @property {string} prefix - The prefix (e.g. 'hdx-')
  * @property {string[]} variants - Ordered variant list (e.g. ['md', 'hover'])
  * @property {string} utility - The utility name (e.g. 'bg-primary')
  * @property {boolean} valid - Whether parsing succeeded
@@ -26,6 +28,16 @@
  * @type {string[]}
  */
 export const DEFAULT_VARIANT_PREFIXES = [
+  // Derived media variants (longest first so greedy matching never splits them)
+  'max-2xl', 'max-xl', 'max-lg', 'max-md', 'max-sm',
+  '2xl-only', 'xl-only', 'lg-only', 'md-only', 'sm-only',
+  // Container queries (derived, same breakpoints)
+  'cq-2xl', 'cq-xl', 'cq-lg', 'cq-md', 'cq-sm',
+  // Media-feature / environment variants
+  'motion-reduce', 'motion-safe',
+  'portrait', 'landscape',
+  // Print
+  'print',
   // Responsive (must come before shorter matches)
   '2xl',
   // State (hyphenated first to avoid partial matches)
@@ -63,7 +75,13 @@ export const DEFAULT_VARIANT_PREFIXES = [
  * @returns {string[]}
  */
 export function getVariantPrefixes(config) {
-  const themeBps = config?.theme?.breakpoints || {};
+  const themeBps = Object.keys(config?.theme?.breakpoints || {});
+  // Derived media variants (max-{bp}, {bp}-only) ride on the same breakpoints.
+  const mediaVariants = themeBps.flatMap(bp => [`max-${bp}`, `${bp}-only`]);
+  // Container query variants (container-type on the nearest hdx-cq ancestor).
+  const containerVariants = themeBps.map(bp => `cq-${bp}`);
+  // Static media-feature / environment variants.
+  const envVariants = ['portrait', 'landscape', 'print', 'motion-safe', 'motion-reduce'];
   const states = [
     'hover', 'focus', 'active', 'visited', 'disabled',
     'checked', 'required', 'invalid', 'valid',
@@ -72,8 +90,8 @@ export function getVariantPrefixes(config) {
   ];
 
   return [
-    // Responsive breakpoints (from resolved config, longest first)
-    ...Object.keys(themeBps).sort((a, b) => b.length - a.length),
+    // Responsive breakpoints + derived media variants (longest first)
+    ...[...themeBps, ...mediaVariants, ...containerVariants, ...envVariants].sort((a, b) => b.length - a.length),
     // Dark (only when a dark strategy is configured; 'none' disables it)
     ...(config?.darkMode === 'none' ? [] : ['dark']),
     // Important
@@ -90,14 +108,14 @@ export function getVariantPrefixes(config) {
 /**
  * Parse a full HDX class name into its components.
  *
- * @param {string} fullName - Full prefixed class name (e.g. 'hdx_md_hover_bg-primary')
- * @param {string} prefix - Expected prefix (default 'hdx_')
+ * @param {string} fullName - Full prefixed class name (e.g. 'hdx-md_hover_bg-primary')
+ * @param {string} prefix - Expected prefix (default 'hdx-')
  * @param {string[]} [variantPrefixes] - Ordered variant prefixes to match against
  *   (defaults to DEFAULT_VARIANT_PREFIXES). Pass the result of getVariantPrefixes(config)
  *   so custom breakpoints and plugin variants parse correctly.
  * @returns {ParsedClass}
  */
-export function parseClass(fullName, prefix = 'hdx_', variantPrefixes = DEFAULT_VARIANT_PREFIXES) {
+export function parseClass(fullName, prefix = 'hdx-', variantPrefixes = DEFAULT_VARIANT_PREFIXES) {
   if (!fullName || typeof fullName !== 'string') {
     return { prefix, variants: [], utility: '', valid: false };
   }
@@ -133,7 +151,17 @@ export function parseClass(fullName, prefix = 'hdx_', variantPrefixes = DEFAULT_
       }
     }
 
-    if (!matched) break;
+    if (!matched) {
+      // Arbitrary media variant: min-[900px]_ / max-[900px]_ (one `_`-segment).
+      const arbitrary = matchArbitraryMediaSegment(remaining);
+      if (arbitrary !== null) {
+        variants.push(arbitrary);
+        segIndex += 1;
+        matched = true;
+        continue;
+      }
+      break;
+    }
   }
 
   const utility = segments.slice(segIndex).join('_');
@@ -152,7 +180,7 @@ export function parseClass(fullName, prefix = 'hdx_', variantPrefixes = DEFAULT_
  * @param {string} prefix
  * @returns {boolean}
  */
-export function isHdxClass(className, prefix = 'hdx_') {
+export function isHdxClass(className, prefix = 'hdx-') {
   return className.startsWith(prefix) && className.length > prefix.length;
 }
 
@@ -163,7 +191,7 @@ export function isHdxClass(className, prefix = 'hdx_') {
  * @param {string[]} [variantPrefixes]
  * @returns {string}
  */
-export function getUtilityName(fullName, prefix = 'hdx_', variantPrefixes = DEFAULT_VARIANT_PREFIXES) {
+export function getUtilityName(fullName, prefix = 'hdx-', variantPrefixes = DEFAULT_VARIANT_PREFIXES) {
   return parseClass(fullName, prefix, variantPrefixes).utility;
 }
 
@@ -174,7 +202,7 @@ export function getUtilityName(fullName, prefix = 'hdx_', variantPrefixes = DEFA
  * @param {string[]} [variantPrefixes]
  * @returns {string[]}
  */
-export function getVariants(fullName, prefix = 'hdx_', variantPrefixes = DEFAULT_VARIANT_PREFIXES) {
+export function getVariants(fullName, prefix = 'hdx-', variantPrefixes = DEFAULT_VARIANT_PREFIXES) {
   return parseClass(fullName, prefix, variantPrefixes).variants;
 }
 
@@ -191,7 +219,7 @@ export function getVariants(fullName, prefix = 'hdx_', variantPrefixes = DEFAULT
  *   plugin variants resolve.
  * @returns {Map<string, Set<string>>}
  */
-export function mapUtilitiesToVariants(classNames, prefix = 'hdx_', variantPrefixes = DEFAULT_VARIANT_PREFIXES) {
+export function mapUtilitiesToVariants(classNames, prefix = 'hdx-', variantPrefixes = DEFAULT_VARIANT_PREFIXES) {
   const map = new Map();
 
   for (const cls of classNames) {

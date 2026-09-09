@@ -19,6 +19,6 @@ import "./dist/hdx.css";          // local build
 ## What it shows
 
 - Component class maps resolved statically (no template-literal interpolation, which the scanner cannot resolve)
-- Drop-in components (`hdx_btn`, `hdx_card`, `hdx_badge-*`) combining with state variants (`hdx_active_scale-95`, `hdx_hover_*`)
-- Form states (`hdx_focus_border-primary`, `hdx_invalid_border-danger`)
-- Responsive grids (`hdx_sm_grid-cols-2`, `hdx_lg_grid-cols-4`)
+- Drop-in components (`hdx-btn`, `hdx-card`, `hdx-badge-*`) combining with state variants (`hdx-active_scale-95`, `hdx-hover_*`)
+- Form states (`hdx-focus_border-primary`, `hdx-invalid_border-danger`)
+- Responsive grids (`hdx-sm_grid-cols-2`, `hdx-lg_grid-cols-4`)

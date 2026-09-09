@@ -5,7 +5,7 @@ import { success, info } from '../utils.js';
 
 const esmConfigContent = `export default {
   // HDX CSS Configuration
-  prefix: 'hdx_',
+  prefix: 'hdx-',
 
   // Content files to scan for used classes
   content: [
@@ -35,7 +35,7 @@ const esmConfigContent = `export default {
 
 const cjsConfigContent = `module.exports = {
   // HDX CSS Configuration
-  prefix: 'hdx_',
+  prefix: 'hdx-',
 
   // Content files to scan for used classes
   content: [

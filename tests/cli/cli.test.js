@@ -16,7 +16,7 @@ describe('CLI', () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
-  it('hdx_style init creates hdx.config.cjs in a CommonJS project', () => {
+  it('hdx-style init creates hdx.config.cjs in a CommonJS project', () => {
     const testDir = path.join(tmpDir, 'init-test');
     fs.mkdirSync(testDir, { recursive: true });
 
@@ -28,11 +28,11 @@ describe('CLI', () => {
     expect(fs.existsSync(path.join(testDir, 'hdx.config.cjs'))).toBe(true);
     const content = fs.readFileSync(path.join(testDir, 'hdx.config.cjs'), 'utf-8');
     expect(content).toContain('module.exports');
-    expect(content).toContain("prefix: 'hdx_'");
+    expect(content).toContain("prefix: 'hdx-'");
     expect(content).toContain('darkMode');
   });
 
-  it('hdx_style init creates hdx.config.js (ESM) in a module project', () => {
+  it('hdx-style init creates hdx.config.js (ESM) in a module project', () => {
     const testDir = path.join(tmpDir, 'init-esm-test');
     fs.mkdirSync(testDir, { recursive: true });
     fs.writeFileSync(path.join(testDir, 'package.json'), JSON.stringify({ type: 'module' }));
@@ -47,7 +47,7 @@ describe('CLI', () => {
     expect(content).toContain('export default');
   });
 
-  it('hdx_style init skips when a config already exists', () => {
+  it('hdx-style init skips when a config already exists', () => {
     const testDir = path.join(tmpDir, 'init-skip-test');
     fs.mkdirSync(testDir, { recursive: true });
     fs.writeFileSync(path.join(testDir, 'hdx.config.cjs'), 'module.exports = {};');
@@ -61,7 +61,7 @@ describe('CLI', () => {
     expect(fs.readFileSync(path.join(testDir, 'hdx.config.cjs'), 'utf-8')).toBe('module.exports = {};');
   });
 
-  it('hdx_style build generates CSS file', () => {
+  it('hdx-style build generates CSS file', () => {
     const testDir = path.join(tmpDir, 'build-test');
     fs.mkdirSync(testDir, { recursive: true });
 
@@ -69,7 +69,7 @@ describe('CLI', () => {
     fs.writeFileSync(
       path.join(testDir, 'hdx.config.js'),
       `export default {
-        prefix: 'hdx_',
+        prefix: 'hdx-',
         content: [],
         darkMode: 'class',
         theme: {},
@@ -84,24 +84,24 @@ describe('CLI', () => {
 
     expect(fs.existsSync(path.join(testDir, 'dist/hdx.css'))).toBe(true);
     const css = fs.readFileSync(path.join(testDir, 'dist/hdx.css'), 'utf-8');
-    expect(css).toContain('.hdx_flex');
-    expect(css).toContain('.hdx_p-4');
+    expect(css).toContain('.hdx-flex');
+    expect(css).toContain('.hdx-p-4');
     expect(css).toContain('--hdx-color-primary');
   });
 
-  it('hdx_style build -p purges to only the used utilities across custom breakpoints', () => {
+  it('hdx-style build -p purges to only the used utilities across custom breakpoints', () => {
     const testDir = path.join(tmpDir, 'build-purge-test');
     fs.mkdirSync(testDir, { recursive: true });
 
     fs.writeFileSync(
       path.join(testDir, 'index.html'),
-      '<div className="hdx_grid-cols-1 hdx_sm_grid-cols-2 hdx_xs_flex"></div>'
+      '<div className="hdx-grid-cols-1 hdx-sm_grid-cols-2 hdx-xs_flex"></div>'
     );
 
     fs.writeFileSync(
       path.join(testDir, 'hdx.config.js'),
       `export default {
-        prefix: 'hdx_',
+        prefix: 'hdx-',
         content: ['./index.html'],
         darkMode: 'class',
         theme: {
@@ -121,29 +121,29 @@ describe('CLI', () => {
     const css = fs.readFileSync(path.join(testDir, 'dist/hdx.css'), 'utf-8');
 
     // Used utilities are present.
-    expect(css).toContain('.hdx_grid-cols-1');
-    expect(css).toContain('.hdx_sm_grid-cols-2');
+    expect(css).toContain('.hdx-grid-cols-1');
+    expect(css).toContain('.hdx-sm_grid-cols-2');
     // The custom breakpoint variant resolves AND emits the xs media query.
     expect(css).toContain('@media (min-width: 480px)');
-    expect(css).toContain('.hdx_xs_flex');
+    expect(css).toContain('.hdx-xs_flex');
     // Unused utilities are purged away.
-    expect(css).not.toContain('.hdx_rounded-lg');
-    expect(css).not.toContain('.hdx_shadow-xl');
+    expect(css).not.toContain('.hdx-rounded-lg');
+    expect(css).not.toContain('.hdx-shadow-xl');
   });
 
-  it('hdx_style build purges by default when content is configured', () => {
+  it('hdx-style build purges by default when content is configured', () => {
     const testDir = path.join(tmpDir, 'build-default-purge-test');
     fs.mkdirSync(testDir, { recursive: true });
 
     fs.writeFileSync(
       path.join(testDir, 'index.html'),
-      '<div class="hdx_flex hdx_p-4"></div>'
+      '<div class="hdx-flex hdx-p-4"></div>'
     );
 
     fs.writeFileSync(
       path.join(testDir, 'hdx.config.js'),
       `export default {
-        prefix: 'hdx_',
+        prefix: 'hdx-',
         content: ['./index.html'],
         darkMode: 'class',
         theme: {},
@@ -159,13 +159,13 @@ describe('CLI', () => {
     expect(output).toContain('Keeping');
 
     const css = fs.readFileSync(path.join(testDir, 'dist/hdx.css'), 'utf-8');
-    expect(css).toContain('.hdx_flex');
-    expect(css).toContain('.hdx_p-4');
-    expect(css).not.toContain('.hdx_rounded-lg');
-    expect(css).not.toContain('.hdx_shadow-xl');
+    expect(css).toContain('.hdx-flex');
+    expect(css).toContain('.hdx-p-4');
+    expect(css).not.toContain('.hdx-rounded-lg');
+    expect(css).not.toContain('.hdx-shadow-xl');
   });
 
-  it('hdx_style --version prints version', () => {
+  it('hdx-style --version prints version', () => {
     const output = execSync(`node ${path.join(PROJECT_ROOT, 'src/cli/index.js')} --version`, {
       encoding: 'utf-8',
     });
@@ -173,11 +173,11 @@ describe('CLI', () => {
     expect(output.trim()).toBe(pkg.version);
   });
 
-  it('hdx_style --help prints help', () => {
+  it('hdx-style --help prints help', () => {
     const output = execSync(`node ${path.join(PROJECT_ROOT, 'src/cli/index.js')} --help`, {
       encoding: 'utf-8',
     });
-    expect(output).toContain('hdx_style');
+    expect(output).toContain('hdx-style');
     expect(output).toContain('init');
     expect(output).toContain('build');
     expect(output).toContain('watch');

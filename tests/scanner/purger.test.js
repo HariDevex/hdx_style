@@ -12,7 +12,7 @@ describe('purger', () => {
   ];
 
   it('keeps directly used utilities', () => {
-    const used = new Set(['hdx_flex', 'hdx_p-4']);
+    const used = new Set(['hdx-flex', 'hdx-p-4']);
     const result = purgeUnused(allUtilities, used);
     expect(result).toHaveLength(2);
     expect(result.map(u => u.name)).toContain('flex');
@@ -20,39 +20,39 @@ describe('purger', () => {
   });
 
   it('keeps utilities used in variant forms', () => {
-    const used = new Set(['hdx_hover_bg-primary', 'hdx_md_flex']);
+    const used = new Set(['hdx-hover_bg-primary', 'hdx-md_flex']);
     const result = purgeUnused(allUtilities, used);
     expect(result.map(u => u.name)).toContain('flex');
     expect(result.map(u => u.name)).toContain('bg-primary');
   });
 
   it('keeps utilities used with dark variant', () => {
-    const used = new Set(['hdx_dark_bg-primary']);
+    const used = new Set(['hdx-dark_bg-primary']);
     const result = purgeUnused(allUtilities, used);
     expect(result.map(u => u.name)).toContain('bg-primary');
   });
 
   it('removes unused utilities', () => {
-    const used = new Set(['hdx_flex']);
+    const used = new Set(['hdx-flex']);
     const result = purgeUnused(allUtilities, used);
     expect(result).toHaveLength(1);
     expect(result[0].name).toBe('flex');
   });
 
   it('keeps utilities used in deep variant combos (responsive + dark + state)', () => {
-    const used = new Set(['hdx_lg_dark_hover_bg-primary']);
+    const used = new Set(['hdx-lg_dark_hover_bg-primary']);
     const result = purgeUnused(allUtilities, used);
     expect(result.map(u => u.name)).toContain('bg-primary');
   });
 
   it('does not keep utilities for unknown (non-HDX) classes', () => {
-    const used = new Set(['hdx_not-a-utility', 'navbar-brand']);
+    const used = new Set(['hdx-not-a-utility', 'navbar-brand']);
     const result = purgeUnused(allUtilities, used);
     expect(result).toHaveLength(0);
   });
 
   it('records exact requested variant combos per utility', () => {
-    const used = new Set(['hdx_flex', 'hdx_md_hover_bg-primary', 'hdx_dark_bg-primary']);
+    const used = new Set(['hdx-flex', 'hdx-md_hover_bg-primary', 'hdx-dark_bg-primary']);
     const result = purgeUnused(allUtilities, used);
 
     const flex = result.find(u => u.name === 'flex');
@@ -64,16 +64,16 @@ describe('purger', () => {
   });
 
   it('adds safelisted utilities with no variants', () => {
-    const used = new Set(['hdx_flex']);
-    const result = purgeUnused(allUtilities, used, 'hdx_', ['hdx_hidden', 'hdx_md_flex']);
+    const used = new Set(['hdx-flex']);
+    const result = purgeUnused(allUtilities, used, 'hdx-', ['hdx-hidden', 'hdx-md_flex']);
     expect(result.map(u => u.name)).toContain('hidden');
     const hidden = result.find(u => u.name === 'hidden');
     expect(hidden._requestedVariants).toEqual([]);
   });
 
   it('does not duplicate utilities already kept from content', () => {
-    const used = new Set(['hdx_flex']);
-    const result = purgeUnused(allUtilities, used, 'hdx_', ['hdx_flex']);
+    const used = new Set(['hdx-flex']);
+    const result = purgeUnused(allUtilities, used, 'hdx-', ['hdx-flex']);
     const flexes = result.filter(u => u.name === 'flex');
     expect(flexes).toHaveLength(1);
   });
@@ -82,8 +82,8 @@ describe('purger', () => {
     const config = loadConfig();
     config.theme.breakpoints.xs = '480px';
 
-    const used = new Set(['hdx_xs_flex']);
-    const result = purgeUnused(allUtilities, used, 'hdx_', [], config);
+    const used = new Set(['hdx-xs_flex']);
+    const result = purgeUnused(allUtilities, used, 'hdx-', [], config);
 
     const flex = result.find(u => u.name === 'flex');
     expect(flex).toBeDefined();
@@ -94,8 +94,8 @@ describe('purger', () => {
     const config = loadConfig();
     config.theme.breakpoints.xs = '480px';
 
-    const used = new Set(['hdx_xs_flex']);
-    const result = purgeUnused(allUtilities, used, 'hdx_', []);
+    const used = new Set(['hdx-xs_flex']);
+    const result = purgeUnused(allUtilities, used, 'hdx-', []);
 
     // Without config-derived prefixes, 'xs_flex' is an unknown utility.
     expect(result).toHaveLength(0);
@@ -109,15 +109,15 @@ describe('findUnknownClasses', () => {
   ];
 
   it('returns nothing for fully-resolvable classes', () => {
-    const unknown = findUnknownClasses(allUtilities, new Set(['hdx_flex', 'hdx_md_bg-primary']));
+    const unknown = findUnknownClasses(allUtilities, new Set(['hdx-flex', 'hdx-md_bg-primary']));
     expect(unknown).toHaveLength(0);
   });
 
   it('flags classes that use an unknown utility name', () => {
-    const unknown = findUnknownClasses(allUtilities, new Set(['hdx_grid', 'hdx_hover_grid']));
+    const unknown = findUnknownClasses(allUtilities, new Set(['hdx-grid', 'hdx-hover_grid']));
     expect(unknown.length).toBeGreaterThan(0);
-    expect(unknown.find(u => u.className === 'hdx_grid')).toBeDefined();
-    expect(unknown.find(u => u.className === 'hdx_hover_grid').utility).toBe('grid');
+    expect(unknown.find(u => u.className === 'hdx-grid')).toBeDefined();
+    expect(unknown.find(u => u.className === 'hdx-hover_grid').utility).toBe('grid');
   });
 
   it('ignores non-HDX classes', () => {
@@ -126,15 +126,15 @@ describe('findUnknownClasses', () => {
   });
 
   it('flags syntactically-invalid classes', () => {
-    const unknown = findUnknownClasses(allUtilities, new Set(['hdx__weird__name']));
+    const unknown = findUnknownClasses(allUtilities, new Set(['hdx-_weird__name']));
     expect(unknown.length).toBeGreaterThan(0);
   });
 
-  it('does not flag variant-marker classes like hdx_dark / hdx_group / hdx_peer', () => {
+  it('does not flag variant-marker classes like hdx-dark / hdx-group / hdx-peer', () => {
     const unknown = findUnknownClasses(
       allUtilities,
-      new Set(['hdx_dark', 'hdx_group', 'hdx_peer', 'hdx_flex']),
-      'hdx_',
+      new Set(['hdx-dark', 'hdx-group', 'hdx-peer', 'hdx-flex']),
+      'hdx-',
       loadConfig()
     );
     expect(unknown).toHaveLength(0);
@@ -143,8 +143,8 @@ describe('findUnknownClasses', () => {
   it('does not flag component classes when component names are supplied', () => {
     const unknown = findUnknownClasses(
       allUtilities,
-      new Set(['hdx_btn-primary', 'hdx_input', 'hdx_flex']),
-      'hdx_',
+      new Set(['hdx-btn-primary', 'hdx-input', 'hdx-flex']),
+      'hdx-',
       loadConfig(),
       new Set(['btn-primary', 'input', 'label'])
     );
@@ -162,39 +162,39 @@ describe('purgeComponents', () => {
   ];
 
   it('keeps only components whose base class appears in content', () => {
-    const used = new Set(['hdx_btn', 'hdx_btn-primary', 'hdx_flex']);
+    const used = new Set(['hdx-btn', 'hdx-btn-primary', 'hdx-flex']);
     const result = purgeComponents(allComponents, used);
     expect(result.map(c => c.name)).toEqual(['btn', 'btn-primary']);
   });
 
-  it('removes unused components (e.g. modal when no hdx_modal* is present)', () => {
-    const used = new Set(['hdx_btn']);
+  it('removes unused components (e.g. modal when no hdx-modal* is present)', () => {
+    const used = new Set(['hdx-btn']);
     const result = purgeComponents(allComponents, used);
     expect(result.map(c => c.name)).not.toContain('modal');
     expect(result.map(c => c.name)).not.toContain('modal-overlay');
   });
 
   it('resolves composed component usage independently (btn + btn-primary)', () => {
-    const used = new Set(['hdx_btn', 'hdx_btn-primary']);
+    const used = new Set(['hdx-btn', 'hdx-btn-primary']);
     const result = purgeComponents(allComponents, used);
     expect(result.map(c => c.name)).toEqual(['btn', 'btn-primary']);
   });
 
   it('keeps components referenced by a variant-prefixed class', () => {
-    const used = new Set(['hdx_hover_btn', 'hdx_dark_input']);
-    const result = purgeComponents(allComponents, used, 'hdx_', [], loadConfig());
+    const used = new Set(['hdx-hover_btn', 'hdx-dark_input']);
+    const result = purgeComponents(allComponents, used, 'hdx-', [], loadConfig());
     expect(result.map(c => c.name)).toEqual(['btn', 'input']);
   });
 
   it('keeps safelisted component classes even when absent from content', () => {
-    const used = new Set(['hdx_flex']);
-    const result = purgeComponents(allComponents, used, 'hdx_', ['hdx_modal']);
+    const used = new Set(['hdx-flex']);
+    const result = purgeComponents(allComponents, used, 'hdx-', ['hdx-modal']);
     expect(result.map(c => c.name)).toContain('modal');
     expect(result.map(c => c.name)).not.toContain('btn');
   });
 
   it('returns an empty list when no components are used', () => {
-    const used = new Set(['hdx_flex', 'navbar-brand']);
+    const used = new Set(['hdx-flex', 'navbar-brand']);
     const result = purgeComponents(allComponents, used);
     expect(result).toHaveLength(0);
   });

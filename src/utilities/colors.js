@@ -11,7 +11,7 @@ export function colorsUtilities(config) {
   const utils = [];
 
   // Child combinator shared with borders.js divide-* width rules so
-  // `hdx_divide-x hdx_divide-primary` colors the borders between children.
+  // `hdx-divide-x hdx-divide-primary` colors the borders between children.
   const childCombinator = ' > :not([hidden]) ~ :not([hidden])';
 
   for (const [key] of Object.entries(colors)) {
@@ -58,12 +58,15 @@ export function colorsUtilities(config) {
       selector: childCombinator,
     });
 
-    // Placeholder color
+    // Placeholder color (`hdx-placeholder-primary` styles the input's
+    // ::placeholder text). The pseudo-element rides on the utility's selector
+    // suffix so it composes with variants like any other color utility.
     utils.push({
       name: `placeholder-${key}`,
-      property: semanticVar('placeholder-color', prefix),
+      property: 'color',
       value: cssVar,
       category: 'colors',
+      selector: '::placeholder',
     });
 
     // Accent color

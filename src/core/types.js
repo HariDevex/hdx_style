@@ -19,6 +19,7 @@
  * @property {Object<string,string>} [darkColors]
  * @property {Object<string,string>} spacing
  * @property {Object<string,string>} fontSize
+ * @property {Object<string,{min: string, max: string}>} fluidFontSize
  * @property {Object<string,string>} fontWeight
  * @property {Object<string,string>} lineHeight
  * @property {Object<string,string>} letterSpacing
@@ -47,7 +48,7 @@
  * @property {string} name
  * @property {string} prefix
  * @property {function(string): string} selector
- * @property {'state'|'responsive'|'dark'|'ancestor'|'important'} [type]
+ * @property {'state'|'responsive'|'dark'|'ancestor'|'important'|'container'} [type]
  * @property {'class'|'media'|'both'} [strategy]
  */
 

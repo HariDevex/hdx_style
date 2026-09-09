@@ -18,6 +18,8 @@ import { transitionsUtilities } from './transitions.js';
 import { animationsUtilities, getAnimationKeyframes } from './animations.js';
 import { accessibilityUtilities } from './accessibility.js';
 import { interactionUtilities } from './interaction.js';
+import { safeAreaUtilities } from './safe-area.js';
+import { containerQueryUtilities } from './container-query.js';
 
 /**
  * Get all utility definitions from all categories
@@ -48,6 +50,8 @@ export function getAllUtilities(config) {
     ...animationsUtilities(config),
     ...accessibilityUtilities(config),
     ...interactionUtilities(),
+    ...safeAreaUtilities(),
+    ...containerQueryUtilities(),
     ...customUtilities,
   ];
 }

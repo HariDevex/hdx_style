@@ -41,18 +41,18 @@ describe('P3: arbitrary values', () => {
 
   it('purges arbitrary classes into generated utilities', () => {
     const all = getAllUtilities(config);
-    const purged = purgeUnused(all, new Set(['hdx_w-[260px]', 'hdx_md_max-h-[70vh]']), 'hdx_');
+    const purged = purgeUnused(all, new Set(['hdx-w-[260px]', 'hdx-md_max-h-[70vh]']), 'hdx-');
     const css = generateCSS(config, { utilities: purged });
 
-    expect(css).toContain('.hdx_w-\\[260px\\] { width: 260px; }');
+    expect(css).toContain('.hdx-w-\\[260px\\] { width: 260px; }');
     expect(css).toContain('@media (min-width: 768px) {');
-    expect(css).toMatch(/\.hdx_md_max-h-\\\[70vh\\\] \{\s*max-height: 70vh;/);
+    expect(css).toMatch(/\.hdx-md_max-h-\\\[70vh\\\] \{\s*max-height: 70vh;/);
   });
 
   it('does not flag arbitrary classes as unknown', () => {
     const all = getAllUtilities(config);
-    const unknown = findUnknownClasses(all, new Set(['hdx_w-[260px]', 'hdx_total-yolo']), 'hdx_');
-    expect(unknown.map(u => u.className)).toEqual(['hdx_total-yolo']);
+    const unknown = findUnknownClasses(all, new Set(['hdx-w-[260px]', 'hdx-total-yolo']), 'hdx-');
+    expect(unknown.map(u => u.className)).toEqual(['hdx-total-yolo']);
   });
 
   it('disambiguates text-[...] between color and font-size (Task 2)', () => {
@@ -81,7 +81,10 @@ describe('P3: arbitrary values', () => {
   it('supports arbitrary colors for bg/border/ring (Task 7)', () => {
     expect(resolveArbitraryUtility('bg-[#123456]')).toEqual({ name: 'bg-[#123456]', property: 'background-color', value: '#123456', category: 'arbitrary' });
     expect(resolveArbitraryUtility('border-[#123456]')).toEqual({ name: 'border-[#123456]', property: 'border-color', value: '#123456', category: 'arbitrary' });
-    expect(resolveArbitraryUtility('ring-[#123456]')).toEqual({ name: 'ring-[#123456]', property: '--ring-color', value: '#123456', category: 'arbitrary' });
+    expect(resolveArbitraryUtility('ring-[#123456]')).toEqual({ name: 'ring-[#123456]', property: '--hdx-ring-color', value: '#123456', category: 'arbitrary' });
+    // Custom prefixes keep ring-color namespaced so it matches the var the
+    // static ring-* shadow reads (utilities/shadows.js).
+    expect(resolveArbitraryUtility('ring-[#123456]', 'my-').property).toBe('--my-ring-color');
   });
 
   it('flags genuinely unsupported arbitrary values as unknown (Task 7)', () => {
@@ -91,11 +94,11 @@ describe('P3: arbitrary values', () => {
     expect(resolveArbitraryUtility('xyz-[123]')).toBeNull();
 
     const all = getAllUtilities(config);
-    const unknown = findUnknownClasses(all, new Set(['hdx_xyz-[123]', 'hdx_bg-[14px]']), 'hdx_');
-    expect(unknown.map(u => u.className).sort()).toEqual(['hdx_bg-[14px]', 'hdx_xyz-[123]']);
+    const unknown = findUnknownClasses(all, new Set(['hdx-xyz-[123]', 'hdx-bg-[14px]']), 'hdx-');
+    expect(unknown.map(u => u.className).sort()).toEqual(['hdx-bg-[14px]', 'hdx-xyz-[123]']);
 
     // Color-shaped arbitrary values are NOT reported as unknown.
-    const knownSet = findUnknownClasses(all, new Set(['hdx_bg-[#123456]', 'hdx_ring-[red]']), 'hdx_');
+    const knownSet = findUnknownClasses(all, new Set(['hdx-bg-[#123456]', 'hdx-ring-[red]']), 'hdx-');
     expect(knownSet.map(u => u.className)).toEqual([]);
   });
 });
@@ -103,28 +106,28 @@ describe('P3: arbitrary values', () => {
 describe('P3: negative values', () => {
   it('generates negative margins from the theme spacing scale', () => {
     const all = getAllUtilities(config);
-    const purged = purgeUnused(all, new Set(['hdx_-mx-5', 'hdx_-mt-2']), 'hdx_');
+    const purged = purgeUnused(all, new Set(['hdx--mx-5', 'hdx--mt-2']), 'hdx-');
     const css = generateCSS(config, { utilities: purged });
-    expect(css).toContain('.hdx_-mx-5 { margin-inline: -1.25rem; }');
-    expect(css).toContain('.hdx_-mt-2 { margin-top: -0.5rem; }');
+    expect(css).toContain('.hdx--mx-5 { margin-inline: -1.25rem; }');
+    expect(css).toContain('.hdx--mt-2 { margin-top: -0.5rem; }');
   });
 
   it('generates negative positioning offsets', () => {
     const all = getAllUtilities(config);
-    const purged = purgeUnused(all, new Set(['hdx_-top-4', 'hdx_-left-1/2', 'hdx_-bottom-full', 'hdx_-right-px']), 'hdx_');
+    const purged = purgeUnused(all, new Set(['hdx--top-4', 'hdx--left-1/2', 'hdx--bottom-full', 'hdx--right-px']), 'hdx-');
     const css = generateCSS(config, { utilities: purged });
-    expect(css).toContain('.hdx_-top-4 { top: -1rem; }');
-    expect(css).toContain('.hdx_-left-1\\/2 { left: -50%; }');
-    expect(css).toContain('.hdx_-bottom-full { bottom: -100%; }');
-    expect(css).toContain('.hdx_-right-px { right: -1px; }');
+    expect(css).toContain('.hdx--top-4 { top: -1rem; }');
+    expect(css).toContain('.hdx--left-1\\/2 { left: -50%; }');
+    expect(css).toContain('.hdx--bottom-full { bottom: -100%; }');
+    expect(css).toContain('.hdx--right-px { right: -1px; }');
   });
 
   it('generates negative transforms', () => {
     const all = getAllUtilities(config);
-    const purged = purgeUnused(all, new Set(['hdx_-translate-y-1/2', 'hdx_-rotate-45']), 'hdx_');
+    const purged = purgeUnused(all, new Set(['hdx--translate-y-1/2', 'hdx--rotate-45']), 'hdx-');
     const css = generateCSS(config, { utilities: purged });
-    expect(css).toContain('.hdx_-translate-y-1\\/2 { --translate-y: -50%; }');
-    expect(css).toContain('.hdx_-rotate-45 { --rotate: -45deg; }');
+    expect(css).toContain('.hdx--translate-y-1\\/2 { --translate-y: -50%; }');
+    expect(css).toContain('.hdx--rotate-45 { --rotate: -45deg; }');
   });
 
   it('parser resolves the negative token as the plain utility name', () => {

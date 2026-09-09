@@ -13,7 +13,7 @@ const pkg = require('../../package.json');
 const program = new Command();
 
 program
-  .name('hdx_style')
+  .name('hdx-style')
   .description('HDX Style — Modern utility-first CSS framework')
   .version(pkg.version);
 

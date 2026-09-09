@@ -7,8 +7,8 @@
  * Variant types:
  *   - state:     selector-based (e.g. :hover, :focus)
  *   - responsive: media query (e.g. @media (min-width: 768px))
- *   - dark:      class or media (e.g. .hdx_dark & or @media (prefers-color-scheme: dark))
- *   - ancestor:  ancestor selector (e.g. .hdx_group:hover &)
+ *   - dark:      class or media (e.g. .hdx-dark & or @media (prefers-color-scheme: dark))
+ *   - ancestor:  ancestor selector (e.g. .hdx-group:hover &)
  *
  * @module generator/variant-pipeline
  */
@@ -83,18 +83,18 @@ export function markImportant(css) {
  * - The first variant in the array becomes the outermost wrapper
  * - The last variant in the array is closest to the rule
  *
- * Example: ['md', 'dark', 'hover'] for hdx_md_dark_hover_flex produces:
+ * Example: ['md', 'dark', 'hover'] for hdx-md_dark_hover_flex produces:
  *   @media (min-width: 768px) {
- *     .hdx_dark .hdx_md_dark_hover_flex:hover { display: flex; }
+ *     .hdx-dark .hdx-md_dark_hover_flex:hover { display: flex; }
  *   }
  *
  * The variantMap maps a name to ALL registered definitions (usually one).
  * When a name has several (dark mode 'both' registers a class strategy and a
  * media strategy under the same name), each combination is emitted as its own
- * rule — so a `dark_` class produces both the `.hdx_dark` ancestor rule and
+ * rule — so a `dark_` class produces both the `.hdx-dark` ancestor rule and
  * the `@media (prefers-color-scheme: dark)` rule.
  *
- * @param {string} baseCss - The base CSS rule (e.g. '.hdx_flex { display: flex; }')
+ * @param {string} baseCss - The base CSS rule (e.g. '.hdx-flex { display: flex; }')
  * @param {string[]} variantNames - Ordered variant names (e.g. ['md', 'hover'])
  * @param {Map<string, import('../core/types.js').VariantDefinition[]>} variantMap - Name→definitions map
  * @param {string} utilityName - The utility name (e.g. 'flex')
@@ -103,7 +103,7 @@ export function markImportant(css) {
  * @param {string} [suffix=''] - Optional selector suffix (e.g. ' > :not([hidden]) ~ :not([hidden])')
  * @returns {string[]} Wrapped CSS rules (one per registered strategy)
  */
-export function applyVariantPipeline(baseCss, variantNames, variantMap, utilityName, prefix = 'hdx_', darkStrategy = 'class', suffix = '') {
+export function applyVariantPipeline(baseCss, variantNames, variantMap, utilityName, prefix = 'hdx-', darkStrategy = 'class', suffix = '') {
   if (variantNames.length === 0) {
     return [baseCss];
   }
@@ -114,8 +114,13 @@ export function applyVariantPipeline(baseCss, variantNames, variantMap, utilityN
 
   // Escape only the utility name (memoized) and prepend the variant prefix:
   // variant names are alphanumeric/hyphenated so they never need escaping, and
-  // escaping is per-character so escape(a+b) === escape(a)+escape(b).
-  const escaped = prefix + variantPrefix + escapeClassName(utilityName);
+  // escaping is per-character so escape(a+b) === escape(a)+escape(b). Arbitrary
+  // media variants (min-[900px]_) break that invariant, so escape the whole
+  // prefix when it contains bracket characters.
+  const escapedVariantPrefix = /[\[\]]/.test(variantPrefix)
+    ? escapeClassName(variantPrefix)
+    : variantPrefix;
+  const escaped = prefix + escapedVariantPrefix + escapeClassName(utilityName);
 
   // Resolve variant groups once up-front. Each name may map to several defs
   // (e.g. dark 'both'); take the cartesian product so every strategy is emitted.
@@ -174,6 +179,9 @@ export function applyVariantPipeline(baseCss, variantNames, variantMap, utilityN
       if (variant.type === 'responsive') {
         const mediaQuery = variant.selector(utilityName);
         css = mediaQuery + ' {\n' + indent(css) + '\n}\n';
+      } else if (variant.type === 'container') {
+        const cq = variant.selector(utilityName);
+        css = cq + ' {\n' + indent(css) + '\n}\n';
       } else if (variant.type === 'dark') {
         const strategy = variant.strategy || darkStrategy;
 
@@ -183,7 +191,7 @@ export function applyVariantPipeline(baseCss, variantNames, variantMap, utilityN
           const marker = `.${prefix}dark`;
           css = marker + ' ' + css + '\n@media (prefers-color-scheme: dark) {\n' + indent(css) + '\n}\n';
         } else {
-          // class strategy: prepend .hdx_dark (prefix-aware marker)
+          // class strategy: prepend .hdx-dark (prefix-aware marker)
           css = `.${prefix}dark ` + css;
         }
       }
