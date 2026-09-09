@@ -1,6 +1,23 @@
 | 📐 Responsive breakpoints | **5** |
-| ✅ Tests | **283** |
-| 📄 Source files | **68** |
+| ✅ Tests | **334** |
+| 📄 Source files | **72** |
+| ⚙️ Runtime dependencies | **4** |
+| 🚫 PostCSS dependency | **No** |
+| 🚫 Tailwind dependency | **No** |
+
+### 📊 Verified Statistics
+
+Run `node stats.js` to generate from source; `npm run stats:verify` (also part of CI) fails if this table drifts from the source:
+
+| Metric | Count |
+|---|---|
+| 📦 Utilities | **2,035** |
+| 🗂️ Utility categories | **21** |
+| 🧩 Components | **92** |
+| 🎛️ Variants | **49** |
+| 📐 Responsive breakpoints | **5** |
+| ✅ Tests | **334** |
+| 📄 Source files | **72** |
 | ⚙️ Runtime dependencies | **4** |
 | 🚫 PostCSS dependency | **No** |
 | 🚫 Tailwind dependency | **No** |
