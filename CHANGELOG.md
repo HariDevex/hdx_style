@@ -2,6 +2,18 @@
 
 All notable changes to HDX Style are documented in this file.
 
+## [1.0.0] — 2026-09-09
+
+### BREAKING CHANGES
+For detailed instructions on migrating to `1.0.0`, please refer to the [Upgrading / Migration Guide](README.md#upgrading--migration-guide).
+
+- **Default Class Prefix Change (`hdx_` → `hdx-`):** All legacy utility classes must be updated to use standard hyphenated prefix notation. Set `prefix: 'hdx_'` explicitly in `hdx.config.js` to preserve the old behavior.
+  - *Before:* `hdx_flex hdx_p-4`
+  - *After:* `hdx-flex hdx-p-4`
+- **CLI Binary Naming Convention (`hdx_style` → `hdx-style`):** The command line tool package bin name has been standardized to hyphenated form.
+  - *Before:* `npx hdx_style build`
+  - *After:* `npx hdx-style build`
+
 ## [0.2.4] — 2026-09-07
 
 ### Added

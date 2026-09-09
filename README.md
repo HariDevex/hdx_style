@@ -35,12 +35,12 @@ Run `node stats.js` to generate from source; `npm run stats:verify` (also part o
 
 | Metric | Count |
 |---|---|
-| 📦 Utilities | **1,850** |
-| 🗂️ Utility categories | **20** |
+| 📦 Utilities | **1,879** |
+| 🗂️ Utility categories | **21** |
 | 🧩 Components | **58** |
-| 🎛️ Variants | **29** |
+| 🎛️ Variants | **49** |
 | 📐 Responsive breakpoints | **5** |
-| ✅ Tests | **283** |
+| ✅ Tests | **333** |
 | 📄 Source files | **68** |
 | ⚙️ Runtime dependencies | **4** |
 | 🚫 PostCSS dependency | **No** |
@@ -65,6 +65,7 @@ Run `node stats.js` to generate from source; `npm run stats:verify` (also part o
 
 ## Table of Contents
 - [Table of Contents](#table-of-contents)
+- [Upgrading / Migration Guide](#upgrading--migration-guide)
 - [Architecture](#architecture)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
@@ -114,6 +115,43 @@ Run `node stats.js` to generate from source; `npm run stats:verify` (also part o
 - [Complete Page Example](#complete-page-example)
 - [Git Workflow](#git-workflow)
 - [License](#license)
+
+---
+
+<h2 id="upgrading--migration-guide">🔌 Upgrading / Migration Guide (Breaking Changes)</h2>
+
+HDX Style version `1.0.0` introduces major breaking changes to align naming conventions and CLI execution.
+
+### 1. Default Class Prefix Change (`hdx_` → `hdx-`)
+The default class prefix has changed from an underscore (`hdx_`) to a hyphen (`hdx-`).
+- **Before:** `class="hdx_flex hdx_p-4 hdx_bg-primary"`
+- **After:** `class="hdx-flex hdx-p-4 hdx-bg-primary"`
+
+#### 💡 Keeping the Old Behavior (Zero-Migration Opt-Out)
+If you wish to keep using the legacy `hdx_` class names indefinitely without rewriting your markup, configure your `hdx.config.js` to set the legacy prefix explicitly. This is a fully supported, permanent feature:
+```javascript
+export default {
+  prefix: 'hdx_', // Restores legacy prefix behavior
+  // ...
+};
+```
+
+#### 🛠️ Recommended Migration Regex
+If you want to migrate your codebase's markup, use this find-and-replace regular expression:
+- **Search Pattern:** `\bhdx_([a-zA-Z0-9_-]+)`
+- **Replace Pattern:** `hdx-$1`
+
+> ⚠️ **Warning:** Only run this regex replacement on your markup, templates, or class name files. Do **NOT** run it blindly across entire projects, configuration files (`hdx.config.js` or `package.json`), or files containing the repository/binary identifier `hdx_style`, as this will corrupt package and repo identities.
+
+### 2. CLI Binary Rename (`hdx_style` → `hdx-style`)
+The command line binary and `package.json` execution entry point have also been renamed to standard hyphenated format.
+- **Before:** `npx hdx_style build` or `npx hdx_style watch`
+- **After:** `npx hdx-style build` or `npx hdx-style watch`
+
+Be sure to update any of your local script definitions, build pipelines, CI/CD workflows, or custom tooling integrations using the old binary name.
+
+### 3. Content Purging Globs Are Unaffected
+Your content-scanning configuration (e.g. `content: ['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}']`) remains completely identical. It will simply look for classes starting with your newly configured literal prefix (`hdx-` by default).
 
 ---
 
@@ -423,6 +461,7 @@ Base font stack (`body`): `Inter, ui-sans-serif, system-ui, -apple-system, Blink
 | `text-secondary` | `#475569` | `text-muted` | `#64748B` |
 | `border` | `#E2E8F0` | `border-strong` | `#CBD5E1` |
 | `white` | `#FFFFFF` | `black` | `#000000` |
+| `on-accent` | `#FFFFFF` | | |
 | `gray-50` | `#F8FAFC` | `gray-100` | `#F1F5F9` |
 | `gray-200` | `#E2E8F0` | `gray-300` | `#CBD5E1` |
 | `gray-400` | `#94A3B8` | `gray-500` | `#64748B` |
@@ -569,6 +608,7 @@ colors: {
 
   border: '#E2E8F0',
   'border-strong': '#CBD5E1',
+  'on-accent': '#FFFFFF',
 
   white: '#FFFFFF',
   black: '#000000',
@@ -2471,7 +2511,7 @@ fix(generator): prevent markImportant from corrupting quoted semicolons
 feat(theme): add semantic z-index tokens (dropdown, sticky, overlay, modal)
 docs: document color-aware arbitrary value prefixes
 chore(deps): bump vitest to ^2.0.0
-BREAKING CHANGE: class prefix hdx- → hdx- (set prefix:'hdx-' to keep old syntax)
+BREAKING CHANGE: class prefix hdx_ → hdx- (set prefix:'hdx_' to keep old syntax)
 ```
 
 ### Release Process
