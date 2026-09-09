@@ -247,7 +247,7 @@ export function countClassOccurrences(content, className) {
  *   totals: { classes: number, utilities: number, components: number, unknown: number },
  * }>}
  */
-export async function explainBuild(config, warn = () => {}) {
+export async function explainBuild(config) {
   const { allUsedClasses, unknownLocs } = await scanContent(config);
   const fg = await import('fast-glob');
   const prefix = config.prefix || 'hdx-';

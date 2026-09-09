@@ -117,7 +117,7 @@ export function applyVariantPipeline(baseCss, variantNames, variantMap, utilityN
   // escaping is per-character so escape(a+b) === escape(a)+escape(b). Arbitrary
   // media variants (min-[900px]_) break that invariant, so escape the whole
   // prefix when it contains bracket characters.
-  const escapedVariantPrefix = /[\[\]]/.test(variantPrefix)
+  const escapedVariantPrefix = (variantPrefix.includes('[') || variantPrefix.includes(']'))
     ? escapeClassName(variantPrefix)
     : variantPrefix;
   const escaped = prefix + escapedVariantPrefix + escapeClassName(utilityName);

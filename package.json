@@ -55,6 +55,7 @@
     "stats": "node stats.js",
     "stats:verify": "node scripts/verify-stats.js",
     "token-docs:verify": "node scripts/verify-token-docs.js",
+    "lint": "eslint .",
     "defaults": "node scripts/generate-defaults.js",
     "build": "node src/cli/index.js build",
     "build:css": "node scripts/build-starter.js",
@@ -70,6 +71,9 @@
     "picocolors": "^1.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.10.0",
+    "globals": "^17.12.0",
     "vitest": "^2.0.0"
   },
   "engines": {

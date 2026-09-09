@@ -68,29 +68,40 @@ export function extractClassNames(content, prefix = 'hdx-') {
   }
 
   // String literals with HDX classes: "hdx-flex hdx-p-4" or 'hdx-flex hdx-p-4'
-  // The char class covers every character the generator emits in selector /
-  // arbitrary values: word chars, spaces, hyphen, dot, slash, brackets, colon,
-  // percent, hash, parens, comma, star.
-  const arbitraryChars = '\\w\\s\\-/.\\[\\].:%#(),*';
-  const stringPattern = new RegExp('(["\'])((?:' + prefixRe + '[' + arbitraryChars + ']+)+)\\1', 'g');
+  // We match any string literal and then filter for tokens starting with the prefix.
+  const stringPattern = /(['"])(.*?)\1/g;
   while ((match = stringPattern.exec(content)) !== null) {
-    splitClasses(match[2]).forEach(c => classes.add(c));
+    const value = match[2];
+    if (prefixClassRe.test(value)) {
+      splitClasses(value).forEach(c => {
+        if (c.startsWith(prefix)) classes.add(c);
+      });
+    }
   }
 
   // Array join patterns: ['hdx-flex', 'hdx-p-4'].join(' ') containing HDX
-  // classes. Only the quoted literals are read — never a raw slice of the
-  // surrounding source — so tokens like `const`/`=`,`,`` don't enter the set.
+  // classes. We look for the preceding array literal [ ... ] and extract all quoted strings.
   const joinPattern = /\.join\(\s*(['"])\s*(\S+)?\s*\1\s*\)/g;
   while ((match = joinPattern.exec(content)) !== null) {
-    const before = content.slice(Math.max(0, match.index - 500), match.index);
-    const itemRe = /(["'])([^"']*?)\1/g;
+    // Find the start of the array [
+    let start = match.index - 1;
+    let brackets = 0;
+    while (start >= 0) {
+      if (content[start] === ']') brackets++;
+      if (content[start] === '[') brackets--;
+      if (brackets === 0) break;
+      start--;
+    }
+    const arrayContent = content.slice(Math.max(0, start), match.index);
+    const itemRe = /(['"])([^'"]*?)\1/g;
     let item;
-    while ((item = itemRe.exec(before)) !== null) {
+    while ((item = itemRe.exec(arrayContent)) !== null) {
       if (prefixClassRe.test(item[2])) {
         splitClasses(item[2]).forEach(c => classes.add(c));
       }
     }
   }
+
 
   return classes;
 }

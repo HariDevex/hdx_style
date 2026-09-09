@@ -7,6 +7,10 @@ import { avatarComponents } from './avatar.js';
 import { modalComponents } from './modal.js';
 import { tableComponents } from './table.js';
 import { containerComponent } from './container.js';
+import { toastComponents } from './toast.js';
+import { tooltipComponents } from './tooltip.js';
+import { layoutComponents } from './layout.js';
+import { interactiveComponents } from './interactive.js';
 
 /**
  * Get all component definitions
@@ -26,6 +30,10 @@ export function getAllComponents(config) {
     ...modalComponents(config),
     ...tableComponents(config),
     ...containerComponent(config),
+    ...toastComponents(config),
+    ...tooltipComponents(config),
+    ...layoutComponents(config),
+    ...interactiveComponents(config),
     ...customComponents,
   ];
 }
