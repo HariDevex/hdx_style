@@ -164,7 +164,7 @@ function build() {
     + ' * Full utility × variant matrix: see dist/hdx.css (opt-in).\n'
     + ' */\n\n';
   css += generateCSS(config, { utilities: needed });
-  css += '\n/* HDX CSS — Keyframes */\n' + getAnimationKeyframes();
+  css += '\n/* HDX CSS — Keyframes */\n' + getAnimationKeyframes(config.prefix);
 
   const outDir = path.join(root, '..', 'css');
   fs.mkdirSync(outDir, { recursive: true });

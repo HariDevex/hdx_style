@@ -4,9 +4,9 @@ import { loadConfig } from '../../src/core/config.js';
 
 describe('HDX Class Parser', () => {
   it('parses simple utility', () => {
-    const result = parseClass('hdx_flex');
+    const result = parseClass('hdx-flex');
     expect(result).toEqual({
-      prefix: 'hdx_',
+      prefix: 'hdx-',
       variants: [],
       utility: 'flex',
       valid: true,
@@ -14,9 +14,9 @@ describe('HDX Class Parser', () => {
   });
 
   it('parses utility with one variant', () => {
-    const result = parseClass('hdx_md_flex');
+    const result = parseClass('hdx-md_flex');
     expect(result).toEqual({
-      prefix: 'hdx_',
+      prefix: 'hdx-',
       variants: ['md'],
       utility: 'flex',
       valid: true,
@@ -24,9 +24,9 @@ describe('HDX Class Parser', () => {
   });
 
   it('parses utility with two variants', () => {
-    const result = parseClass('hdx_md_hover_bg-primary');
+    const result = parseClass('hdx-md_hover_bg-primary');
     expect(result).toEqual({
-      prefix: 'hdx_',
+      prefix: 'hdx-',
       variants: ['md', 'hover'],
       utility: 'bg-primary',
       valid: true,
@@ -34,9 +34,9 @@ describe('HDX Class Parser', () => {
   });
 
   it('parses utility with three variants', () => {
-    const result = parseClass('hdx_lg_dark_hover_bg-primary');
+    const result = parseClass('hdx-lg_dark_hover_bg-primary');
     expect(result).toEqual({
-      prefix: 'hdx_',
+      prefix: 'hdx-',
       variants: ['lg', 'dark', 'hover'],
       utility: 'bg-primary',
       valid: true,
@@ -44,9 +44,9 @@ describe('HDX Class Parser', () => {
   });
 
   it('parses dark + state variant', () => {
-    const result = parseClass('hdx_dark_hover_flex');
+    const result = parseClass('hdx-dark_hover_flex');
     expect(result).toEqual({
-      prefix: 'hdx_',
+      prefix: 'hdx-',
       variants: ['dark', 'hover'],
       utility: 'flex',
       valid: true,
@@ -54,9 +54,9 @@ describe('HDX Class Parser', () => {
   });
 
   it('parses 2xl responsive', () => {
-    const result = parseClass('hdx_2xl_flex');
+    const result = parseClass('hdx-2xl_flex');
     expect(result).toEqual({
-      prefix: 'hdx_',
+      prefix: 'hdx-',
       variants: ['2xl'],
       utility: 'flex',
       valid: true,
@@ -64,9 +64,9 @@ describe('HDX Class Parser', () => {
   });
 
   it('parses focus-visible variant', () => {
-    const result = parseClass('hdx_focus-visible_ring');
+    const result = parseClass('hdx-focus-visible_ring');
     expect(result).toEqual({
-      prefix: 'hdx_',
+      prefix: 'hdx-',
       variants: ['focus-visible'],
       utility: 'ring',
       valid: true,
@@ -74,9 +74,9 @@ describe('HDX Class Parser', () => {
   });
 
   it('parses group-hover variant', () => {
-    const result = parseClass('hdx_group-hover_text-primary');
+    const result = parseClass('hdx-group-hover_text-primary');
     expect(result).toEqual({
-      prefix: 'hdx_',
+      prefix: 'hdx-',
       variants: ['group-hover'],
       utility: 'text-primary',
       valid: true,
@@ -84,9 +84,9 @@ describe('HDX Class Parser', () => {
   });
 
   it('parses read-only variant', () => {
-    const result = parseClass('hdx_read-only_bg-gray');
+    const result = parseClass('hdx-read-only_bg-gray');
     expect(result).toEqual({
-      prefix: 'hdx_',
+      prefix: 'hdx-',
       variants: ['read-only'],
       utility: 'bg-gray',
       valid: true,
@@ -109,7 +109,7 @@ describe('HDX Class Parser', () => {
   });
 
   it('returns invalid for prefix-only string', () => {
-    const result = parseClass('hdx_');
+    const result = parseClass('hdx-');
     expect(result.valid).toBe(false);
   });
 
@@ -126,8 +126,8 @@ describe('HDX Class Parser', () => {
 
 describe('isHdxClass', () => {
   it('returns true for HDX classes', () => {
-    expect(isHdxClass('hdx_flex')).toBe(true);
-    expect(isHdxClass('hdx_p-4')).toBe(true);
+    expect(isHdxClass('hdx-flex')).toBe(true);
+    expect(isHdxClass('hdx-p-4')).toBe(true);
   });
 
   it('returns false for non-HDX classes', () => {
@@ -138,31 +138,31 @@ describe('isHdxClass', () => {
 
 describe('getUtilityName', () => {
   it('extracts utility name from simple class', () => {
-    expect(getUtilityName('hdx_flex')).toBe('flex');
+    expect(getUtilityName('hdx-flex')).toBe('flex');
   });
 
   it('extracts utility name from variant class', () => {
-    expect(getUtilityName('hdx_md_hover_bg-primary')).toBe('bg-primary');
+    expect(getUtilityName('hdx-md_hover_bg-primary')).toBe('bg-primary');
   });
 });
 
 describe('getVariants', () => {
   it('returns empty for simple utility', () => {
-    expect(getVariants('hdx_flex')).toEqual([]);
+    expect(getVariants('hdx-flex')).toEqual([]);
   });
 
   it('returns variants in order', () => {
-    expect(getVariants('hdx_lg_dark_hover_flex')).toEqual(['lg', 'dark', 'hover']);
+    expect(getVariants('hdx-lg_dark_hover_flex')).toEqual(['lg', 'dark', 'hover']);
   });
 });
 
 describe('mapUtilitiesToVariants', () => {
   it('maps utility names to their variant combos', () => {
     const classes = new Set([
-      'hdx_flex',
-      'hdx_md_flex',
-      'hdx_hover_bg-primary',
-      'hdx_dark_bg-primary',
+      'hdx-flex',
+      'hdx-md_flex',
+      'hdx-hover_bg-primary',
+      'hdx-dark_bg-primary',
     ]);
     const map = mapUtilitiesToVariants(classes);
     expect(map.has('flex')).toBe(true);
@@ -194,9 +194,9 @@ describe('getVariantPrefixes (config-derived variants, P2/1.6 regression)', () =
     expect(prefixes).toContain('xs');
 
     // Without the config-derived list, 'xs' is treated as part of the utility.
-    expect(parseClass('hdx_xs_flex', 'hdx_').utility).toBe('xs_flex');
+    expect(parseClass('hdx-xs_flex', 'hdx-').utility).toBe('xs_flex');
     // With the config-derived list, 'xs' is consumed as a variant.
-    const parsed = parseClass('hdx_xs_flex', 'hdx_', prefixes);
+    const parsed = parseClass('hdx-xs_flex', 'hdx-', prefixes);
     expect(parsed.valid).toBe(true);
     expect(parsed.variants).toEqual(['xs']);
     expect(parsed.utility).toBe('flex');
@@ -205,7 +205,7 @@ describe('getVariantPrefixes (config-derived variants, P2/1.6 regression)', () =
   it('threads config-derived prefixes through mapUtilitiesToVariants', () => {
     const config = loadConfig();
     config.theme.breakpoints.xs = '480px';
-    const map = mapUtilitiesToVariants(new Set(['hdx_xs_flex']), 'hdx_', getVariantPrefixes(config));
+    const map = mapUtilitiesToVariants(new Set(['hdx-xs_flex']), 'hdx-', getVariantPrefixes(config));
     expect(map.get('flex').has('xs')).toBe(true);
   });
 

@@ -22,24 +22,24 @@ export function isSemanticColor(key, colors) {
 /**
  * Get CSS variable reference for a semantic color
  * @param {string} key - color name (e.g. "primary", "text")
- * @param {string} prefix - variable prefix (default "hdx_")
+ * @param {string} prefix - variable prefix (default "hdx-")
  * @returns {string} CSS variable reference
  */
-export function colorVariable(key, prefix = 'hdx_') {
+export function colorVariable(key, prefix = 'hdx-') {
   const varPrefix = prefix.replace(/_/g, '-').replace(/-$/, '');
   return `var(--${varPrefix}-color-${key})`;
 }
 
 /**
  * Build a namespaced internal CSS custom-property NAME (without the var()
- * wrapper), e.g. semanticVar('ring-color', 'hdx_') → '--hdx-ring-color'.
+ * wrapper), e.g. semanticVar('ring-color', 'hdx-') → '--hdx-ring-color'.
  * Internal variables (ring color, gradient stops, divide color, placeholder
  * color) follow the configured prefix so custom prefixes stay isolated.
  * @param {string} suffix - The variable suffix, e.g. 'ring-color'
- * @param {string} [prefix='hdx_']
+ * @param {string} [prefix='hdx-']
  * @returns {string}
  */
-export function semanticVar(suffix, prefix = 'hdx_') {
+export function semanticVar(suffix, prefix = 'hdx-') {
   const varPrefix = prefix.replace(/_/g, '-').replace(/-$/, '');
   return `--${varPrefix}-${suffix}`;
 }
@@ -51,7 +51,7 @@ export function semanticVar(suffix, prefix = 'hdx_') {
  * @param {string} prefix
  * @returns {string|null}
  */
-export function resolveColor(key, colors, prefix = 'hdx_') {
+export function resolveColor(key, colors, prefix = 'hdx-') {
   if (!colors || !(key in colors)) return null;
   return colorVariable(key, prefix);
 }

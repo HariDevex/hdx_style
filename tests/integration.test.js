@@ -15,7 +15,7 @@ describe('Integration: Purge actually reduces output', () => {
     const config = loadConfig();
     const fullCss = generateCSS(config);
 
-    // Simulate purging: only request hdx_flex and hdx_p-4
+    // Simulate purging: only request hdx-flex and hdx-p-4
     const allUtilities = getAllUtilities(config);
     const utilMap = new Map(allUtilities.map(u => [u.name, u]));
     const flexUtil = utilMap.get('flex');
@@ -44,11 +44,11 @@ describe('Integration: Purge actually reduces output', () => {
     const purgedCss = generateCSS(config, { utilities: neededUtils });
 
     // Should contain the requested utility
-    expect(purgedCss).toContain('.hdx_flex');
+    expect(purgedCss).toContain('.hdx-flex');
     // Should NOT contain unrelated utilities
-    expect(purgedCss).not.toContain('.hdx_grid');
-    expect(purgedCss).not.toContain('.hdx_shadow-xl');
-    expect(purgedCss).not.toContain('.hdx_rotate-45');
+    expect(purgedCss).not.toContain('.hdx-grid');
+    expect(purgedCss).not.toContain('.hdx-shadow-xl');
+    expect(purgedCss).not.toContain('.hdx-rotate-45');
   });
 
   it('purged output includes requested variant combos', () => {
@@ -63,16 +63,16 @@ describe('Integration: Purge actually reduces output', () => {
 
     const purgedCss = generateCSS(config, { utilities: neededUtils });
 
-    expect(purgedCss).toContain('.hdx_hover_bg-primary');
+    expect(purgedCss).toContain('.hdx-hover_bg-primary');
     expect(purgedCss).toContain(':hover');
   });
 
   it('scanner extracts classes and purger filters correctly', () => {
-    const html = '<div class="hdx_flex hdx_p-4 hdx_text-primary"></div>';
+    const html = '<div class="hdx-flex hdx-p-4 hdx-text-primary"></div>';
     const classes = extractClassNames(html);
-    expect(classes.has('hdx_flex')).toBe(true);
-    expect(classes.has('hdx_p-4')).toBe(true);
-    expect(classes.has('hdx_text-primary')).toBe(true);
+    expect(classes.has('hdx-flex')).toBe(true);
+    expect(classes.has('hdx-p-4')).toBe(true);
+    expect(classes.has('hdx-text-primary')).toBe(true);
 
     const config = loadConfig();
     const allUtilities = getAllUtilities(config);
@@ -85,7 +85,7 @@ describe('Integration: Purge actually reduces output', () => {
   });
 
   it('purger output feeds demand-driven generation end to end', () => {
-    const html = '<button class="hdx_lg_dark_hover_bg-primary"></button>';
+    const html = '<button class="hdx-lg_dark_hover_bg-primary"></button>';
     const classes = extractClassNames(html);
 
     const config = loadConfig();
@@ -99,19 +99,19 @@ describe('Integration: Purge actually reduces output', () => {
 
     // Its output drives the demand-driven generator
     const purgedCss = generateCSS(config, { utilities: purged });
-    expect(purgedCss).toContain('.hdx_bg-primary');
-    expect(purgedCss).not.toContain('.hdx_grid');
-    expect(purgedCss).not.toContain('.hdx_shadow-xl');
+    expect(purgedCss).toContain('.hdx-bg-primary');
+    expect(purgedCss).not.toContain('.hdx-grid');
+    expect(purgedCss).not.toContain('.hdx-shadow-xl');
   });
 
   it('design-token completeness additions survive a purge build end to end', () => {
-    const html = `<div class="hdx_z-toast hdx_bg-gray-500 hdx_p-0.5 hdx_hover_bg-primary">
-  <button class="hdx_btn-danger">Delete</button>
+    const html = `<div class="hdx-z-toast hdx-bg-gray-500 hdx-p-0.5 hdx-hover_bg-primary">
+  <button class="hdx-btn-danger">Delete</button>
 </div>`;
     const classes = extractClassNames(html);
-    expect(classes.has('hdx_z-toast')).toBe(true);
-    expect(classes.has('hdx_bg-gray-500')).toBe(true);
-    expect(classes.has('hdx_p-0.5')).toBe(true);
+    expect(classes.has('hdx-z-toast')).toBe(true);
+    expect(classes.has('hdx-bg-gray-500')).toBe(true);
+    expect(classes.has('hdx-p-0.5')).toBe(true);
 
     const config = loadConfig();
     const allUtilities = getAllUtilities(config);
@@ -123,35 +123,35 @@ describe('Integration: Purge actually reduces output', () => {
     expect(purged.find(u => u.name === 'bg-primary')._requestedVariants).toContainEqual(['hover']);
 
     const css = generateCSS(config, { utilities: purged });
-    expect(css).toContain('.hdx_z-toast { z-index: 1500; }');
-    expect(css).toContain('.hdx_bg-gray-500 { background-color: var(--hdx-color-gray-500); }');
-    expect(css).toContain('.hdx_p-0\\.5 { padding: 0.125rem; }');
-    expect(css).toContain('.hdx_hover_bg-primary:hover');
+    expect(css).toContain('.hdx-z-toast { z-index: 1500; }');
+    expect(css).toContain('.hdx-bg-gray-500 { background-color: var(--hdx-color-gray-500); }');
+    expect(css).toContain('.hdx-p-0\\.5 { padding: 0.125rem; }');
+    expect(css).toContain('.hdx-hover_bg-primary:hover');
     // Button component + its press states ship regardless of used utilities.
-    expect(css).toContain('.hdx_btn-danger:hover');
-    expect(css).toContain('.hdx_btn-danger:active');
-    // Dark action color and gray token land in the .hdx_dark token layer.
+    expect(css).toContain('.hdx-btn-danger:hover');
+    expect(css).toContain('.hdx-btn-danger:active');
+    // Dark action color and gray token land in the .hdx-dark token layer.
     expect(css).toContain('--hdx-color-danger: #F87171');
     expect(css).toContain('--hdx-color-gray-500: #64748B');
     // Unrelated utilities still stay out.
-    expect(css).not.toContain('.hdx_z-50');
-    expect(css).not.toContain('.hdx_bg-danger');
+    expect(css).not.toContain('.hdx-z-50');
+    expect(css).not.toContain('.hdx-bg-danger');
   });
 });
 
-describe('Integration: Dark mode uses hdx_dark', () => {
-  it('dark variant selector is .hdx_dark', () => {
+describe('Integration: Dark mode uses hdx-dark', () => {
+  it('dark variant selector is .hdx-dark', () => {
     const config = loadConfig({ darkMode: 'class' });
     const css = generateCSS(config);
-    expect(css).toContain('.hdx_dark');
+    expect(css).toContain('.hdx-dark');
     expect(css).not.toContain('.dark {');
   });
 
-  it('dark variables use .hdx_dark', () => {
+  it('dark variables use .hdx-dark', () => {
     const config = loadConfig({ darkMode: 'class' });
     const css = generateCSS(config);
-    // Dark variables should use .hdx_dark, not .dark
-    expect(css).toContain('.hdx_dark {\n  --hdx-color-background');
+    // Dark variables should use .hdx-dark, not .dark
+    expect(css).toContain('.hdx-dark {\n  --hdx-color-background');
   });
 
   it('dark variant generates correct CSS rule', () => {
@@ -161,7 +161,7 @@ describe('Integration: Dark mode uses hdx_dark', () => {
         { name: 'bg-primary', property: 'background-color', value: 'var(--hdx-color-primary)', category: 'colors', _requestedVariants: [['dark']] },
       ],
     });
-    expect(css).toContain('.hdx_dark .hdx_dark_bg-primary');
+    expect(css).toContain('.hdx-dark .hdx-dark_bg-primary');
   });
 });
 
@@ -174,7 +174,7 @@ describe('Integration: Combined variant selectors', () => {
       ],
     });
     expect(css).toContain('@media (min-width: 768px) {');
-    expect(css).toContain('.hdx_md_hover_bg-primary:hover');
+    expect(css).toContain('.hdx-md_hover_bg-primary:hover');
   });
 
   it('responsive + dark combo places the dark ancestor inside the media query', () => {
@@ -185,8 +185,8 @@ describe('Integration: Combined variant selectors', () => {
       ],
     });
     expect(css).toContain('@media (min-width: 768px) {');
-    expect(css).toContain('.hdx_dark .hdx_md_dark_bg-primary');
-    expect(css).not.toContain('.hdx_dark .hdx_bg-primary');
+    expect(css).toContain('.hdx-dark .hdx-md_dark_bg-primary');
+    expect(css).not.toContain('.hdx-dark .hdx-bg-primary');
   });
 
   it('responsive + dark + state combo emits fully qualified selector behind the dark ancestor', () => {
@@ -197,30 +197,30 @@ describe('Integration: Combined variant selectors', () => {
       ],
     });
     expect(css).toContain('@media (min-width: 768px) {');
-    expect(css).toContain('.hdx_dark .hdx_md_dark_hover_bg-primary:hover');
+    expect(css).toContain('.hdx-dark .hdx-md_dark_hover_bg-primary:hover');
   });
 });
 
-describe('Integration: Group/peer use hdx_group/hdx_peer', () => {
-  it('group-hover variant uses hdx_group ancestor', () => {
+describe('Integration: Group/peer use hdx-group/hdx-peer', () => {
+  it('group-hover variant uses hdx-group ancestor', () => {
     const config = loadConfig();
     const css = generateCSS(config, {
       utilities: [
         { name: 'text-primary', property: 'color', value: 'var(--hdx-color-primary)', category: 'colors', _requestedVariants: [['group-hover']] },
       ],
     });
-    expect(css).toContain('hdx_group:hover');
+    expect(css).toContain('hdx-group:hover');
     expect(css).not.toContain('.group:hover');
   });
 
-  it('peer-hover variant uses hdx_peer ancestor', () => {
+  it('peer-hover variant uses hdx-peer ancestor', () => {
     const config = loadConfig();
     const css = generateCSS(config, {
       utilities: [
         { name: 'text-primary', property: 'color', value: 'var(--hdx-color-primary)', category: 'colors', _requestedVariants: [['peer-hover']] },
       ],
     });
-    expect(css).toContain('hdx_peer:hover');
+    expect(css).toContain('hdx-peer:hover');
     expect(css).not.toContain('.peer:hover');
   });
 });
@@ -230,9 +230,9 @@ describe('Integration: Border multi-property', () => {
     const config = loadConfig();
     const css = generateCSS(config);
     // border should set both border-width and border-style
-    expect(css).toContain('.hdx_border');
+    expect(css).toContain('.hdx-border');
     // Verify it contains both properties
-    const borderMatch = css.match(/\.hdx_border\s*\{[^}]+\}/);
+    const borderMatch = css.match(/\.hdx-border\s*\{[^}]+\}/);
     expect(borderMatch).toBeTruthy();
     if (borderMatch) {
       expect(borderMatch[0]).toContain('border-width');
@@ -245,7 +245,7 @@ describe('Integration: Truncate multi-property', () => {
   it('truncate sets overflow, text-overflow, and white-space', () => {
     const config = loadConfig();
     const css = generateCSS(config);
-    const truncateMatch = css.match(/\.hdx_truncate\s*\{[^}]+\}/);
+    const truncateMatch = css.match(/\.hdx-truncate\s*\{[^}]+\}/);
     expect(truncateMatch).toBeTruthy();
     if (truncateMatch) {
       expect(truncateMatch[0]).toContain('overflow: hidden');
@@ -313,11 +313,11 @@ describe('Integration: Cascade ordering (P1 regression)', () => {
     const config = loadConfig();
     const css = generateCSS(config);
 
-    const baseInfoIdx = css.indexOf('.hdx_hidden');
+    const baseInfoIdx = css.indexOf('.hdx-hidden');
     expect(baseInfoIdx).toBeGreaterThan(-1);
 
     // Every breakpoint media query must come after the base rule. This is the
-    // ordering contract that lets `hdx_hidden hdx_lg_flex` show at >= lg.
+    // ordering contract that lets `hdx-hidden hdx-lg_flex` show at >= lg.
     for (const [bp, width] of Object.entries(config.theme.breakpoints)) {
       const mediaBlock = css.indexOf('@media (min-width: ' + width + ')');
       expect(mediaBlock).toBeGreaterThan(-1);
@@ -329,12 +329,12 @@ describe('Integration: Cascade ordering (P1 regression)', () => {
     const config = loadConfig();
     const css = generateCSS(config);
 
-    const hiddenPos = css.indexOf('.hdx_hidden { display: none;');
+    const hiddenPos = css.indexOf('.hdx-hidden { display: none;');
     expect(hiddenPos).toBeGreaterThan(-1);
 
-    // Find the media block that actually wraps the hdx_lg_flex rule and confirm
+    // Find the media block that actually wraps the hdx-lg_flex rule and confirm
     // it contains display:flex and comes after the hidden base.
-    const lgFlexRule = '.hdx_lg_flex { display: flex; }';
+    const lgFlexRule = '.hdx-lg_flex { display: flex; }';
     expect(css).toContain(lgFlexRule);
     expect(hiddenPos).toBeLessThan(css.indexOf(lgFlexRule));
   });
@@ -351,7 +351,7 @@ describe('Integration: Cascade ordering (P1 regression)', () => {
 
     const css = generateCSS(config, { utilities: neededUtils });
 
-    const hiddenPos = css.indexOf('.hdx_hidden { display: none;');
+    const hiddenPos = css.indexOf('.hdx-hidden { display: none;');
     const lgPos = css.indexOf('@media (min-width: 1024px)');
     expect(hiddenPos).toBeLessThan(lgPos);
   });
@@ -371,7 +371,7 @@ describe('Integration: Cascade ordering (P1 regression)', () => {
 
     const css = generateCSS(config, { utilities: neededUtils });
 
-    const basePos = css.indexOf('.hdx_grid-cols-1 {');
+    const basePos = css.indexOf('.hdx-grid-cols-1 {');
     expect(basePos).toBeGreaterThan(-1);
 
     for (const width of ['640px', '1280px']) {
@@ -406,7 +406,7 @@ describe('Integration: Media blocks grouped for inspection', () => {
     for (let i = firstMedia; i <= mediaLines[mediaLines.length - 1]; i++) {
       const raw = lines[i];
       const t = raw.trim();
-      if (/^\.hdx_.+\{/.test(t)) {
+      if (/^\.hdx-.+\{/.test(t)) {
         expect(raw.startsWith('  ')).toBe(true);
       }
     }
@@ -423,17 +423,17 @@ describe('Integration: Deterministic output', () => {
 });
 
 describe('Integration: Dark mode strategy', () => {
-  it('media strategy does not produce .hdx_dark class', () => {
+  it('media strategy does not produce .hdx-dark class', () => {
     const config = loadConfig({ darkMode: 'media' });
     const css = generateCSS(config);
-    expect(css).not.toContain('.hdx_dark {');
+    expect(css).not.toContain('.hdx-dark {');
     expect(css).toContain('@media (prefers-color-scheme: dark)');
   });
 
   it('both strategy produces both', () => {
     const config = loadConfig({ darkMode: 'both' });
     const css = generateCSS(config);
-    expect(css).toContain('.hdx_dark {');
+    expect(css).toContain('.hdx-dark {');
     expect(css).toContain('@media (prefers-color-scheme: dark)');
   });
 });
@@ -443,14 +443,14 @@ describe('Integration: Component layer gating (P1/1.7 regression)', () => {
     const config = loadConfig();
     const css = generateCSS(config);
     expect(css).toContain('/* HDX CSS — Components */');
-    expect(css).toContain('.hdx_btn {');
+    expect(css).toContain('.hdx-btn {');
   });
 
   it('components are omitted when config.components === false', () => {
     const config = loadConfig({ components: false });
     const css = generateCSS(config);
     expect(css).not.toContain('/* HDX CSS — Components */');
-    expect(css).not.toContain('.hdx_btn {');
+    expect(css).not.toContain('.hdx-btn {');
   });
 
   it('purged utility output remains correct when components are disabled', () => {
@@ -464,8 +464,8 @@ describe('Integration: Component layer gating (P1/1.7 regression)', () => {
         _requestedVariants: [],
       }],
     });
-    expect(css).toContain('.hdx_flex { display: flex; }');
-    expect(css).not.toContain('.hdx_btn');
+    expect(css).toContain('.hdx-flex { display: flex; }');
+    expect(css).not.toContain('.hdx-btn');
   });
 });
 
@@ -480,7 +480,7 @@ describe('Integration: col-span emission (P1/1.2 regression)', () => {
         { ...utilMap.get('col-span-2'), _requestedVariants: [] },
       ],
     });
-    expect(css).toContain('.hdx_col-span-2 { grid-column: span 2 / span 2; }');
+    expect(css).toContain('.hdx-col-span-2 { grid-column: span 2 / span 2; }');
     expect(css).not.toContain('grid-column: 2 / span 2');
   });
 });
@@ -504,55 +504,55 @@ describe('Integration: Component purging (demand-driven components)', () => {
     return generatePurgedBuildCss(config);
   };
 
-  it('drops an unused component (modal) from a purged build when no hdx_modal* appears in content', async () => {
-    const css = await buildWithContent('<div class="hdx_flex hdx_p-4"></div>');
+  it('drops an unused component (modal) from a purged build when no hdx-modal* appears in content', async () => {
+    const css = await buildWithContent('<div class="hdx-flex hdx-p-4"></div>');
 
-    expect(css).toContain('.hdx_flex');
-    expect(css).not.toContain('.hdx_modal-overlay');
-    expect(css).not.toContain('.hdx_modal {');
-    expect(css).not.toContain('.hdx_modal-header');
+    expect(css).toContain('.hdx-flex');
+    expect(css).not.toContain('.hdx-modal-overlay');
+    expect(css).not.toContain('.hdx-modal {');
+    expect(css).not.toContain('.hdx-modal-header');
     // Unused utility-only components are equally purged.
-    expect(css).not.toContain('.hdx_btn {');
-    expect(css).not.toContain('.hdx_card');
+    expect(css).not.toContain('.hdx-btn {');
+    expect(css).not.toContain('.hdx-card');
   });
 
   it('keeps a component (and its states blocks) when its class appears in content', async () => {
-    const css = await buildWithContent('<button class="hdx_btn hdx_btn-primary">Go</button>');
+    const css = await buildWithContent('<button class="hdx-btn hdx-btn-primary">Go</button>');
 
-    expect(css).toContain('.hdx_btn {');
-    expect(css).toContain('.hdx_btn-primary {');
+    expect(css).toContain('.hdx-btn {');
+    expect(css).toContain('.hdx-btn-primary {');
     // Interactive states ship with their base definition.
-    expect(css).toContain('.hdx_btn-primary:hover');
-    expect(css).toContain('.hdx_btn-primary:active');
+    expect(css).toContain('.hdx-btn-primary:hover');
+    expect(css).toContain('.hdx-btn-primary:active');
     // Unrelated components stay out of the purged build.
-    expect(css).not.toContain('.hdx_modal-overlay');
-    expect(css).not.toContain('.hdx_input');
+    expect(css).not.toContain('.hdx-modal-overlay');
+    expect(css).not.toContain('.hdx-input');
   });
 
   it('composed components resolve independently (btn + btn-primary)', async () => {
-    const css = await buildWithContent('<button class="hdx_btn hdx_btn-primary"></button>');
+    const css = await buildWithContent('<button class="hdx-btn hdx-btn-primary"></button>');
 
-    expect(css).toContain('.hdx_btn {');
-    expect(css).toContain('.hdx_btn-primary {');
+    expect(css).toContain('.hdx-btn {');
+    expect(css).toContain('.hdx-btn-primary {');
   });
 
   it('keeps a component when only its class name is the sole usage', async () => {
-    const css = await buildWithContent('<div class="hdx_modal-overlay"><div class="hdx_modal">x</div></div>');
+    const css = await buildWithContent('<div class="hdx-modal-overlay"><div class="hdx-modal">x</div></div>');
 
-    expect(css).toContain('.hdx_modal-overlay');
-    expect(css).toContain('.hdx_modal {');
-    expect(css).not.toContain('.hdx_btn {');
+    expect(css).toContain('.hdx-modal-overlay');
+    expect(css).toContain('.hdx-modal {');
+    expect(css).not.toContain('.hdx-btn {');
   });
 
   it('keeps safelisted components even when absent from content', async () => {
     const htmlPath = path.join(tmpDir, 'index.html');
-    fs.writeFileSync(htmlPath, '<div class="hdx_flex"></div>');
+    fs.writeFileSync(htmlPath, '<div class="hdx-flex"></div>');
     const config = loadConfig();
     config.content = [path.join(tmpDir, '*.html')];
-    config.safelist = ['hdx_modal'];
+    config.safelist = ['hdx-modal'];
 
     const css = await generatePurgedBuildCss(config);
-    expect(css).toContain('.hdx_modal {');
-    expect(css).not.toContain('.hdx_btn {');
+    expect(css).toContain('.hdx-modal {');
+    expect(css).not.toContain('.hdx-btn {');
   });
 });

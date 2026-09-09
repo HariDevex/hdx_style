@@ -23,7 +23,7 @@ describe('Regression: plugins run exactly once per purged build', () => {
   beforeAll(() => {
     pluginRunCount = 0;
     fs.mkdirSync(tmpDir, { recursive: true });
-    fs.writeFileSync(path.join(tmpDir, 'index.html'), '<div class="hdx_flex hdx_glow"></div>');
+    fs.writeFileSync(path.join(tmpDir, 'index.html'), '<div class="hdx-flex hdx-glow"></div>');
   });
 
   afterAll(() => {
@@ -32,7 +32,7 @@ describe('Regression: plugins run exactly once per purged build', () => {
 
   it('side-effecting plugin handler fires a single time across scan + generate', async () => {
     const config = loadConfig({
-      prefix: 'hdx_',
+      prefix: 'hdx-',
       content: [path.join(tmpDir, 'index.html')],
       plugins: [sideEffectPlugin],
     });
@@ -45,8 +45,8 @@ describe('Regression: plugins run exactly once per purged build', () => {
 
     expect(pluginRunCount).toBe(1);
     // The plugin utility is still purge-matched and emitted.
-    expect(css).toContain('.hdx_glow');
-    expect(css).toContain('.hdx_flex');
+    expect(css).toContain('.hdx-glow');
+    expect(css).toContain('.hdx-flex');
   });
 
   it('generateCSS still runs plugins itself when no registry is supplied', () => {

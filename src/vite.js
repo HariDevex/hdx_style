@@ -66,9 +66,12 @@ export function hdxVitePlugin(options = {}) {
   let lastWrite = '';
 
   async function writeStyles() {
-    const cfg = await loadConfigFromFile(configPath, { bustCache: false });
+    // bustCache ensures config edits on disk are re-read instead of the stale
+    // loaded config from the first call, and cwd is the Vite root so content
+    // globs resolve relative to the project (not the process CWD).
+    const cfg = await loadConfigFromFile(configPath, { bustCache: true });
     patterns = cfg.content || [];
-    const css = await generatePurgedBuildCss(cfg);
+    const css = await generatePurgedBuildCss(cfg, () => {}, () => {}, {}, root);
     const out = path.resolve(root, options.output || 'dist/hdx.css');
     fs.mkdirSync(path.dirname(out), { recursive: true });
     fs.writeFileSync(out, css, 'utf-8');

@@ -2,14 +2,16 @@
  * Arbitrary value resolution
  *
  * Converts a safe subset of Tailwind-style arbitrary values into synthesized
- * utility definitions at purge time, e.g. `hdx_w-[260px]` → { width: 260px },
- * `hdx_rounded-[10px]`, `hdx_max-h-[70vh]`, `hdx_opacity-[0.5]`.
+ * utility definitions at purge time, e.g. `hdx-w-[260px]` → { width: 260px },
+ * `hdx-rounded-[10px]`, `hdx-max-h-[70vh]`, `hdx-opacity-[0.5]`.
  *
  * Only a curated allow-list of property prefixes is supported, so this never
  * becomes a free-form CSS injection mechanism.
  *
  * @module generator/arbitrary
  */
+
+import { semanticVar } from './resolver.js';
 
 // [property, valueKind]
 // valueKind ∈ 'length' | 'number' | 'angle' | 'raw' | 'blur'
@@ -103,11 +105,14 @@ function isColorValue(value) {
     || COLOR_KEYWORDS.has(v);
 }
 
-// Properties that accept negative values (margins, offsets, translates).
+// Properties that accept negative values (margins, offsets, translates,
+// rotate). Static analogues exist for all of these (-m-4, -top-4,
+// -translate-x-4, -rotate-45), so the arbitrary form should mirror them.
 const NEGATABLE = new Set([
   'm', 'mx', 'my', 'mt', 'mr', 'mb', 'ml',
   'top', 'right', 'bottom', 'left',
   'translate-x', 'translate-y',
+  'rotate',
 ]);
 
 // Color-backed arbitrary tokens (Task 7) share the same value-shape detection
@@ -130,9 +135,12 @@ const COLOR_PROPERTY = {
  * UtilityDefinition, or null when it isn't a supported arbitrary value.
  *
  * @param {string} utility - The parsed utility token (e.g. 'w-[260px]')
+ * @param {string} [prefix='hdx-'] - Config prefix, so variable-backed tokens
+ *   (ring color) emit the same namespaced custom property the static
+ *   utilities read (e.g. `--hdx-ring-color`, not `--ring-color`).
  * @returns {import('../core/types.js').UtilityDefinition|null}
  */
-export function resolveArbitraryUtility(utility) {
+export function resolveArbitraryUtility(utility, prefix = 'hdx-') {
   const match = /^(.+)-\[(.+)\]$/.exec(utility);
   if (!match) return null;
 
@@ -155,7 +163,10 @@ export function resolveArbitraryUtility(utility) {
   // its default kind (font-size/length for 'text', etc.).
   if (COLOR_TOKENS.has(token)) {
     if (isColorValue(value)) {
-      property = COLOR_PROPERTY[token];
+      // ring writes to the prefix-scoped internal variable the static
+      // `ring-*` shadow reads (see utilities/shadows.js), so arbitrary ring
+      // colors actually take effect.
+      property = token === 'ring' ? semanticVar('ring-color', prefix) : COLOR_PROPERTY[token];
       kind = COLOR_KIND;
     } else if (token !== 'text') {
       // bg/border/ring only accept color-shaped values. A non-color value is
@@ -165,7 +176,7 @@ export function resolveArbitraryUtility(utility) {
     }
   }
 
-  if (negative && (!NEGATABLE.has(token) || kind !== 'length')) return null;
+  if (negative && !NEGATABLE.has(token)) return null;
 
   // Block characters that would leak out of a single CSS declaration.
   if (/[{}\n\r;]/.test(value)) return null;
@@ -207,7 +218,7 @@ export function resolveArbitraryUtility(utility) {
     // Normalize to the built-in opacity scale (0–1). Values already expressed
     // as a 0–1 decimal stay as-is; integer/float values within 0–100 are
     // treated as a percentage and divided by 100 to match how the built-in
-    // hdx_opacity-N utilities work (hdx_opacity-50 → 0.5).
+    // hdx-opacity-N utilities work (hdx-opacity-50 → 0.5).
     //
     // Ambiguous edge case: `opacity-[1]` could mean 1% or 100%. Mirroring
     // Tailwind's own convention, `1` is treated as already-normalized (1.0),

@@ -19,10 +19,10 @@ font-size: ${fontSize.sm};
 line-height: 1.5;`;
 
   return [
-    { name: 'alert', css: baseAlert + `\nbackground-color: ${cv('info')};\ncolor: ${cv('white')};`, category: 'components' },
-    { name: 'alert-success', css: baseAlert + `\nbackground-color: ${cv('success')};\ncolor: ${cv('white')};`, category: 'components' },
-    { name: 'alert-danger', css: baseAlert + `\nbackground-color: ${cv('danger')};\ncolor: ${cv('white')};`, category: 'components' },
-    { name: 'alert-warning', css: baseAlert + `\nbackground-color: ${cv('warning')};\ncolor: ${cv('white')};`, category: 'components' },
-    { name: 'alert-info', css: baseAlert + `\nbackground-color: ${cv('info')};\ncolor: ${cv('white')};`, category: 'components' },
+    { name: 'alert', css: baseAlert + `\nbackground-color: ${cv('info')};\ncolor: ${cv('on-accent')};`, category: 'components' },
+    { name: 'alert-success', css: baseAlert + `\nbackground-color: ${cv('success')};\ncolor: ${cv('on-accent')};`, category: 'components' },
+    { name: 'alert-danger', css: baseAlert + `\nbackground-color: ${cv('danger')};\ncolor: ${cv('on-accent')};`, category: 'components' },
+    { name: 'alert-warning', css: baseAlert + `\nbackground-color: ${cv('warning')};\ncolor: ${cv('on-accent')};`, category: 'components' },
+    { name: 'alert-info', css: baseAlert + `\nbackground-color: ${cv('info')};\ncolor: ${cv('on-accent')};`, category: 'components' },
   ];
 }

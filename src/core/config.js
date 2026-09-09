@@ -10,6 +10,22 @@ export function getDefaultConfig() {
 }
 
 /**
+ * Define a configuration object with TypeScript/JSDoc type inference.
+ *
+ * A type-safe identity: it returns its argument unchanged, so `loadConfig`
+ * still deep-merges the object over the framework defaults. Its only job is to
+ * give config files (`hdx.config.js` / `.cjs` / `.mjs`) autocompletion and
+ * type-checking of the ~4 dozen supported options.
+ *
+ * @template {Partial<import('./types.js').HdxConfig>} T
+ * @param {T} config
+ * @returns {T}
+ */
+export function defineConfig(config) {
+  return config;
+}
+
+/**
  * Load and merge configuration
  * @param {Partial<HdxConfig>} [userConfig]
  * @returns {HdxConfig}

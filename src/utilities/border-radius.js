@@ -18,7 +18,7 @@ export function borderRadiusUtilities(config) {
   // Individual corners. Each utility emits ALL its corner properties in a
   // single rule (multi-property `css` body) so a name maps to exactly one
   // definition — otherwise the purger's name→definition map would drop the
-  // first corner (e.g. `hdx_rounded-t-md` losing border-top-left-radius).
+  // first corner (e.g. `hdx-rounded-t-md` losing border-top-left-radius).
   const corners = [
     ['t', ['border-top-left-radius', 'border-top-right-radius']],
     ['r', ['border-top-right-radius', 'border-bottom-right-radius']],

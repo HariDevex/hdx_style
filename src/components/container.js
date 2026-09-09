@@ -15,7 +15,7 @@ padding-inline: 1rem;`,
   ];
 
   // container-{breakpoint} max-widths are derived from theme.breakpoints so a
-  // custom breakpoint (e.g. 3xl) automatically gets an hdx_container-3xl.
+  // custom breakpoint (e.g. 3xl) automatically gets an hdx-container-3xl.
   for (const [key, width] of Object.entries(config.theme.breakpoints || {})) {
     components.push({
       name: `container-${key}`,

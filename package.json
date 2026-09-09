@@ -26,12 +26,16 @@
       "types": "./index.d.ts",
       "default": "./src/index.js"
     },
-    "./css": "./dist/hdx.css"
+    "./css": "./css/index.css",
+    "./vite": {
+      "types": "./vite.d.ts",
+      "default": "./src/vite.js"
+    }
   },
   "main": "./src/index.js",
   "types": "./index.d.ts",
   "bin": {
-    "hdx_style": "src/cli/index.js"
+    "hdx-style": "src/cli/index.js"
   },
   "directories": {
     "example": "examples",
@@ -40,10 +44,12 @@
   "files": [
     "src/",
     "dist/",
-    "index.d.ts"
+    "css/",
+    "index.d.ts",
+    "vite.d.ts"
   ],
   "scripts": {
-    "prepack": "npm run build",
+    "prepack": "npm run build && npm run build:css",
     "test": "vitest run",
     "test:watch": "vitest",
     "stats": "node stats.js",
@@ -51,6 +57,7 @@
     "token-docs:verify": "node scripts/verify-token-docs.js",
     "defaults": "node scripts/generate-defaults.js",
     "build": "node src/cli/index.js build",
+    "build:css": "node scripts/build-starter.js",
     "build:dev": "node src/cli/index.js build",
     "dev": "node src/cli/index.js watch",
     "generate": "node src/cli/index.js generate",

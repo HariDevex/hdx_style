@@ -80,7 +80,7 @@ export function spacingUtilities(config) {
 
   // Space between stacked children (space-y / space-x) using the Tailwind
   // child combinator. The `selector` suffix lets the generator emit the
-  // combinator rule and keeps it applied to variants (e.g. hdx_md_space-y-4).
+  // combinator rule and keeps it applied to variants (e.g. hdx-md_space-y-4).
   const childCombinator = ' > :not([hidden]) ~ :not([hidden])';
   const spaceProps = {
     y: 'margin-block-start',

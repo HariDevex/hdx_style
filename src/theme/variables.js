@@ -4,7 +4,7 @@
  * @param {string} prefix
  * @returns {string} CSS string with :root variables
  */
-export function generateCSSVariables(theme, prefix = 'hdx_') {
+export function generateCSSVariables(theme, prefix = 'hdx-') {
   const varPrefix = prefix.replace(/_/g, '-').replace(/-$/, '');
   let css = ':root {\n';
 
@@ -24,7 +24,7 @@ export function generateCSSVariables(theme, prefix = 'hdx_') {
  * @param {'class'|'media'|'both'} [strategy='class']
  * @returns {string} CSS string with dark overrides
  */
-export function generateDarkVariables(theme, prefix = 'hdx_', strategy = 'class') {
+export function generateDarkVariables(theme, prefix = 'hdx-', strategy = 'class') {
   const varPrefix = prefix.replace(/_/g, '-').replace(/-$/, '');
   const darkMarker = `.${prefix}dark`;
   let css = '';
@@ -59,6 +59,6 @@ export function generateDarkVariables(theme, prefix = 'hdx_', strategy = 'class'
  * @param {'class'|'media'|'both'} [strategy='class']
  * @returns {string}
  */
-export function generateAllVariables(theme, prefix = 'hdx_', strategy = 'class') {
+export function generateAllVariables(theme, prefix = 'hdx-', strategy = 'class') {
   return generateCSSVariables(theme, prefix) + '\n' + generateDarkVariables(theme, prefix, strategy);
 }

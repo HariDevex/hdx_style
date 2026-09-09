@@ -70,10 +70,10 @@ describe('Regression: no duplicate utility names', () => {
 describe('Regression: corner radius survives purge (P1)', () => {
   it('purged rounded-t-md keeps top-left and top-right radius', () => {
     const allUtilities = getAllUtilities(config);
-    const purged = purgeUnused(allUtilities, new Set(['hdx_rounded-t-md']), 'hdx_', [], config);
+    const purged = purgeUnused(allUtilities, new Set(['hdx-rounded-t-md']), 'hdx-', [], config);
     const css = generateCSS(config, { utilities: purged });
 
-    const ruleMatch = css.match(/\.hdx_rounded-t-md\s*\{([^}]+)\}/);
+    const ruleMatch = css.match(/\.hdx-rounded-t-md\s*\{([^}]+)\}/);
     expect(ruleMatch).toBeTruthy();
     if (ruleMatch) {
       expect(ruleMatch[1]).toContain('border-top-left-radius');
@@ -120,20 +120,20 @@ describe('Regression: negative arbitrary values', () => {
 describe('Regression: configurable prefix is prefix-scoped everywhere', () => {
   const myConfig = loadConfig({ prefix: 'my_' });
 
-  it('dark variant emits .my_dark ancestor, never .hdx_dark', () => {
+  it('dark variant emits .my_dark ancestor, never .hdx-dark', () => {
     const css = generateCSS(myConfig, {
       utilities: [
         { name: 'bg-primary', property: 'background-color', value: 'var(--my-color-primary)', category: 'colors', _requestedVariants: [['dark']] },
       ],
     });
     expect(css).toContain('.my_dark .my_dark_bg-primary');
-    expect(css).not.toContain('hdx_dark');
+    expect(css).not.toContain('hdx-dark');
   });
 
   it('dark variables are scoped under .my_dark', () => {
     const css = generateCSS(myConfig);
     expect(css).toContain('.my_dark {');
-    expect(css).not.toContain('hdx_dark');
+    expect(css).not.toContain('hdx-dark');
   });
 
   it('ring color falls back to a prefix-scoped variable', () => {
@@ -178,7 +178,7 @@ describe('Regression: darkMode none produces no dark prefix', () => {
   it('parser yields no dark variant', () => {
     const noConfig = loadConfig({ darkMode: 'none' });
     const css = generateCSS(noConfig);
-    expect(css).not.toContain('hdx_dark');
+    expect(css).not.toContain('hdx-dark');
     expect(css).not.toContain('prefers-color-scheme');
   });
 });
@@ -187,13 +187,13 @@ describe('Regression: darkMode both through the purger', () => {
   it('purged output emits both class-driven and media-driven dark rules', () => {
     const bothConfig = loadConfig({ darkMode: 'both' });
     const allUtilities = getAllUtilities(bothConfig);
-    const purged = purgeUnused(allUtilities, new Set(['hdx_dark_bg-primary', 'hdx_dark_hover_bg-primary']), 'hdx_', [], bothConfig);
+    const purged = purgeUnused(allUtilities, new Set(['hdx-dark_bg-primary', 'hdx-dark_hover_bg-primary']), 'hdx-', [], bothConfig);
     const css = generateCSS(bothConfig, { utilities: purged });
 
-    expect(css).toContain('.hdx_dark .hdx_dark_bg-primary');
+    expect(css).toContain('.hdx-dark .hdx-dark_bg-primary');
     expect(css).toContain('@media (prefers-color-scheme: dark)');
-    expect(css).toContain('.hdx_dark .hdx_dark_hover_bg-primary:hover');
-    expect(css).toContain('.hdx_dark_hover_bg-primary:hover');
+    expect(css).toContain('.hdx-dark .hdx-dark_hover_bg-primary:hover');
+    expect(css).toContain('.hdx-dark_hover_bg-primary:hover');
   });
 });
 
@@ -210,25 +210,25 @@ describe('Regression: plugin variants resolve in purge scans', () => {
     }],
   });
 
-  it('hdx_swipe_glow resolves to the plugin utility', () => {
+  it('hdx-swipe_glow resolves to the plugin utility', () => {
     const { registry } = runPlugins(pluginConfig);
     const extraVariantPrefixes = registry.variants.map(v => v.prefix.replace(/_$/, ''));
     const allUtilities = [...getAllUtilities(pluginConfig), ...registry.utilities];
 
-    const purged = purgeUnused(allUtilities, new Set(['hdx_swipe_glow']), 'hdx_', [], pluginConfig, extraVariantPrefixes);
+    const purged = purgeUnused(allUtilities, new Set(['hdx-swipe_glow']), 'hdx-', [], pluginConfig, extraVariantPrefixes);
     expect(purged).toHaveLength(1);
     expect(purged[0].name).toBe('glow');
     expect(purged[0]._requestedVariants).toContainEqual(['swipe']);
 
     const css = generateCSS(pluginConfig, { utilities: purged });
-    expect(css).toContain('.swipe-parent .hdx_swipe_glow');
+    expect(css).toContain('.swipe-parent .hdx-swipe_glow');
   });
 
   it('findUnknownClasses does not flag plugin-variant classes', () => {
     const { registry } = runPlugins(pluginConfig);
     const extraVariantPrefixes = registry.variants.map(v => v.prefix.replace(/_$/, ''));
     const allUtilities = [...getAllUtilities(pluginConfig), ...registry.utilities];
-    const unknown = findUnknownClasses(allUtilities, new Set(['hdx_swipe_glow']), 'hdx_', pluginConfig, undefined, extraVariantPrefixes);
+    const unknown = findUnknownClasses(allUtilities, new Set(['hdx-swipe_glow']), 'hdx-', pluginConfig, undefined, extraVariantPrefixes);
     expect(unknown).toHaveLength(0);
   });
 });
@@ -249,8 +249,8 @@ describe('Regression: container breakpoints come from the theme', () => {
 
 describe('Regression: extractor prefix parameter', () => {
   it('quoted class attributes extract every token regardless of prefix', () => {
-    const html = '<div class="my_flex hdx_p-4"></div>';
-    expect([...extractClassNames(html, 'my_')].sort()).toEqual(['hdx_p-4', 'my_flex']);
+    const html = '<div class="my_flex hdx-p-4"></div>';
+    expect([...extractClassNames(html, 'my_')].sort()).toEqual(['hdx-p-4', 'my_flex']);
   });
 
   it('tags template literals and string literals with a custom prefix', () => {
@@ -271,7 +271,7 @@ describe('Regression: grid span-first shorthand intact', () => {
 describe('Regression: default config shape', () => {
   it('getDefaultConfig exposes the documented defaults', () => {
     const d = getDefaultConfig();
-    expect(d.prefix).toBe('hdx_');
+    expect(d.prefix).toBe('hdx-');
     expect(d.darkMode).toBe('class');
     expect(d.reset).toBe(true);
     expect(d.components).toBe(true);

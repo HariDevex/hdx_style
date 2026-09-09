@@ -16,7 +16,11 @@ export default {
   // Global reset + base styles
   reset: true,
 
+<<<<<<< HEAD
   // Built-in component layer (.hdx-btn, .hdx-card, .hdx-input, ...)
+=======
+  // Built-in component layer (.hdx-btn, .hdx-card, .hdx-input, …)
+>>>>>>> 4e3e9a2 (with error)
   components: true,
 
   // Theme customization (deep-merged over the defaults — see README

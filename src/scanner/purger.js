@@ -6,7 +6,7 @@ import { resolveArbitraryUtility } from '../generator/arbitrary.js';
  * plus safelisted classes.
  *
  * Uses the class parser so variant combos of any depth (e.g.
- * `hdx_lg_dark_hover_bg-primary`) resolve to the right utility. The returned
+ * `hdx-lg_dark_hover_bg-primary`) resolve to the right utility. The returned
  * utilities carry a `_requestedVariants` array that drives demand-driven
  * generation: each entry is the exact ordered variant combo to emit.
  *
@@ -19,7 +19,7 @@ import { resolveArbitraryUtility } from '../generator/arbitrary.js';
  *   purged builds can parse variant combos that only exist via plugins.
  * @returns {import('../core/types.js').UtilityDefinition[]}
  */
-export function purgeUnused(allUtilities, usedClasses, prefix = 'hdx_', safelist = [], config = null, extraVariantPrefixes = []) {
+export function purgeUnused(allUtilities, usedClasses, prefix = 'hdx-', safelist = [], config = null, extraVariantPrefixes = []) {
   const utilMap = new Map(allUtilities.map(u => [u.name, u]));
   const basePrefixes = config ? getVariantPrefixes(config) : DEFAULT_VARIANT_PREFIXES;
   const variantPrefixes = [...basePrefixes, ...extraVariantPrefixes];
@@ -33,7 +33,7 @@ export function purgeUnused(allUtilities, usedClasses, prefix = 'hdx_', safelist
 
     // Unknown utility alias? Try a safe arbitrary value (w-[260px], …).
     if (!util) {
-      util = resolveArbitraryUtility(utilName);
+      util = resolveArbitraryUtility(utilName, prefix);
       if (util) util._arbitrary = true;
     }
     if (!util) continue;
@@ -53,7 +53,7 @@ export function purgeUnused(allUtilities, usedClasses, prefix = 'hdx_', safelist
 
     let util = utilMap.get(parsed.utility);
     if (!util) {
-      util = resolveArbitraryUtility(parsed.utility);
+      util = resolveArbitraryUtility(parsed.utility, prefix);
       if (util) util._arbitrary = true;
     }
     if (!util || keptNames.has(parsed.utility)) continue;
@@ -69,10 +69,10 @@ export function purgeUnused(allUtilities, usedClasses, prefix = 'hdx_', safelist
  * Compute the components (base definition + their `states` blocks) referenced
  * by content, plus safelisted component classes.
  *
- * Composed usage resolves naturally: `hdx_btn hdx_btn-primary` parses to the
+ * Composed usage resolves naturally: `hdx-btn hdx-btn-primary` parses to the
  * independent `btn` and `btn-primary` component names, so each is kept if (and
  * only if) its own class appears in content. Variant-prefixed forms (e.g.
- * `hdx_hover_btn`) resolve to their base component name too.
+ * `hdx-hover_btn`) resolve to their base component name too.
  *
  * @param {import('../core/types.js').ComponentDefinition[]} allComponents
  * @param {Set<string>|string[]} usedClasses - HDX class names found in content
@@ -82,7 +82,7 @@ export function purgeUnused(allUtilities, usedClasses, prefix = 'hdx_', safelist
  * @param {string[]} [extraVariantPrefixes] - plugin addVariant() prefixes.
  * @returns {import('../core/types.js').ComponentDefinition[]}
  */
-export function purgeComponents(allComponents, usedClasses, prefix = 'hdx_', safelist = [], config = null, extraVariantPrefixes = []) {
+export function purgeComponents(allComponents, usedClasses, prefix = 'hdx-', safelist = [], config = null, extraVariantPrefixes = []) {
   const nameToComp = new Map(allComponents.map(c => [c.name, c]));
   const basePrefixes = config ? getVariantPrefixes(config) : DEFAULT_VARIANT_PREFIXES;
   const variantPrefixes = [...basePrefixes, ...extraVariantPrefixes];
@@ -109,10 +109,10 @@ export function purgeComponents(allComponents, usedClasses, prefix = 'hdx_', saf
  * Tailwind→HDX migration).
  *
  * Three things are intentionally NOT reported as unknown:
- * - Standalone variant-marker classes (`hdx_dark`, `hdx_group`, `hdx_peer`)
+ * - Standalone variant-marker classes (`hdx-dark`, `hdx-group`, `hdx-peer`)
  *   that parse entirely into variants with an empty utility — they activate
  *   dark mode / group / peer and are never generated as a rule.
- * - Component classes (`.hdx_btn`, `.hdx_input`, …) — component classes found
+ * - Component classes (`.hdx-btn`, `.hdx-input`, …) — component classes found
  *   in content resolve to real (purged) CSS, so they are never "unknown".
  * - Unknown-but-plain CSS classes are ignored (they are not HDX-prefixed).
  *
@@ -126,7 +126,7 @@ export function purgeComponents(allComponents, usedClasses, prefix = 'hdx_', saf
  *   plugin-variant classes are not reported as unknown.
  * @returns {Array<{className: string, utility: string, valid: boolean}>}
  */
-export function findUnknownClasses(allUtilities, usedClasses, prefix = 'hdx_', config = null, componentNames = null, extraVariantPrefixes = []) {
+export function findUnknownClasses(allUtilities, usedClasses, prefix = 'hdx-', config = null, componentNames = null, extraVariantPrefixes = []) {
   const utilSet = new Set(allUtilities.map(u => u.name));
   const basePrefixes = config ? getVariantPrefixes(config) : DEFAULT_VARIANT_PREFIXES;
   const variantPrefixes = [...basePrefixes, ...extraVariantPrefixes];
@@ -137,7 +137,7 @@ export function findUnknownClasses(allUtilities, usedClasses, prefix = 'hdx_', c
     if (!cls.startsWith(prefix)) continue;
     const parsed = parseClass(cls, prefix, variantPrefixes);
 
-    // Variant-marker classes (e.g. hdx_dark, hdx_group, hdx_peer) never need
+    // Variant-marker classes (e.g. hdx-dark, hdx-group, hdx-peer) never need
     // a rule — the variants consume the whole class name and the utility is
     // empty. Treat them as known.
     const isMarker = !parsed.utility && parsed.variants.length > 0;
@@ -145,7 +145,7 @@ export function findUnknownClasses(allUtilities, usedClasses, prefix = 'hdx_', c
     const known = isMarker
       || (parsed.valid && (
         utilSet.has(parsed.utility)
-        || resolveArbitraryUtility(parsed.utility)
+        || resolveArbitraryUtility(parsed.utility, prefix)
         || knownComponents.has(parsed.utility)
       ));
 

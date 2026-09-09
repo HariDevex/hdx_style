@@ -3,6 +3,7 @@ export interface Theme {
   darkColors?: Record<string, string>;
   spacing: Record<string, string>;
   fontSize: Record<string, string>;
+  fluidFontSize?: Record<string, { min: string; max: string }>;
   fontWeight: Record<string, string>;
   lineHeight: Record<string, string>;
   letterSpacing: Record<string, string>;
@@ -42,7 +43,7 @@ export interface UtilityDefinition {
 export interface VariantDefinition {
   name: string;
   prefix: string;
-  type?: 'state' | 'responsive' | 'dark' | 'ancestor' | 'important';
+  type?: 'state' | 'responsive' | 'dark' | 'ancestor' | 'important' | 'container';
   strategy?: 'class' | 'media' | 'both';
   selector: (...args: unknown[]) => string;
 }
@@ -65,6 +66,7 @@ export type PluginFunction = (context: PluginContext) => void;
 export function loadConfig(userConfig?: Partial<HdxConfig>): HdxConfig;
 export function loadConfigFromFile(configPath?: string): Promise<HdxConfig>;
 export function getDefaultConfig(): HdxConfig;
+export function defineConfig<T extends Partial<HdxConfig>>(config: T): T;
 export const defaultTheme: Theme;
 export const defaultConfig: HdxConfig;
 

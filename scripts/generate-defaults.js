@@ -55,19 +55,26 @@ const remSpacing = (obj) => Object.entries(obj).map(([k, v]) => {
 });
 
 section('3. FONT SIZE', pairs(defaultTheme.fontSize, 5));
-section('4. FONT WEIGHT', pairs(defaultTheme.fontWeight, 11));
-section('5. LINE HEIGHT', pairs(defaultTheme.lineHeight, 7));
-section('6. LETTER SPACING', pairs(defaultTheme.letterSpacing, 8));
-section('7. COLORS (semantic)', pairs(defaultTheme.colors, 17));
-section('8. DARK MODE COLORS (darkColors, used under .hdx_dark / prefers-color-scheme)', pairs(defaultTheme.darkColors, 18));
-section('9. SPACING', remSpacing(defaultTheme.spacing));
-section('10. BORDER RADIUS', pairs(defaultTheme.radius, 5));
-section('11. SHADOWS', pairs(defaultTheme.shadows, 6));
-section('12. BREAKPOINTS', pairs(defaultTheme.breakpoints, 4));
-section('13. OPACITY', pairs(defaultTheme.opacity, 4));
-section('14. Z-INDEX', pairs(defaultTheme.zIndex, 5));
-section('15. TRANSITION DURATION', pairs(defaultTheme.transitionDuration, 5));
-section('16. TRANSITION TIMING', pairs(defaultTheme.transitionTiming, 12));
+
+const fluidFontSize = Object.entries(defaultTheme.fluidFontSize).map(
+  ([k, v]) => `  ${k.padEnd(5)}: ${v.min} → ${v.max}`,
+);
+section('4. FLUID FONT SIZE (text-fluid-*, clamp() between min → max)', fluidFontSize);
+
+section('5. FONT WEIGHT', pairs(defaultTheme.fontWeight, 11));
+section('6. LINE HEIGHT', pairs(defaultTheme.lineHeight, 7));
+section('7. LETTER SPACING', pairs(defaultTheme.letterSpacing, 8));
+section('8. COLORS (semantic)', pairs(defaultTheme.colors, 17));
+const darkMarker = defaultConfig.prefix + 'dark';
+section(`9. DARK MODE COLORS (darkColors, used under .${darkMarker} / prefers-color-scheme)`, pairs(defaultTheme.darkColors, 18));
+section('10. SPACING', remSpacing(defaultTheme.spacing));
+section('11. BORDER RADIUS', pairs(defaultTheme.radius, 5));
+section('12. SHADOWS', pairs(defaultTheme.shadows, 6));
+section('13. BREAKPOINTS', pairs(defaultTheme.breakpoints, 4));
+section('14. OPACITY', pairs(defaultTheme.opacity, 4));
+section('15. Z-INDEX', pairs(defaultTheme.zIndex, 5));
+section('16. TRANSITION DURATION', pairs(defaultTheme.transitionDuration, 5));
+section('17. TRANSITION TIMING', pairs(defaultTheme.transitionTiming, 12));
 
 writeFileSync(OUT, lines.join('\n').trimEnd() + '\n', 'utf-8');
 console.log('Wrote default-values.txt');

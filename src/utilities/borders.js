@@ -7,7 +7,6 @@ import { colorVariable } from '../generator/resolver.js';
  */
 export function bordersUtilities(config) {
   const { colors } = config.theme;
-  const prefix = config.prefix;
   const utils = [];
 
   // Border width
@@ -45,7 +44,7 @@ export function bordersUtilities(config) {
 
   // Divide utilities (for child dividers).
   // The `selector` suffix emits the Tailwind child combinator so borders render
-  // between adjacent children: `.hdx_divide-x > :not([hidden]) ~ :not([hidden])`.
+  // between adjacent children: `.hdx-divide-x > :not([hidden]) ~ :not([hidden])`.
   const childCombinator = ' > :not([hidden]) ~ :not([hidden])';
   utils.push(
     { name: 'divide-x', property: 'border-inline-start-width', value: '1px', category: 'borders', selector: childCombinator },

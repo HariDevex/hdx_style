@@ -6,12 +6,20 @@ import { defaultFontFamily } from '../theme/defaults.js';
  * @returns {import('../core/types.js').UtilityDefinition[]}
  */
 export function typographyUtilities(config) {
-  const { fontSize, fontWeight, lineHeight, letterSpacing } = config.theme;
+  const { fontSize, fontWeight, lineHeight, letterSpacing, fluidFontSize } = config.theme;
   const utils = [];
 
   // Font size
   for (const [key, value] of Object.entries(fontSize)) {
     utils.push({ name: `text-${key}`, property: 'font-size', value, category: 'typography' });
+  }
+
+  // Fluid font size: interpolates min → max across the responsive range
+  // (40rem/640px → 96rem/1536px), clamped at both ends by clamp().
+  for (const [key, value] of Object.entries(fluidFontSize || {})) {
+    const { min, max } = value;
+    const fluid = `clamp(${min}, calc(${min} + (${max} - ${min}) * (100vw - 40rem) / (96rem - 40rem)), ${max})`;
+    utils.push({ name: `text-fluid-${key}`, property: 'font-size', value: fluid, category: 'typography' });
   }
 
   // Font weight

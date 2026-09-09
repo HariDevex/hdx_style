@@ -33,6 +33,9 @@ export const defaultTheme = {
     'border-strong': '#CBD5E1',
     white: '#FFFFFF',
     black: '#000000',
+    // Foreground placed ON accent surfaces (buttons/badges/alerts): stays white
+    // in light mode, flips to a dark ink in dark mode where accents lighten.
+    'on-accent': '#FFFFFF',
     'gray-50': '#F8FAFC',
     'gray-100': '#F1F5F9',
     'gray-200': '#E2E8F0',
@@ -59,6 +62,7 @@ export const defaultTheme = {
     danger: '#F87171',
     warning: '#FBBF24',
     info: '#0EA5E9',
+    'on-accent': '#0F172A',
   },
 
   spacing: {
@@ -90,6 +94,21 @@ export const defaultTheme = {
     '3xl': '1.875rem',
     '4xl': '2.25rem',
     '5xl': '3rem',
+  },
+
+  // Fluid type pairs: `min` is the clamped floor (small viewports), `max` the
+  // clamped ceiling (large viewports). The generator interpolates between them
+  // across the responsive range (40rem → 96rem / 640px → 1536px) with calc().
+  fluidFontSize: {
+    xs: { min: '0.75rem', max: '0.875rem' },
+    sm: { min: '0.875rem', max: '1rem' },
+    base: { min: '1rem', max: '1.125rem' },
+    lg: { min: '1.125rem', max: '1.25rem' },
+    xl: { min: '1.25rem', max: '1.5rem' },
+    '2xl': { min: '1.5rem', max: '1.875rem' },
+    '3xl': { min: '1.875rem', max: '2.25rem' },
+    '4xl': { min: '2.25rem', max: '3rem' },
+    '5xl': { min: '3rem', max: '4rem' },
   },
 
   fontWeight: {
@@ -209,7 +228,7 @@ export const defaultTheme = {
 export const defaultFontFamily = 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
 
 export const defaultConfig = {
-  prefix: 'hdx_',
+  prefix: 'hdx-',
   content: [],
   safelist: [],
   darkMode: 'class',

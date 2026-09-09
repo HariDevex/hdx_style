@@ -31,10 +31,10 @@ describe('P2: interaction utilities', () => {
 
   it('emits working CSS for the new interaction utilities', () => {
     const css = generateCSS(config);
-    expect(css).toContain('.hdx_cursor-pointer { cursor: pointer; }');
-    expect(css).toContain('.hdx_select-none { user-select: none; }');
-    expect(css).toContain('.hdx_appearance-none { appearance: none; }');
-    expect(css).toContain('.hdx_resize-y { resize: vertical; }');
+    expect(css).toContain('.hdx-cursor-pointer { cursor: pointer; }');
+    expect(css).toContain('.hdx-select-none { user-select: none; }');
+    expect(css).toContain('.hdx-appearance-none { appearance: none; }');
+    expect(css).toContain('.hdx-resize-y { resize: vertical; }');
   });
 });
 
@@ -65,18 +65,18 @@ describe('P2: space-* and divide-* child combinators', () => {
     expect(divideY.selector).toBe(combinator);
 
     const css = generateCSS(config);
-    expect(css).toContain('.hdx_divide-x' + combinator);
-    expect(css).toContain('.hdx_divide-y' + combinator);
+    expect(css).toContain('.hdx-divide-x' + combinator);
+    expect(css).toContain('.hdx-divide-y' + combinator);
   });
 
   it('responsive variant of space-y-4 keeps the combinator inside the media query', () => {
     const css = generateCSS(config);
     expect(css).toContain('@media (min-width: 768px) {');
-    expect(css).toMatch(/\.hdx_md_space-y-4 > :not\(\[hidden\]\) ~ :not\(\[hidden\]\) \{ margin-block-start:/);
+    expect(css).toMatch(/\.hdx-md_space-y-4 > :not\(\[hidden\]\) ~ :not\(\[hidden\]\) \{ margin-block-start:/);
   });
 
-  it('parses hdx_md_space-y-4 into responsive variant + space-y-4 utility', () => {
-    const parsed = parseClass('hdx_md_space-y-4', 'hdx_');
+  it('parses hdx-md_space-y-4 into responsive variant + space-y-4 utility', () => {
+    const parsed = parseClass('hdx-md_space-y-4', 'hdx-');
     expect(parsed.valid).toBe(true);
     expect(parsed.variants).toEqual(['md']);
     expect(parsed.utility).toBe('space-y-4');
@@ -105,25 +105,25 @@ describe('P2: gradient utilities', () => {
 
   it('emits renderable gradient CSS', () => {
     const css = generateCSS(config);
-    expect(css).toContain('.hdx_bg-gradient-to-r { background-image: linear-gradient(to right, var(--hdx-gradient-stops, transparent)); }');
-    expect(css).toContain('.hdx_from-primary');
-    expect(css).toContain('.hdx_via-primary');
-    expect(css).toContain('.hdx_to-primary');
+    expect(css).toContain('.hdx-bg-gradient-to-r { background-image: linear-gradient(to right, var(--hdx-gradient-stops, transparent)); }');
+    expect(css).toContain('.hdx-from-primary');
+    expect(css).toContain('.hdx-via-primary');
+    expect(css).toContain('.hdx-to-primary');
   });
 });
 
 describe('P2: important variant', () => {
-  it('hdx_important_bg-primary emits a !important declaration', () => {
+  it('hdx-important_bg-primary emits a !important declaration', () => {
     const css = generateCSS(config, {
       utilities: [
         { name: 'bg-primary', property: 'background-color', value: 'var(--hdx-color-primary)', category: 'colors', _requestedVariants: [['important']] },
       ],
     });
-    expect(css).toContain('.hdx_important_bg-primary { background-color: var(--hdx-color-primary) !important; }');
+    expect(css).toContain('.hdx-important_bg-primary { background-color: var(--hdx-color-primary) !important; }');
   });
 
-  it('parser resolves hdx_important_bg-primary', () => {
-    const parsed = parseClass('hdx_important_bg-primary', 'hdx_');
+  it('parser resolves hdx-important_bg-primary', () => {
+    const parsed = parseClass('hdx-important_bg-primary', 'hdx-');
     expect(parsed.valid).toBe(true);
     expect(parsed.variants).toEqual(['important']);
     expect(parsed.utility).toBe('bg-primary');
@@ -137,8 +137,8 @@ describe('P2: important variant', () => {
       ],
     });
     expect(css).toContain('@media (min-width: 768px) {');
-    expect(css).toContain('.hdx_md_important_flex { display: flex !important; }');
-    expect(css).toContain('.hdx_hover_important_text-primary:hover { color: var(--hdx-color-primary) !important; }');
+    expect(css).toContain('.hdx-md_important_flex { display: flex !important; }');
+    expect(css).toContain('.hdx-hover_important_text-primary:hover { color: var(--hdx-color-primary) !important; }');
   });
 
   it('does not double-mark declarations that already carry !important', () => {
@@ -152,7 +152,7 @@ describe('P2: important variant', () => {
       ],
     });
 
-    expect(css).toContain('.hdx_important_w-auto { width: auto !important; }');
+    expect(css).toContain('.hdx-important_w-auto { width: auto !important; }');
     expect(css).not.toContain('!important !important');
 
     // Multi-declaration rules: only unmarked declarations gain the flag.
@@ -170,8 +170,8 @@ describe('P2: important variant', () => {
     // The literal `;` inside the quoted value must survive untouched; only the
     // declaration-terminating `;` gains the flag. (Task: harden markImportant
     // against quoted semicolons.)
-    expect(css).toContain(".hdx_important_content { content: ';' !important; }");
-    expect(css).toContain(".hdx_important_msg { content: 'a;b' !important; }");
+    expect(css).toContain(".hdx-important_content { content: ';' !important; }");
+    expect(css).toContain(".hdx-important_msg { content: 'a;b' !important; }");
     expect(css).not.toContain("content: ' !important;'");
   });
 });

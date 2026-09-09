@@ -18,7 +18,7 @@ function selectorFor(def, prefix) {
  * @param {string} prefix
  * @returns {string} CSS rule
  */
-export function generateRule(def, prefix = 'hdx_') {
+export function generateRule(def, prefix = 'hdx-') {
   const selector = selectorFor(def, prefix);
   return selector + ' { ' + def.property + ': ' + def.value + '; }\n';
 }
@@ -30,7 +30,7 @@ export function generateRule(def, prefix = 'hdx_') {
  * @param {string} prefix
  * @returns {string} CSS rule
  */
-export function generateMultiPropertyRule(def, prefix = 'hdx_') {
+export function generateMultiPropertyRule(def, prefix = 'hdx-') {
   const selector = selectorFor(def, prefix);
 
   let cssBody;

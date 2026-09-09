@@ -91,9 +91,9 @@ describe('components', () => {
   it('emits :hover/:active rules resolving -hover/-active variables', () => {
     const css = generateCSS(config);
     for (const base of ['danger', 'info', 'success', 'primary']) {
-      expect(css).toContain(`.hdx_btn-${base}:hover`);
+      expect(css).toContain(`.hdx-btn-${base}:hover`);
       expect(css).toContain(`var(--hdx-color-${base}-hover)`);
-      expect(css).toContain(`.hdx_btn-${base}:active`);
+      expect(css).toContain(`.hdx-btn-${base}:active`);
       expect(css).toContain(`var(--hdx-color-${base}-active)`);
     }
   });

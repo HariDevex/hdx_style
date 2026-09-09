@@ -46,14 +46,14 @@ describe('variants', () => {
   it('dark variant has correct selector (class strategy)', () => {
     const dark = variants.find(v => v.name === 'dark' && v.strategy === 'class');
     expect(dark).toBeDefined();
-    expect(dark.selector()).toBe('.hdx_dark');
+    expect(dark.selector()).toBe('.hdx-dark');
   });
 
-  it('group variants use hdx_group/hdx_peer ancestors', () => {
+  it('group variants use hdx-group/hdx-peer ancestors', () => {
     const gh = variants.find(v => v.name === 'group-hover');
     expect(gh).toBeDefined();
     expect(gh.type).toBe('ancestor');
-    expect(gh.selector()).toContain('hdx_group');
+    expect(gh.selector()).toContain('hdx-group');
   });
 });
 

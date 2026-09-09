@@ -7,6 +7,7 @@ import { getAllComponents } from '../components/index.js';
 import { generateAllVariables } from '../theme/variables.js';
 import { defaultFontFamily } from '../theme/defaults.js';
 import { runPlugins } from '../plugins/index.js';
+import { synthesizeArbitraryMediaVariant, isArbitraryMediaName } from '../variants/arbitrary.js';
 
 /**
  * Generate complete CSS from config
@@ -72,6 +73,11 @@ export function generateCSS(config, options = {}) {
   const purgedUtilities = options.utilities || options._purgedUtilities || null;
 
   if (purgedUtilities) {
+    // Arbitrary breakpoint classes (min-[900px]_, max-[900px]_) cannot be
+    // enumerated up front; synthesize their variant definitions from the
+    // demanded combos so the pipeline wraps them in the right @media query.
+    synthesizeArbitraryMediaVariants(variantMap, purgedUtilities);
+
     // Demand-driven: only generate CSS for requested utilities + their variants
     css += generatePurgedCSS(purgedUtilities, variants, variantMap, prefix, darkStrategy);
   } else {
@@ -120,7 +126,7 @@ function generateFullCSS(allUtilities, pluginUtilities, variants, variantMap, pr
   const utils = [...allUtilities, ...pluginUtilities];
 
   // Phase 1: emit ALL base rules first. This guarantees that every base
-  // utility (e.g. `.hdx_hidden { display:none }`) precedes every responsive
+  // utility (e.g. `.hdx-hidden { display:none }`) precedes every responsive
   // `@media` block, so at equal specificity the responsive variant always wins
   // when its breakpoint matches. (Cascade ordering contract — see notes.)
   for (const util of utils) {
@@ -296,6 +302,12 @@ function appendVariantCSS(css, baseRule, variant, fullClassName, utilityName, pr
     return css + mediaQuery + ' {\n' + indent(inner) + '\n}\n';
   }
 
+  if (variant.type === 'container') {
+    const cq = variant.selector(utilityName);
+    const inner = rule(withSuffix);
+    return css + cq + ' {\n' + indent(inner) + '\n}\n';
+  }
+
   if (variant.type === 'dark') {
     const strategy = variant.strategy || darkStrategy;
     const inner = rule(withSuffix);
@@ -389,4 +401,23 @@ function generateReducedMotion() {
   }
 }
 `;
+}
+
+/**
+ * Register synthesized arbitrary media variants (min-[900px]_, max-[900px]_)
+ * into the variant map for the variants requested by purged utilities, so the
+ * pipeline can wrap them. Inert for static variants (already present).
+ * @param {Map<string, import('../core/types.js').VariantDefinition[]>} variantMap
+ * @param {import('../core/types.js').UtilityDefinition[]} purgedUtilities
+ */
+function synthesizeArbitraryMediaVariants(variantMap, purgedUtilities) {
+  for (const util of purgedUtilities) {
+    for (const combo of util._requestedVariants || []) {
+      for (const name of combo) {
+        if (variantMap.has(name) || !isArbitraryMediaName(name)) continue;
+        const def = synthesizeArbitraryMediaVariant(name);
+        if (def) variantMap.set(name, [def]);
+      }
+    }
+  }
 }

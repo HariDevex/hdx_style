@@ -10,7 +10,7 @@ export function transformsUtilities(config) {
     { name: 'transform-none', property: 'transform', value: 'none', category: 'transforms' },
     { name: 'transform-gpu', property: 'transform', value: 'translate3d(var(--translate-x, 0), var(--translate-y, 0), 0) rotate(var(--rotate, 0)) skewX(var(--skew-x, 0)) skewY(var(--skew-y, 0)) scaleX(var(--scale-x, 1)) scaleY(var(--scale-y, 1))', category: 'transforms' },
 
-    // Scale (sets both axes so `hdx_scale-150` scales evenly; use scale-x-* /
+    // Scale (sets both axes so `hdx-scale-150` scales evenly; use scale-x-* /
     // scale-y-* arbitrary values to scale a single axis)
     { name: 'scale-0', css: '--scale-x: 0;\n--scale-y: 0;', category: 'transforms' },
     { name: 'scale-50', css: '--scale-x: .5;\n--scale-y: .5;', category: 'transforms' },

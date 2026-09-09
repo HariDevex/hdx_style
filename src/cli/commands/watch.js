@@ -1,7 +1,7 @@
 import { loadConfigFromFile, resolveConfigPath } from '../../core/config.js';
 import { generateCSS } from '../../generator/index.js';
 import { getAnimationKeyframes } from '../../utilities/index.js';
-import { generatePurgedBuildCss } from '../../scanner/scan.js';
+import { generatePurgedBuildCss, createScanState } from '../../scanner/scan.js';
 import { success, info, warn } from '../utils.js';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -21,6 +21,9 @@ export function watchCommand(program) {
       const chokidar = await import('chokidar');
 
       let buildTimeout = null;
+      // Per-file class cache for incremental purged rebuilds: only the files
+      // that actually changed are re-read on each rebuild (see scan.js).
+      const scanState = createScanState();
 
       async function rebuild() {
         try {
@@ -35,13 +38,13 @@ export function watchCommand(program) {
           if (purge && config.content.length > 0) {
             // Watch mirrors the `build -p` path: scan content and generate only
             // the demanded utilities + variants so the dev output stays small.
-            css = await generatePurgedBuildCss(config, info, warn);
+            css = await generatePurgedBuildCss(config, info, warn, scanState);
           } else {
             if (config.content.length > 0) {
               warn('Full rebuild (watch --no-purge) — generating every utility × variant combination.');
             }
             css = generateCSS(config);
-            css += '\n/* HDX CSS — Keyframes */\n' + getAnimationKeyframes();
+            css += '\n/* HDX CSS — Keyframes */\n' + getAnimationKeyframes(config.prefix);
           }
 
           const outDir = path.dirname(path.resolve(process.cwd(), opts.output));
@@ -49,6 +52,9 @@ export function watchCommand(program) {
           fs.writeFileSync(path.resolve(process.cwd(), opts.output), css, 'utf-8');
 
           success(`Rebuilt ${opts.output} (${(css.length / 1024).toFixed(1)} KB)`);
+          // Every file was (re)validated this round; the next rebuild only
+          // re-reads the specific file that changes next.
+          scanState.changedFiles = null;
         } catch (err) {
           console.error(err.message);
         }
@@ -67,6 +73,9 @@ export function watchCommand(program) {
       if (configPath) {
         chokidar.default.watch(configPath).on('change', () => {
           info('Config changed, rebuilding...');
+          // Config affects how classes resolve: invalidate the whole cache.
+          scanState.fileCache.clear();
+          scanState.changedFiles = null;
           debounce();
         });
       }
@@ -74,8 +83,10 @@ export function watchCommand(program) {
       // Watch content files
       const config = await loadConfigFromFile(opts.config);
       if (config.content.length > 0) {
-        chokidar.default.watch(config.content, { cwd: process.cwd() }).on('change', () => {
+        chokidar.default.watch(config.content, { cwd: process.cwd() }).on('change', (filePath) => {
           info('Content changed, rebuilding...');
+          // Only the changed file needs re-reading.
+          scanState.changedFiles = new Set([path.resolve(process.cwd(), filePath)]);
           debounce();
         });
       }

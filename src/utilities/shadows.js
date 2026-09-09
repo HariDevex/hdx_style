@@ -16,7 +16,7 @@ export function shadowsUtilities(config) {
   utils.push({ name: 'shadow', property: 'box-shadow', value: shadows.sm, category: 'shadows' });
 
   // Ring utilities (for focus rings). The ring color var follows config.prefix
-  // so custom prefixes remain isolated (set via hdx_ring-{color}).
+  // so custom prefixes remain isolated (set via hdx-ring-{color}).
   const ringColor = 'var(--' + config.prefix.replace(/_/g, '-').replace(/-$/, '') + '-ring-color, #2563EB)';
   utils.push(
     { name: 'ring-0', property: 'box-shadow', value: `0 0 0 0px ${ringColor}`, category: 'shadows' },
