@@ -1,46 +1,5 @@
-<div align="center">
-
-<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="HDX Style logo">
-  <defs>
-    <linearGradient id="hdxGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#8B5CF6"/>
-      <stop offset="50%" stop-color="#7C3AED"/>
-      <stop offset="100%" stop-color="#EC4899"/>
-    </linearGradient>
-  </defs>
-  <rect x="10" y="10" width="100" height="100" rx="26" fill="url(#hdxGrad)"/>
-  <path d="M34 84 V36 h11 v38 h30 v-38 h11 v48 Z" fill="#FFFFFF"/>
-  <path d="M86 40 l-14 12 14 12 Z" fill="#FDE047"/>
-</svg>
-
-# HDX Style
-
-**`@haridevx/hdx-style`** — a modern, **independent**, utility-first CSS framework & design system, built from scratch around the `hdx-` namespace.
-
-Every utility class starts with `hdx-` — built for SaaS, dashboards, and enterprise applications.
-
-[![npm version](https://img.shields.io/npm/v/@haridevx/hdx-style?style=for-the-badge&logo=npm&label=version&color=%237C3AED)](https://www.npmjs.com/package/@haridevx/hdx-style)
-[![License](https://img.shields.io/badge/license-MIT-%2316A34A?style=for-the-badge&logo=opensourceinitiative)](LICENSE)
-[![Node.js](https://img.shields.io/badge/node-%E2%89%A5%2018-%230EA5E9?style=for-the-badge&logo=node.js&logoColor=white)](package.json)
-[![Tests](https://img.shields.io/badge/tests-283%20passing-%23A3E635?style=for-the-badge&logo=vitest)](.github/workflows/ci.yml)
-[![CI](https://img.shields.io/github/actions/workflow/status/HariDevex/hdx_style/ci.yml?branch=main&style=for-the-badge&label=CI&logo=github&color=%23F59E0B)](.github/workflows/ci.yml)
-
-</div>
-
-> **Independent implementation.** HDX Style is an independent utility-first CSS framework and design system. It is inspired by the usability of utility-first CSS, but its implementation, utilities, tokens, components, generator, CLI, and plugin API are independently developed. It is **not** a fork, wrapper, derivative implementation, or modified version of Tailwind CSS.
-
-### 📊 Verified Statistics
-
-Run `node stats.js` to generate from source; `npm run stats:verify` (also part of CI) fails if this table drifts from the source:
-
-| Metric | Count |
-|---|---|
-| 📦 Utilities | **1,879** |
-| 🗂️ Utility categories | **21** |
-| 🧩 Components | **58** |
-| 🎛️ Variants | **49** |
 | 📐 Responsive breakpoints | **5** |
-| ✅ Tests | **333** |
+| ✅ Tests | **283** |
 | 📄 Source files | **68** |
 | ⚙️ Runtime dependencies | **4** |
 | 🚫 PostCSS dependency | **No** |
@@ -65,7 +24,6 @@ Run `node stats.js` to generate from source; `npm run stats:verify` (also part o
 
 ## Table of Contents
 - [Table of Contents](#table-of-contents)
-- [Upgrading / Migration Guide](#upgrading--migration-guide)
 - [Architecture](#architecture)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
@@ -89,7 +47,7 @@ Run `node stats.js` to generate from source; `npm run stats:verify` (also part o
   - [Opacity](#opacity)
   - [Overflow](#overflow)
   - [Positioning](#positioning)
-  - [Z-Index](#z-index)
+  - [Z-Index](#z-index)sponsive 
   - [Transforms](#transforms)
   - [Transitions](#transitions)
   - [Animations](#animations)
@@ -115,43 +73,6 @@ Run `node stats.js` to generate from source; `npm run stats:verify` (also part o
 - [Complete Page Example](#complete-page-example)
 - [Git Workflow](#git-workflow)
 - [License](#license)
-
----
-
-<h2 id="upgrading--migration-guide">🔌 Upgrading / Migration Guide (Breaking Changes)</h2>
-
-HDX Style version `1.0.0` introduces major breaking changes to align naming conventions and CLI execution.
-
-### 1. Default Class Prefix Change (`hdx_` → `hdx-`)
-The default class prefix has changed from an underscore (`hdx_`) to a hyphen (`hdx-`).
-- **Before:** `class="hdx_flex hdx_p-4 hdx_bg-primary"`
-- **After:** `class="hdx-flex hdx-p-4 hdx-bg-primary"`
-
-#### 💡 Keeping the Old Behavior (Zero-Migration Opt-Out)
-If you wish to keep using the legacy `hdx_` class names indefinitely without rewriting your markup, configure your `hdx.config.js` to set the legacy prefix explicitly. This is a fully supported, permanent feature:
-```javascript
-export default {
-  prefix: 'hdx_', // Restores legacy prefix behavior
-  // ...
-};
-```
-
-#### 🛠️ Recommended Migration Regex
-If you want to migrate your codebase's markup, use this find-and-replace regular expression:
-- **Search Pattern:** `\bhdx_([a-zA-Z0-9_-]+)`
-- **Replace Pattern:** `hdx-$1`
-
-> ⚠️ **Warning:** Only run this regex replacement on your markup, templates, or class name files. Do **NOT** run it blindly across entire projects, configuration files (`hdx.config.js` or `package.json`), or files containing the repository/binary identifier `hdx_style`, as this will corrupt package and repo identities.
-
-### 2. CLI Binary Rename (`hdx_style` → `hdx-style`)
-The command line binary and `package.json` execution entry point have also been renamed to standard hyphenated format.
-- **Before:** `npx hdx_style build` or `npx hdx_style watch`
-- **After:** `npx hdx-style build` or `npx hdx-style watch`
-
-Be sure to update any of your local script definitions, build pipelines, CI/CD workflows, or custom tooling integrations using the old binary name.
-
-### 3. Content Purging Globs Are Unaffected
-Your content-scanning configuration (e.g. `content: ['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}']`) remains completely identical. It will simply look for classes starting with your newly configured literal prefix (`hdx-` by default).
 
 ---
 
@@ -240,12 +161,12 @@ The package ships TypeScript definitions (`.d.ts`) for the full public API.
 
 ```bash
 npm install @haridevx/hdx-style
-npx hdx-style init
+npx hdx_style init
 ```
 
 ### 2. Configure `hdx.config.js`
 
-`hdx-style init` creates the config with the correct module syntax for your project: `hdx.config.cjs` (CommonJS) for CommonJS projects, `hdx.config.js` (ESM) for `"type": "module"` projects. ESM, CommonJS (`.cjs`), and `.mjs` config files are all supported.
+`hdx_style init` creates the config with the correct module syntax for your project: `hdx.config.cjs` (CommonJS) for CommonJS projects, `hdx.config.js` (ESM) for `"type": "module"` projects. ESM, CommonJS (`.cjs`), and `.mjs` config files are all supported.
 
 ```js
 export default {
@@ -260,7 +181,7 @@ export default {
 ### 3. Build
 
 ```bash
-npx hdx-style build
+npx hdx_style build
 ```
 
 ### 4. Use
@@ -280,18 +201,18 @@ npx hdx-style build
 <h2 id="cli-commands">💻 CLI Commands</h2>
 
 ```bash
-npx hdx-style init              # Create hdx.config.js / .cjs / .mjs
-npx hdx-style build             # Build dist/hdx.css — purges unused CSS when content is configured (recommended default)
-npx hdx-style build -p          # Production build (explicit purge; same as the default when content is set)
-npx hdx-style build --production  # Production build (same as -p)
-npx hdx-style build --no-purge  # Full utility × variant matrix (CDN/stylesheet distribution)
-npx hdx-style build -o out.css  # Custom output path
-npx hdx-style build -c my.config.js  # Custom config path
-npx hdx-style watch             # Watch and rebuild (content-scans/purges by default)
-npx hdx-style watch --no-purge  # Watch with a full (unpurged) rebuild
-npx hdx-style generate          # Full stylesheet — always non-purged (no -p/--production)
-npx hdx-style --version         # Print version
-npx hdx-style --help            # Print help
+npx hdx_style init              # Create hdx.config.js / .cjs / .mjs
+npx hdx_style build             # Build dist/hdx.css — purges unused CSS when content is configured (recommended default)
+npx hdx_style build -p          # Production build (explicit purge; same as the default when content is set)
+npx hdx_style build --production  # Production build (same as -p)
+npx hdx_style build --no-purge  # Full utility × variant matrix (CDN/stylesheet distribution)
+npx hdx_style build -o out.css  # Custom output path
+npx hdx_style build -c my.config.js  # Custom config path
+npx hdx_style watch             # Watch and rebuild (content-scans/purges by default)
+npx hdx_style watch --no-purge  # Watch with a full (unpurged) rebuild
+npx hdx_style generate          # Full stylesheet — always non-purged (no -p/--production)
+npx hdx_style --version         # Print version
+npx hdx_style --help            # Print help
 ```
 
 ---
@@ -461,7 +382,6 @@ Base font stack (`body`): `Inter, ui-sans-serif, system-ui, -apple-system, Blink
 | `text-secondary` | `#475569` | `text-muted` | `#64748B` |
 | `border` | `#E2E8F0` | `border-strong` | `#CBD5E1` |
 | `white` | `#FFFFFF` | `black` | `#000000` |
-| `on-accent` | `#FFFFFF` | | |
 | `gray-50` | `#F8FAFC` | `gray-100` | `#F1F5F9` |
 | `gray-200` | `#E2E8F0` | `gray-300` | `#CBD5E1` |
 | `gray-400` | `#94A3B8` | `gray-500` | `#64748B` |
@@ -608,7 +528,6 @@ colors: {
 
   border: '#E2E8F0',
   'border-strong': '#CBD5E1',
-  'on-accent': '#FFFFFF',
 
   white: '#FFFFFF',
   black: '#000000',
@@ -2089,12 +2008,12 @@ padding-inline: 1rem;`,
 Remove unused CSS in production:
 
 ```bash
-npx hdx-style build          # Purges unused CSS by default when content is configured
-npx hdx-style build -p       # Explicit purge (same as the default with content set)
-npx hdx-style build --production  # Same as -p
+npx hdx_style build          # Purges unused CSS by default when content is configured
+npx hdx_style build -p       # Explicit purge (same as the default with content set)
+npx hdx_style build --production  # Same as -p
 ```
 
-> **Heads-up — `build --no-purge` is huge by design.** When `content` is configured, `hdx-style build` purges automatically and emits only the utilities and components your app uses — keep `content` populated and you'll never see the full matrix. If you pass `--no-purge` (or have an empty `content` array, e.g. when generating a CDN stylesheet), the CLI generates every utility × variant combination — a multi-megabyte file (≈25 MB with the default theme). Use `build --no-purge` only when you explicitly want a distributable stylesheet.
+> **Heads-up — `build --no-purge` is huge by design.** When `content` is configured, `hdx_style build` purges automatically and emits only the utilities and components your app uses — keep `content` populated and you'll never see the full matrix. If you pass `--no-purge` (or have an empty `content` array, e.g. when generating a CDN stylesheet), the CLI generates every utility × variant combination — a multi-megabyte file (≈25 MB with the default theme). Use `build --no-purge` only when you explicitly want a distributable stylesheet.
 
 This scans your content files and only includes utilities and components that are actually used:
 
@@ -2202,12 +2121,12 @@ className={isActive ? "hdx-flex" : "hdx-block"}
 
 | Mode | Command | Output |
 |---|---|---|
-| Default (`content` configured) | `npx hdx-style build` | **Purges unused CSS** — only the utilities (and components) your content uses, plus their variants |
-| Default (no `content`) | `npx hdx-style build` | Complete stylesheet (all utilities × all variants — for CDN/stylesheet distribution) |
-| Production | `npx hdx-style build -p` | Explicit purge (same as the default when `content` is set) |
-| Production (alias) | `npx hdx-style build --production` | Same as `-p` |
-| Full stylesheet | `npx hdx-style build --no-purge` | Unpurged utility × variant matrix even when `content` is configured |
-| Full stylesheet | `npx hdx-style generate` | Always the complete stylesheet — ignores `-p`/`--production` |
+| Default (`content` configured) | `npx hdx_style build` | **Purges unused CSS** — only the utilities (and components) your content uses, plus their variants |
+| Default (no `content`) | `npx hdx_style build` | Complete stylesheet (all utilities × all variants — for CDN/stylesheet distribution) |
+| Production | `npx hdx_style build -p` | Explicit purge (same as the default when `content` is set) |
+| Production (alias) | `npx hdx_style build --production` | Same as `-p` |
+| Full stylesheet | `npx hdx_style build --no-purge` | Unpurged utility × variant matrix even when `content` is configured |
+| Full stylesheet | `npx hdx_style generate` | Always the complete stylesheet — ignores `-p`/`--production` |
 
 **Unknown-utility warnings.** In production mode the build reports any HDX
 class that resolves to no utility, with its `file:line:column`, instead of
@@ -2511,7 +2430,7 @@ fix(generator): prevent markImportant from corrupting quoted semicolons
 feat(theme): add semantic z-index tokens (dropdown, sticky, overlay, modal)
 docs: document color-aware arbitrary value prefixes
 chore(deps): bump vitest to ^2.0.0
-BREAKING CHANGE: class prefix hdx_ → hdx- (set prefix:'hdx_' to keep old syntax)
+BREAKING CHANGE: class prefix hdx- → hdx- (set prefix:'hdx-' to keep old syntax)
 ```
 
 ### Release Process

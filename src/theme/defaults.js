@@ -46,6 +46,20 @@ export const defaultTheme = {
     'gray-700': '#334155',
     'gray-800': '#1E293B',
     'gray-900': '#0F172A',
+    // Component tokens
+    'toast-bg': '#1E293B',
+    'toast-text': '#F8FAFC',
+    'modal-bg': '#FFFFFF',
+    'modal-border': '#E2E8F0',
+    'modal-text': '#0F172A',
+    'nav-bg': '#FFFFFF',
+    'nav-text': '#0F172A',
+    'nav-accent': '#2563EB',
+    'button-ghost-border': '#E2E8F0',
+    'button-ghost-text': '#475569',
+    'input-bg': '#FFFFFF',
+    'input-border': '#CBD5E1',
+    'input-text': '#0F172A',
   },
 
   darkColors: {
@@ -63,6 +77,20 @@ export const defaultTheme = {
     warning: '#FBBF24',
     info: '#0EA5E9',
     'on-accent': '#0F172A',
+    // Component tokens (Dark)
+    'toast-bg': '#0F172A',
+    'toast-text': '#F8FAFC',
+    'modal-bg': '#1E293B',
+    'modal-border': '#334155',
+    'modal-text': '#F8FAFC',
+    'nav-bg': '#0F172A',
+    'nav-text': '#F8FAFC',
+    'nav-accent': '#60A5FA',
+    'button-ghost-border': '#334155',
+    'button-ghost-text': '#CBD5E1',
+    'input-bg': '#1E293B',
+    'input-border': '#475569',
+    'input-text': '#F8FAFC',
   },
 
   spacing: {

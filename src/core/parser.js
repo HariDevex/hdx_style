@@ -157,7 +157,6 @@ export function parseClass(fullName, prefix = 'hdx-', variantPrefixes = DEFAULT_
       if (arbitrary !== null) {
         variants.push(arbitrary);
         segIndex += 1;
-        matched = true;
         continue;
       }
       break;

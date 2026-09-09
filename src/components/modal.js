@@ -25,14 +25,15 @@ padding: 1rem;`,
     },
     {
       name: 'modal',
-      css: `background-color: ${cv('surface')};
+      css: `background-color: ${cv('modal-bg')};
 border-radius: ${radius['2xl']};
 box-shadow: ${shadows.xl};
 width: 100%;
 max-width: 28rem;
 max-height: calc(100vh - 2rem);
 overflow: auto;
-padding: 1.5rem;`,
+padding: 1.5rem;
+color: ${cv('modal-text')};`,
       category: 'components',
     },
     {
@@ -42,7 +43,7 @@ align-items: center;
 justify-content: space-between;
 margin-bottom: 1rem;
 padding-bottom: 1rem;
-border-bottom: 1px solid ${cv('border')};`,
+border-bottom: 1px solid ${cv('modal-border')};`,
       category: 'components',
     },
     {
@@ -57,7 +58,7 @@ align-items: center;
 justify-content: flex-end;
 gap: 0.75rem;
 padding-top: 1rem;
-border-top: 1px solid ${cv('border')};`,
+border-top: 1px solid ${cv('modal-border')};`,
       category: 'components',
     },
   ];

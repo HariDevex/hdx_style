@@ -20,7 +20,7 @@ export function generateCSS(config, options = {}) {
   // to purge-match plugin utilities/variants, reuse that registry instead of
   // running plugins again. This guarantees a plugin executes exactly once per
   // build, even when it has side effects.
-  let processedConfig = config;
+  let processedConfig;
   let registry = options._registry;
   if (!registry) {
     const result = runPlugins(config);

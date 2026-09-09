@@ -43,16 +43,10 @@ describe('extractor', () => {
     expect(classes.size).toBe(0);
   });
 
-  it('handles multiple elements', () => {
-    const html = `
-      <div class="hdx-flex">
-        <span class="hdx-text-sm">text</span>
-        <button class="hdx-btn">btn</button>
-      </div>
-    `;
-    const classes = extractClassNames(html);
+  it('extracts from mixed string literals', () => {
+    const content = 'const cls = "btn hdx-flex hdx-p-4";';
+    const classes = extractClassNames(content);
     expect(classes.has('hdx-flex')).toBe(true);
-    expect(classes.has('hdx-text-sm')).toBe(true);
-    expect(classes.has('hdx-btn')).toBe(true);
+    expect(classes.has('hdx-p-4')).toBe(true);
   });
 });
