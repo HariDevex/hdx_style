@@ -11,6 +11,9 @@ import { toastComponents } from './toast.js';
 import { tooltipComponents } from './tooltip.js';
 import { layoutComponents } from './layout.js';
 import { interactiveComponents } from './interactive.js';
+import { iconComponents } from './icon.js';
+import { notificationComponents } from './notification.js';
+import { navComponents } from './nav.js';
 
 /**
  * Get all component definitions
@@ -34,6 +37,9 @@ export function getAllComponents(config) {
     ...tooltipComponents(config),
     ...layoutComponents(config),
     ...interactiveComponents(config),
+    ...iconComponents(config),
+    ...notificationComponents(config),
+    ...navComponents(config),
     ...customComponents,
   ];
 }

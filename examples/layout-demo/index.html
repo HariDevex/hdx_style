@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" class="hdx-dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HDX Style — Layout Demo</title>
+  <!--
+    Build the stylesheet (from the repo root):
+      node src/cli/index.js build -p -c examples/layout-demo/hdx.config.js
+  -->
+  <link rel="stylesheet" href="../../dist/hdx.css">
+  <style>
+    /* The bottom nav is fixed; reserve its space on the page body. */
+    body { padding-bottom: calc(3rem + env(safe-area-inset-bottom)); }
+  </style>
+</head>
+<body class="hdx-min-h-screen hdx-bg-background hdx-text-text">
+
+  <!-- Sticky header -->
+  <header class="hdx-ui-header hdx-ui-header-sticky">
+    <div class="hdx-flex hdx-items-center hdx-gap-3">
+      <div class="hdx-w-8 hdx-h-8 hdx-rounded-lg hdx-bg-primary hdx-flex hdx-items-center hdx-justify-center hdx-text-on-accent hdx-text-sm hdx-font-bold">H</div>
+      <span class="hdx-text-lg hdx-font-bold">HDX Style</span>
+    </div>
+
+    <!-- Tabs (desktop nav) -->
+    <ul class="hdx-ui-nav-tabs">
+      <li><a href="#" class="hdx-ui-nav-tab hdx-ui-nav-tab-active">Overview</a></li>
+      <li><a href="#" class="hdx-ui-nav-tab">Analytics</a></li>
+      <li><a href="#" class="hdx-ui-nav-tab">Reports</a></li>
+    </ul>
+
+    <!-- Search box -->
+    <div class="hdx-ui-search-box hdx-w-[240px]">
+      <svg class="hdx-ui-icon hdx-ui-icon-sm hdx-text-text-muted" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+      </svg>
+      <input class="hdx-ui-search-input" placeholder="Search…">
+    </div>
+
+    <!-- Profile + notification badge on an icon -->
+    <div class="hdx-flex hdx-items-center hdx-gap-4">
+      <div class="hdx-relative">
+        <svg class="hdx-ui-icon hdx-ui-icon-lg hdx-text-text-secondary" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 2a6 6 0 00-6 6c0 1.887-.454 3.665-1.257 5.234a.75.75 0 00.515 1.076 11.29 11.29 0 002.167.611 4.5 4.5 0 009.15 0c.107-.055.215-.111.326-.17a.75.75 0 00.515-1.076C16.454 11.666 16 9.887 16 8a6 6 0 00-6-6z" clip-rule="evenodd"/>
+        </svg>
+        <span class="hdx-ui-notification-badge">4</span>
+      </div>
+      <div class="hdx-ui-profile-card">
+        <div class="hdx-w-8 hdx-h-8 hdx-rounded-full hdx-bg-primary hdx-flex hdx-items-center hdx-justify-center hdx-text-on-accent hdx-text-sm hdx-font-medium">JD</div>
+        <div class="hdx-hidden hdx-sm_block">
+          <div class="hdx-text-sm hdx-font-medium">John Doe</div>
+          <div class="hdx-text-xs hdx-text-text-muted">Admin</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Breadcrumbs -->
+  <nav class="hdx-container hdx-mx-auto hdx-px-4 hdx-mt-4">
+    <ul class="hdx-ui-breadcrumb">
+      <li><a href="#" class="hdx-ui-breadcrumb-item">Home</a></li>
+      <li class="hdx-ui-breadcrumb-separator">/</li>
+      <li><a href="#" class="hdx-ui-breadcrumb-item">Projects</a></li>
+      <li class="hdx-ui-breadcrumb-separator">/</li>
+      <li class="hdx-ui-breadcrumb-current">Analytics Dashboard</li>
+    </ul>
+  </nav>
+
+  <main class="hdx-container hdx-mx-auto hdx-px-4 hdx-py-6 hdx-flex hdx-flex-col hdx-gap-6">
+
+    <!-- Composed content grid -->
+    <div class="hdx-ui-grid-3col">
+
+      <!-- Card with notification panel -->
+      <div class="hdx-card">
+        <div class="hdx-card-header hdx-flex hdx-items-center hdx-justify-between">
+          <h2 class="hdx-text-lg hdx-font-semibold">Notifications</h2>
+          <span class="hdx-badge-primary">New</span>
+        </div>
+        <div class="hdx-card-body">
+          <div class="hdx-ui-notification-panel">
+            <div class="hdx-ui-notification-item hdx-ui-notification-item-unread">
+              <div class="hdx-w-8 hdx-h-8 hdx-rounded-full hdx-bg-primary hdx-flex hdx-items-center hdx-justify-center hdx-text-on-accent hdx-text-xs">JD</div>
+              <div class="hdx-flex-1">
+                <p class="hdx-text-sm hdx-font-medium">John commented</p>
+                <p class="hdx-text-xs hdx-text-text-muted">2 minutes ago</p>
+              </div>
+            </div>
+            <div class="hdx-ui-notification-item">
+              <div class="hdx-w-8 hdx-h-8 hdx-rounded-full hdx-bg-success hdx-flex hdx-items-center hdx-justify-center hdx-text-on-accent hdx-text-xs">JS</div>
+              <div class="hdx-flex-1">
+                <p class="hdx-text-sm hdx-font-medium">Jane approved a build</p>
+                <p class="hdx-text-xs hdx-text-text-muted">1 hour ago</p>
+              </div>
+            </div>
+            <div class="hdx-ui-notification-item">
+              <div class="hdx-w-8 hdx-h-8 hdx-rounded-full hdx-bg-warning hdx-flex hdx-items-center hdx-justify-center hdx-text-on-accent hdx-text-xs">AM</div>
+              <div class="hdx-flex-1">
+                <p class="hdx-text-sm hdx-font-medium">Ali raised a concern</p>
+                <p class="hdx-text-xs hdx-text-text-muted">Yesterday</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings card exercising the icon system -->
+      <div class="hdx-card">
+        <div class="hdx-card-header">
+          <h2 class="hdx-text-lg hdx-font-semibold">Icon System</h2>
+        </div>
+        <div class="hdx-card-body hdx-flex hdx-flex-col hdx-gap-3">
+          <div class="hdx-flex hdx-items-center hdx-gap-2">
+            <svg class="hdx-ui-icon hdx-ui-icon-sm hdx-text-primary" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 2.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm1.4 10.5h-2.8a.75.75 0 010-1.5h.8v-3.75h-.8a.75.75 0 010-1.5h1.7c.6 0 1.1.5 1.1 1.1v4.15h.8a.75.75 0 010 1.5z"/></svg>
+            <span class="hdx-text-sm">Info (xs, primary)</span>
+          </div>
+          <div class="hdx-flex hdx-items-center hdx-gap-2">
+            <svg class="hdx-ui-icon hdx-ui-icon-lg hdx-text-danger" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10A8 8 0 112 10a8 8 0 0116 0zm-7-4a1 1 0 10-2 0v4a1 1 0 102 0V6zm-1 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
+            <span class="hdx-text-sm">Warning (lg, danger)</span>
+          </div>
+          <div class="hdx-flex hdx-items-center hdx-gap-2">
+            <svg class="hdx-ui-icon hdx-ui-icon-spin hdx-text-success" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H4.193a.75.75 0 00-.75.75V14.75a.75.75 0 001.5 0v-2.287l.3.3a7 7 0 0011.71-3.14.75.75 0 00-1.641-.199z" clip-rule="evenodd"/></svg>
+            <span class="hdx-text-sm">Loading (spinning)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination / stat card -->
+      <div class="hdx-card">
+        <div class="hdx-card-header">
+          <h2 class="hdx-text-lg hdx-font-semibold">Pagination</h2>
+        </div>
+        <div class="hdx-card-body hdx-text-sm hdx-text-text-secondary">
+          Pages 1–4 of 128 results.
+        </div>
+        <div class="hdx-card-footer">
+          <ul class="hdx-ui-pagination">
+            <li><a href="#" class="hdx-ui-pagination-item hdx-ui-pagination-item-disabled">‹</a></li>
+            <li><a href="#" class="hdx-ui-pagination-item hdx-ui-pagination-item-active">1</a></li>
+            <li><a href="#" class="hdx-ui-pagination-item">2</a></li>
+            <li><a href="#" class="hdx-ui-pagination-item">3</a></li>
+            <li><a href="#" class="hdx-ui-pagination-item">›</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification dot demo — positioned against a button -->
+    <div class="hdx-card hdx-p-4">
+      <h2 class="hdx-text-lg hdx-font-semibold hdx-mb-2">Unread indicator</h2>
+      <div class="hdx-flex hdx-gap-6 hdx-items-center">
+        <button class="hdx-relative hdx-btn hdx-btn-ghost">
+          Inbox
+          <span class="hdx-ui-notification-dot"></span>
+        </button>
+        <p class="hdx-text-sm hdx-text-text-secondary">The dot is absolutely positioned — add a <code>hdx-relative</code> parent.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="hdx-ui-footer">
+    <p class="hdx-text-sm">HDX Style layout demo — tells a composed story, not isolated snippets.</p>
+  </footer>
+
+  <!-- Mobile bottom tab bar -->
+  <nav class="hdx-ui-nav-bottom">
+    <a href="#" class="hdx-ui-nav-bottom-item hdx-ui-nav-bottom-item-active">
+      <svg class="hdx-ui-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h3a1 1 0 001-1v-3h2v3a1 1 0 001 1h3a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+      Home
+    </a>
+    <a href="#" class="hdx-ui-nav-bottom-item">
+      <svg class="hdx-ui-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10A8 8 0 112 10a8 8 0 0116 0zm-7-4a1 1 0 10-2 0v4a1 1 0 102 0V6zm-1 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
+      Stats
+    </a>
+    <a href="#" class="hdx-ui-nav-bottom-item">
+      <svg class="hdx-ui-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+      Profile
+    </a>
+  </nav>
+
+</body>
+</html>

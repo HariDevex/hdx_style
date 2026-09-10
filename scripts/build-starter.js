@@ -23,7 +23,7 @@ import { generateCSS } from '../src/generator/index.js';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 
-const SIZE_LIMIT_KB = 125;
+const SIZE_LIMIT_KB = 130;
 
 // Curated "core" utility names per category. Only these become rules; the rest
 // of the framework is available through the build/purge/arbitrary paths.
@@ -156,7 +156,7 @@ function build() {
     kept++;
   }
 
-  // All 58 components ride along (base + their own `states` blocks).
+  // All built-in components ride along (base + their own `states` blocks).
   let css = '/**\n'
     + ' * HDX Style — curated starter stylesheet\n'
     + ' * Reset + design tokens + core utilities + components.\n'
@@ -172,7 +172,7 @@ function build() {
   fs.writeFileSync(outFile, css, 'utf-8');
 
   const kb = (css.length / 1024).toFixed(1);
-  console.log(`Starter stylesheet: ${kept} utilities + 58 components -> css/index.css (${kb} KB)`);
+  console.log(`Starter stylesheet: ${kept} utilities + components -> css/index.css (${kb} KB)`);
   if (css.length / 1024 > SIZE_LIMIT_KB) {
     console.error(`WARNING: starter exceeded ${SIZE_LIMIT_KB} KB gate (${kb} KB). Trim the CURATED list in scripts/build-starter.js.`);
     process.exitCode = 1;

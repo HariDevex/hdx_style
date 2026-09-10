@@ -17,23 +17,24 @@
 
 </div>
 
-> **`@haridevx/hdx-style`** is an independent, modular CSS framework with **2,035 utilities**, **92 components**, and **49 variants** — shipping zero PostCSS and zero Tailwind runtime dependencies.
+> **`@haridevx/hdx-style`** is an independent, modular CSS framework with **2,035 utilities**, **121 components**, and **49 variants** — shipping zero PostCSS and zero Tailwind runtime dependencies.
 
-<table>
-<tr>
-<td align="center"><b>📦 Utilities</b><br>2,035</td>
-<td align="center"><b>🧩 Components</b><br>92</td>
-<td align="center"><b>🎛️ Variants</b><br>49</td>
-<td align="center"><b>📐 Breakpoints</b><br>5</td>
-<td align="center"><b>✅ Tests</b><br>334</td>
-<td align="center"><b>📄 Source Files</b><br>72</td>
-<td align="center"><b>⚙️ Runtime Deps</b><br>4</td>
-<td align="center"><b>🚫 PostCSS</b><br>None</td>
-<td align="center"><b>🚫 Tailwind</b><br>None</td>
-</tr>
-</table>
+### 📊 Verified Statistics
 
-> Run `node stats.js` to regenerate; `npm run stats:verify` (part of CI) fails if this table drifts from source.
+Run `node stats.js` to generate from source; `npm run stats:verify` (also part of CI) fails if this table drifts from the source:
+
+| Metric | Count |
+|---|---|
+| 📦 Utilities | **2,035** |
+| 🗂️ Utility categories | **21** |
+| 🧩 Components | **121** |
+| 🎛️ Variants | **49** |
+| 📐 Responsive breakpoints | **5** |
+| ✅ Tests | **353** |
+| 📄 Source files | **75** |
+| ⚙️ Runtime dependencies | **4** |
+| 🚫 PostCSS dependency | **No** |
+| 🚫 Tailwind dependency | **No** |
 
 ---
 
@@ -66,7 +67,7 @@
 </tr>
 <tr>
 <td><b>🧱 Components</b></td>
-<td>92 drop-in components — buttons, cards, modals, tables, and more</td>
+<td>121 drop-in components — buttons, cards, modals, tables, and more</td>
 </tr>
 <tr>
 <td><b>🧹 Auto purging</b></td>
@@ -396,7 +397,7 @@ Everything below is generated from `src/theme/defaults.js`. Override any key in 
 
 Base font stack: `Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`
 
-### 🎨 Colors (Semantic)
+### Colors (semantic)
 
 <table>
 <tr>
@@ -456,10 +457,30 @@ Base font stack: `Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystem
 | `gray-900` | `#0F172A` |
 
 </td>
+<td>
+
+| Token | Value |
+|---|---|
+| `on-accent` | `#FFFFFF` |
+| `toast-bg` | `#1E293B` |
+| `toast-text` | `#F8FAFC` |
+| `modal-bg` | `#FFFFFF` |
+| `modal-border` | `#E2E8F0` |
+| `modal-text` | `#0F172A` |
+| `nav-bg` | `#FFFFFF` |
+| `nav-text` | `#0F172A` |
+| `nav-accent` | `#2563EB` |
+| `button-ghost-border` | `#E2E8F0` |
+| `button-ghost-text` | `#475569` |
+| `input-bg` | `#FFFFFF` |
+| `input-border` | `#CBD5E1` |
+| `input-text` | `#0F172A` |
+
+</td>
 </tr>
 </table>
 
-### 🌙 Dark Mode Colors (`darkColors`)
+### Dark Mode Colors (darkColors)
 
 Applied under `.hdx-dark` (or the media query when `darkMode: 'media'`).
 
@@ -472,6 +493,13 @@ Applied under `.hdx-dark` (or the media query when `darkMode: 'media'`).
 | `primary` | `#60A5FA` | `success` | `#22C55E` |
 | `danger` | `#F87171` | `warning` | `#FBBF24` |
 | `info` | `#0EA5E9` | `on-accent` | `#0F172A` |
+| `toast-bg` | `#0F172A` | `toast-text` | `#F8FAFC` |
+| `modal-bg` | `#1E293B` | `modal-border` | `#334155` |
+| `modal-text` | `#F8FAFC` | `nav-bg` | `#0F172A` |
+| `nav-text` | `#F8FAFC` | `nav-accent` | `#60A5FA` |
+| `button-ghost-border` | `#334155` | `button-ghost-text` | `#CBD5E1` |
+| `input-bg` | `#1E293B` | `input-border` | `#475569` |
+| `input-text` | `#F8FAFC` | | |
 
 ### 📏 Spacing (4px base)
 
@@ -566,9 +594,20 @@ colors: {
   'secondary-active': '#334155',
 
   success: '#16A34A',
+  'success-hover': '#15803D',
+  'success-active': '#166534',
+
   danger: '#DC2626',
+  'danger-hover': '#B91C1C',
+  'danger-active': '#991B1B',
+
   warning: '#D97706',
+  'warning-hover': '#B45309',
+  'warning-active': '#92400E',
+
   info: '#0284C7',
+  'info-hover': '#0369A1',
+  'info-active': '#075985',
 
   background: '#F8FAFC',
   surface: '#FFFFFF',
@@ -583,12 +622,60 @@ colors: {
 
   white: '#FFFFFF',
   black: '#000000',
+  'on-accent': '#FFFFFF',
 
   'gray-50': '#F8FAFC',  'gray-100': '#F1F5F9',
   'gray-200': '#E2E8F0', 'gray-300': '#CBD5E1',
   'gray-400': '#94A3B8', 'gray-500': '#64748B',
   'gray-600': '#475569', 'gray-700': '#334155',
   'gray-800': '#1E293B', 'gray-900': '#0F172A',
+
+  // Component tokens
+  'toast-bg': '#1E293B',
+  'toast-text': '#F8FAFC',
+  'modal-bg': '#FFFFFF',
+  'modal-border': '#E2E8F0',
+  'modal-text': '#0F172A',
+  'nav-bg': '#FFFFFF',
+  'nav-text': '#0F172A',
+  'nav-accent': '#2563EB',
+  'button-ghost-border': '#E2E8F0',
+  'button-ghost-text': '#475569',
+  'input-bg': '#FFFFFF',
+  'input-border': '#CBD5E1',
+  'input-text': '#0F172A',
+}
+
+darkColors: {
+  background: '#0F172A',
+  surface: '#1E293B',
+  'surface-secondary': '#334155',
+  text: '#F8FAFC',
+  'text-secondary': '#CBD5E1',
+  'text-muted': '#94A3B8',
+  border: '#334155',
+  'border-strong': '#475569',
+  primary: '#60A5FA',
+  success: '#22C55E',
+  danger: '#F87171',
+  warning: '#FBBF24',
+  info: '#0EA5E9',
+  'on-accent': '#0F172A',
+
+  // Component tokens (Dark)
+  'toast-bg': '#0F172A',
+  'toast-text': '#F8FAFC',
+  'modal-bg': '#1E293B',
+  'modal-border': '#334155',
+  'modal-text': '#F8FAFC',
+  'nav-bg': '#0F172A',
+  'nav-text': '#F8FAFC',
+  'nav-accent': '#60A5FA',
+  'button-ghost-border': '#334155',
+  'button-ghost-text': '#CBD5E1',
+  'input-bg': '#1E293B',
+  'input-border': '#475569',
+  'input-text': '#F8FAFC',
 }
 ```
 
@@ -1407,6 +1494,159 @@ export default { darkMode: 'media' };  // Uses @media (prefers-color-scheme: dar
 <div class="hdx-container hdx-container-xl">XL (1280px)</div>
 <div class="hdx-container hdx-container-2xl">2XL (1536px)</div>
 ```
+
+### Toasts
+
+Transient, auto-dismissing feedback messages — see [Notifications](#notifications) for the persistent variants.
+
+```html
+<div class="hdx-toast-container">
+  <div class="hdx-toast hdx-toast-success">Saved successfully</div>
+  <div class="hdx-toast hdx-toast-danger">Something went wrong</div>
+</div>
+```
+
+Theme: `toast-bg`, `toast-text` drive the toast surface; `success`, `danger`, `warning`, `info` drive the left-accent border.
+
+### Tooltips
+
+```html
+<div class="hdx-tooltip-container">
+  Hover me
+  <div class="hdx-tooltip">
+    Tooltip text
+    <div class="hdx-tooltip-arrow"></div>
+  </div>
+</div>
+```
+
+Add `hdx-tooltip-visible` to show the tip. Theme: `toast-bg` / `toast-text` drive the tooltip surface.
+
+### Interactive
+
+Composed buttons, dropdowns, and responsive content grids.
+
+```html
+<!-- Pill / ghost buttons -->
+<button class="hdx-ui-btn-ghost">Ghost</button>
+<button class="hdx-ui-btn-ghost hdx-ui-btn-ghost-hover">Hovered</button>
+<button class="hdx-btn hdx-ui-btn-pill">Pill</button>
+
+<!-- Dropdown -->
+<div class="hdx-ui-dropdown">
+  <button class="hdx-ui-btn-ghost">Menu ▾</button>
+  <div class="hdx-ui-dropdown-menu hdx-ui-dropdown-open">
+    <a class="hdx-ui-dropdown-item">Profile</a>
+    <a class="hdx-ui-dropdown-item">Settings</a>
+  </div>
+</div>
+
+<!-- Responsive grid -->
+<div class="hdx-ui-grid-3col">…</div>
+```
+
+Theme: `surface`, `border`, `text`, `surface-secondary`, `button-ghost-border`, `button-ghost-text`.
+
+### Layout & Navigation
+
+Sticky headers, top/side/bottom navs, tabs, breadcrumbs, pagination, search and profile cards.
+
+```html
+<header class="hdx-ui-header hdx-ui-header-sticky">
+  <span class="hdx-text-lg hdx-font-bold">Brand</span>
+  <ul class="hdx-ui-nav-tabs">
+    <li><a href="#" class="hdx-ui-nav-tab hdx-ui-nav-tab-active">Overview</a></li>
+    <li><a href="#" class="hdx-ui-nav-tab">Analytics</a></li>
+  </ul>
+  <div class="hdx-ui-search-box">
+    <input class="hdx-ui-search-input" placeholder="Search…">
+  </div>
+</header>
+
+<ol class="hdx-ui-breadcrumb">
+  <li><a href="#" class="hdx-ui-breadcrumb-item">Home</a></li>
+  <li class="hdx-ui-breadcrumb-separator">/</li>
+  <li class="hdx-ui-breadcrumb-current">Projects</li>
+</ol>
+
+<ul class="hdx-ui-pagination">
+  <li><a href="#" class="hdx-ui-pagination-item hdx-ui-pagination-item-disabled">‹</a></li>
+  <li><a href="#" class="hdx-ui-pagination-item hdx-ui-pagination-item-active">1</a></li>
+  <li><a href="#" class="hdx-ui-pagination-item">2</a></li>
+</ul>
+
+<footer class="hdx-ui-footer">…</footer>
+```
+
+Mobile app bottom tab bar (fixed, safe-area aware — add `padding-bottom: env(safe-area-inset-bottom)` handling is built in):
+
+```html
+<nav class="hdx-ui-nav-bottom">
+  <a href="#" class="hdx-ui-nav-bottom-item hdx-ui-nav-bottom-item-active">Home</a>
+  <a href="#" class="hdx-ui-nav-bottom-item">Stats</a>
+</nav>
+```
+
+`hdx-ui-header` is sticky by default. `hdx-ui-header-transparent` gives a transparent hero-overlay header (solidifying on scroll needs a few lines of user JS toggling a class — HDX only supplies the two visual states).
+
+Theme: `nav-bg`, `nav-text`, `nav-accent`, `primary`, `border`, `surface-secondary`, `input-bg`, `input-border`, `input-text`.
+
+### Icons
+
+HDX does **not** bundle an icon set. `hdx-ui-icon` is the sizing/coloring/wrapping contract any icon source plugs into — import your own SVGs `<svg class="hdx-ui-icon">…</svg>` or icon-font glyphs `<i class="hdx-ui-icon icon-name-from-their-library">`. The wrapper uses `currentColor`, so change `color` on the wrapper or any parent and the icon follows.
+
+```html
+<svg class="hdx-ui-icon hdx-ui-icon-sm hdx-text-primary" viewBox="0 0 20 20" fill="currentColor">
+  <!-- your SVG paths -->
+</svg>
+
+<!-- Loading indicator -->
+<svg class="hdx-ui-icon hdx-ui-icon-spin hdx-text-success" viewBox="0 0 20 20" fill="currentColor">…</svg>
+```
+
+Sizes: `hdx-ui-icon` (1em) · `hdx-ui-icon-xs` · `hdx-ui-icon-sm` · `hdx-ui-icon-lg` · `hdx-ui-icon-xl`. Theme: color inherits via `currentColor`; sizes derive from `fontSize` tokens.
+
+### Notifications
+
+Persistent indicators and list items — distinct from [Toasts](#toasts), which are transient/auto-dismissing.
+
+```html
+<!-- Unread dot / count badge on a relative-positioned icon -->
+<div class="hdx-relative">
+  <svg class="hdx-ui-icon hdx-ui-icon-lg">…</svg>
+  <span class="hdx-ui-notification-dot"></span>
+  <!-- or: <span class="hdx-ui-notification-badge">4</span> -->
+</div>
+
+<!-- Persistent list panel -->
+<div class="hdx-ui-notification-panel">
+  <div class="hdx-ui-notification-item hdx-ui-notification-item-unread">
+    <div class="hdx-avatar hdx-avatar-sm">JD</div>
+    <div>
+      <p class="hdx-text-sm hdx-font-medium">John commented</p>
+      <p class="hdx-text-xs hdx-text-text-muted">2 minutes ago</p>
+    </div>
+  </div>
+</div>
+```
+
+Theme: `danger` drives dot/badge color; `on-accent` the badge text; `primary` the unread accent border; `surface`, `surface-secondary`, `border` the panel/items. Override dot/badge color by setting `--hdx-color-danger` (or a custom color on the element).
+
+### Component Theme Overrides
+
+Every component reads its colors from CSS variables, so overriding a single token re-themes every component that uses it — no per-component code:
+
+| CSS variable | Drives |
+|---|---|
+| `--hdx-color-primary` | Buttons (solid), badges, nav accent, tabs active, pagination active, unread accent |
+| `--hdx-color-danger` | Alert/danger, toast danger, notification dot + badge |
+| `--hdx-color-on-accent` | Text placed on colored surfaces (solid buttons, badges, dot) |
+| `--hdx-color-surface` / `--hdx-color-surface-secondary` | Cards, inputs, dropdowns, notification items |
+| `--hdx-color-border` / `--hdx-color-border-strong` | Outlines, dividers, table/breadcrumb rules |
+| `--hdx-color-toast-bg` / `--hdx-color-toast-text` | Toast + tooltip surfaces |
+| `--hdx-color-modal-bg` / `--hdx-color-modal-border` / `--hdx-color-modal-text` | Modal panel |
+| `--hdx-color-nav-bg` / `--hdx-color-nav-text` / `--hdx-color-nav-accent` | Header/footer/sidebar/bottom nav |
+| `--hdx-color-input-bg` / `--hdx-color-input-border` / `--hdx-color-input-text` | Search box, inputs |
 
 ---
 

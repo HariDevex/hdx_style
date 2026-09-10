@@ -7,7 +7,7 @@ import { colorVariable } from '../generator/resolver.js';
  */
 export function layoutComponents(config) {
   const prefix = config.prefix;
-  const { radius, shadows, zIndex } = config.theme;
+  const { radius, zIndex } = config.theme;
   const cv = (key) => colorVariable(key, prefix);
 
   return [
@@ -128,6 +128,21 @@ padding: 0.5rem;
 border-radius: ${radius['md']};
 transition: background-color 0.2s ease;
 cursor: pointer;`,
+      category: 'components',
+    },
+
+    // --- Header Modifiers (layered onto ui-header) ---
+    {
+      name: 'ui-header-sticky',
+      css: `position: sticky;
+top: 0;
+z-index: ${zIndex.sticky};`,
+      category: 'components',
+    },
+    {
+      name: 'ui-header-transparent',
+      css: `background-color: transparent;
+border-bottom: none;`,
       category: 'components',
     },
   ];
