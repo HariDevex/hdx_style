@@ -19,6 +19,16 @@ is also documented individually in the root [README](../../README.md#-components
   `-unread` modifier
 - `ui-pagination` / `-item` / `-item-active` / `-item-disabled`
 - `ui-notification-dot` on a `hdx-relative` button
+- `ui-form-group` / `ui-form-label` / `ui-form-hint`
+- `ui-floating-input` + `ui-floating-label`(+ `-active`)
+- `ui-switch` / `-thumb` / `-checked` / `-thumb-checked`
+- `ui-chip` / `ui-chip-close`
+- `ui-carousel` / `-item` / `-prev` / `-next`
+- `ui-thumbnails` / `ui-thumbnail` / `-active`
+- `ui-figure` / `ui-figure-caption`
+- `ui-popover` / `-open` / `-arrow`
+- `ui-drawer`(+ `-right`) / `-open` / `-overlay`(+ `-open`) — shipped hidden, toggled by JS
+- `ui-lightbox` / `-open` / `-content` / `-close` / `-caption` — shipped hidden, toggled by JS
 - `ui-nav-bottom` mobile tab bar with `ui-nav-bottom-item(-active)`
 - `ui-footer`
 

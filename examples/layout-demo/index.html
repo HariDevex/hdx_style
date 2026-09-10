@@ -158,6 +158,110 @@
       </div>
     </div>
 
+    <!-- Overlays, forms & media -->
+    <div class="hdx-ui-grid-3col">
+
+      <!-- Forms: field group + switch + chips + floating label -->
+      <div class="hdx-card">
+        <div class="hdx-card-header">
+          <h2 class="hdx-text-lg hdx-font-semibold">Forms</h2>
+        </div>
+        <div class="hdx-card-body hdx-flex hdx-flex-col hdx-gap-4">
+          <div class="hdx-ui-form-group">
+            <label class="hdx-ui-form-label" for="demo-email">Email</label>
+            <input id="demo-email" class="hdx-input" type="email" value="amelia@example.com">
+            <p class="hdx-ui-form-hint">We never share it.</p>
+          </div>
+
+          <div class="hdx-relative">
+            <input class="hdx-input hdx-ui-floating-input" placeholder=" ">
+            <label class="hdx-ui-floating-label hdx-ui-floating-label-active">Search</label>
+          </div>
+
+          <div class="hdx-flex hdx-items-center hdx-gap-3">
+            <label class="hdx-ui-switch hdx-ui-switch-checked">
+              <span class="hdx-ui-switch-thumb hdx-ui-switch-thumb-checked"></span>
+            </label>
+            <span class="hdx-text-sm hdx-text-text-secondary">Dark mode (on)</span>
+          </div>
+
+          <div class="hdx-flex hdx-gap-1 hdx-flex-wrap">
+            <span class="hdx-ui-chip">React <button class="hdx-ui-chip-close">&times;</button></span>
+            <span class="hdx-ui-chip">Vue <button class="hdx-ui-chip-close">&times;</button></span>
+            <span class="hdx-ui-chip">Svelte</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Media: carousel + thumbnails -->
+      <div class="hdx-card">
+        <div class="hdx-card-header">
+          <h2 class="hdx-text-lg hdx-font-semibold">Media</h2>
+        </div>
+        <div class="hdx-card-body hdx-flex hdx-flex-col hdx-gap-4">
+          <div class="hdx-flex hdx-gap-2">
+            <div class="hdx-ui-carousel">
+              <div class="hdx-ui-carousel-item"><div class="hdx-w-[224px] hdx-h-32 hdx-bg-primary hdx-rounded-md"></div></div>
+              <div class="hdx-ui-carousel-item"><div class="hdx-w-[224px] hdx-h-32 hdx-bg-success hdx-rounded-md"></div></div>
+              <div class="hdx-ui-carousel-item"><div class="hdx-w-[224px] hdx-h-32 hdx-bg-warning hdx-rounded-md"></div></div>
+            </div>
+            <div class="hdx-flex hdx-flex-col hdx-gap-2 hdx-shrink-0">
+              <button class="hdx-ui-carousel-prev" aria-label="Previous">‹</button>
+              <button class="hdx-ui-carousel-next" aria-label="Next">›</button>
+            </div>
+          </div>
+
+          <div class="hdx-ui-thumbnails">
+            <div class="hdx-ui-thumbnail"><div class="hdx-w-full hdx-h-full hdx-bg-primary"></div></div>
+            <div class="hdx-ui-thumbnail hdx-ui-thumbnail-active"><div class="hdx-w-full hdx-h-full hdx-bg-success"></div></div>
+            <div class="hdx-ui-thumbnail"><div class="hdx-w-full hdx-h-full hdx-bg-warning"></div></div>
+          </div>
+
+          <figure class="hdx-ui-figure">
+            <div class="hdx-w-full hdx-h-24 hdx-bg-info hdx-rounded-md"></div>
+            <figcaption class="hdx-ui-figure-caption">Quarterly coverage report</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <!-- Overlays: popover (open) + drawer + lightbox -->
+      <div class="hdx-card">
+        <div class="hdx-card-header">
+          <h2 class="hdx-text-lg hdx-font-semibold">Overlays</h2>
+        </div>
+        <div class="hdx-card-body hdx-flex hdx-flex-col hdx-gap-6">
+          <div class="hdx-relative hdx-inline-block">
+            <button class="hdx-ui-btn-ghost">Keyboard help ?</button>
+            <div class="hdx-ui-popover hdx-ui-popover-open">
+              <p class="hdx-text-sm">Press <kbd>g</kbd> then <kbd>o</kbd> to jump.</p>
+              <div class="hdx-ui-popover-arrow"></div>
+            </div>
+          </div>
+
+          <p class="hdx-text-sm hdx-text-text-secondary">
+            Toggle <code>hdx-ui-drawer-open</code> + <code>hdx-ui-drawer-overlay-open</code> (and
+            <code>hdx-ui-lightbox-open</code>) with a few lines of JS — the drawer and
+            lightbox below ship hidden by default, same contract as the dropdown.
+          </p>
+
+          <div class="hdx-ui-drawer-overlay"></div>
+          <aside class="hdx-ui-drawer hdx-ui-drawer-right">
+            <h3 class="hdx-text-lg hdx-font-semibold hdx-mb-2">Filters</h3>
+            <p class="hdx-text-sm hdx-text-text-secondary">Right-anchored drawer, closed by default.</p>
+            <button class="hdx-ui-btn-ghost hdx-mt-4">Apply</button>
+          </aside>
+
+          <div class="hdx-ui-lightbox">
+            <div class="hdx-ui-lightbox-content">
+              <button class="hdx-ui-lightbox-close">&times;</button>
+              <div class="hdx-w-[384px] hdx-h-[256px] hdx-bg-primary m-0"></div>
+              <div class="hdx-ui-lightbox-caption">A lightboxed panel</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <!-- Footer -->

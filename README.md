@@ -17,7 +17,7 @@
 
 </div>
 
-> **`@haridevx/hdx-style`** is an independent, modular CSS framework with **2,035 utilities**, **121 components**, and **49 variants** — shipping zero PostCSS and zero Tailwind runtime dependencies.
+> **`@haridevx/hdx-style`** is an independent, modular CSS framework with **2,035 utilities**, **156 components**, and **49 variants** — shipping zero PostCSS and zero Tailwind runtime dependencies.
 
 ### 📊 Verified Statistics
 
@@ -27,11 +27,11 @@ Run `node stats.js` to generate from source; `npm run stats:verify` (also part o
 |---|---|
 | 📦 Utilities | **2,035** |
 | 🗂️ Utility categories | **21** |
-| 🧩 Components | **121** |
+| 🧩 Components | **156** |
 | 🎛️ Variants | **49** |
 | 📐 Responsive breakpoints | **5** |
-| ✅ Tests | **353** |
-| 📄 Source files | **75** |
+| ✅ Tests | **369** |
+| 📄 Source files | **78** |
 | ⚙️ Runtime dependencies | **4** |
 | 🚫 PostCSS dependency | **No** |
 | 🚫 Tailwind dependency | **No** |
@@ -67,7 +67,7 @@ Run `node stats.js` to generate from source; `npm run stats:verify` (also part o
 </tr>
 <tr>
 <td><b>🧱 Components</b></td>
-<td>121 drop-in components — buttons, cards, modals, tables, and more</td>
+<td>156 drop-in components — buttons, cards, modals, tables, and more</td>
 </tr>
 <tr>
 <td><b>🧹 Auto purging</b></td>
@@ -1632,17 +1632,108 @@ Persistent indicators and list items — distinct from [Toasts](#toasts), which 
 
 Theme: `danger` drives dot/badge color; `on-accent` the badge text; `primary` the unread accent border; `surface`, `surface-secondary`, `border` the panel/items. Override dot/badge color by setting `--hdx-color-danger` (or a custom color on the element).
 
+### Overlays
+
+Drawers, popovers, and lightboxes. All three follow the dropdown contract — hidden by default (`opacity: 0; visibility: hidden`) and revealed by an `-open` modifier class you toggle. The dim backdrops use the same fixed `rgba(0, 0, 0, …)` treatment as `hdx-modal-overlay`.
+
+```html
+<!-- Drawer (left) -->
+<div class="hdx-ui-drawer-overlay hdx-ui-drawer-overlay-open"></div>
+<aside class="hdx-ui-drawer hdx-ui-drawer-open">
+  <h3 class="hdx-text-lg hdx-font-semibold">Filters</h3>
+</aside>
+
+<!-- Popover: wrap trigger in hdx-relative hdx-inline-block -->
+<div class="hdx-relative hdx-inline-block">
+  <button class="hdx-ui-btn-ghost">Help ?</button>
+  <div class="hdx-ui-popover hdx-ui-popover-open">
+    Keyboard shortcuts…<div class="hdx-ui-popover-arrow"></div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="hdx-ui-lightbox hdx-ui-lightbox-open">
+  <div class="hdx-ui-lightbox-content">
+    <button class="hdx-ui-lightbox-close">&times;</button>
+    <img src="photo.jpg" alt="…">
+    <div class="hdx-ui-lightbox-caption">Caption</div>
+  </div>
+</div>
+```
+
+Use `hdx-ui-drawer-right` for a right-side drawer. Theme: `surface`/`border` panel surfaces, `shadows.lg`/`shadows.xl` depth, `text`/`text-secondary` content, `surface-secondary` hover states, `zIndex.overlay` → `zIndex.modal` → `zIndex.popover` stacking.
+
+### Forms
+
+Switches, chips, field groups, and a floating-label pair — complements the existing `hdx-input` family.
+
+```html
+<!-- Toggle switch -->
+<label class="hdx-ui-switch hdx-ui-switch-checked">
+  <span class="hdx-ui-switch-thumb hdx-ui-switch-thumb-checked"></span>
+</label>
+
+<!-- Chip -->
+<span class="hdx-ui-chip">React <button class="hdx-ui-chip-close">&times;</button></span>
+
+<!-- Field group -->
+<div class="hdx-ui-form-group">
+  <label class="hdx-ui-form-label" for="email">Email</label>
+  <input id="email" class="hdx-input" type="email">
+  <p class="hdx-ui-form-hint">We never share it.</p>
+  <!-- <p class="hdx-ui-form-error">Required field</p> -->
+</div>
+
+<!-- Floating label (wrap in hdx-relative) -->
+<div class="hdx-relative">
+  <input class="hdx-input hdx-ui-floating-input" placeholder=" " />
+  <label class="hdx-ui-floating-label hdx-ui-floating-label-active">Search</label>
+</div>
+```
+
+As with the rest of the kit, HDX ships no JS — toggle `-checked`/`-open`/`-active` classes from your own script. Theme: `primary`/`on-accent`/`white` (switch), `surface-secondary`/`gray-200` (chips), `danger` (error text), `text-muted`/`text-secondary` (labels/hints).
+
+### Media
+
+A scroll-snap carousel, thumbnail strip, and figure wrappers.
+
+```html
+<!-- Carousel -->
+<div class="hdx-ui-carousel">
+  <div class="hdx-ui-carousel-item">…1…</div>
+  <div class="hdx-ui-carousel-item">…2…</div>
+</div>
+<button class="hdx-ui-carousel-prev">‹</button>
+<button class="hdx-ui-carousel-next">›</button>
+
+<!-- Thumbnails -->
+<div class="hdx-ui-thumbnails">
+  <img class="hdx-ui-thumbnail" src="t1.jpg" alt="">
+  <img class="hdx-ui-thumbnail hdx-ui-thumbnail-active" src="t2.jpg" alt="">
+</div>
+
+<!-- Figure -->
+<figure class="hdx-ui-figure">
+  <img src="hero.jpg" alt="…">
+  <figcaption class="hdx-ui-figure-caption">Field notes</figcaption>
+</figure>
+```
+
+Theme: `surface`/`border`/`shadows.md` (nav buttons), `primary` (active thumbnail ring), `text-muted` (captions), `border-strong` (hover rings).
+
 ### Component Theme Overrides
 
 Every component reads its colors from CSS variables, so overriding a single token re-themes every component that uses it — no per-component code:
 
 | CSS variable | Drives |
 |---|---|
-| `--hdx-color-primary` | Buttons (solid), badges, nav accent, tabs active, pagination active, unread accent |
-| `--hdx-color-danger` | Alert/danger, toast danger, notification dot + badge |
+| `--hdx-color-primary` | Buttons (solid), badges, nav accent, tabs active, pagination active, unread accent, switch checked, thumbnail active |
+| `--hdx-color-danger` | Alert/danger, toast danger, notification dot + badge, form error text |
 | `--hdx-color-on-accent` | Text placed on colored surfaces (solid buttons, badges, dot) |
-| `--hdx-color-surface` / `--hdx-color-surface-secondary` | Cards, inputs, dropdowns, notification items |
-| `--hdx-color-border` / `--hdx-color-border-strong` | Outlines, dividers, table/breadcrumb rules |
+| `--hdx-color-surface` / `--hdx-color-surface-secondary` | Cards, inputs, dropdowns, notification items, drawer/popover/lightbox panels, chips, carousel buttons, switch track |
+| `--hdx-color-white` | Switch thumb, icon-dot border |
+| `--hdx-color-border` / `--hdx-color-border-strong` | Outlines, dividers, table/breadcrumb rules, thumbnail hover ring |
+| `--hdx-color-text-muted` / `--hdx-color-text-secondary` | Hints, captions, breadcrumb current, pagination placeholder text |
 | `--hdx-color-toast-bg` / `--hdx-color-toast-text` | Toast + tooltip surfaces |
 | `--hdx-color-modal-bg` / `--hdx-color-modal-border` / `--hdx-color-modal-text` | Modal panel |
 | `--hdx-color-nav-bg` / `--hdx-color-nav-text` / `--hdx-color-nav-accent` | Header/footer/sidebar/bottom nav |

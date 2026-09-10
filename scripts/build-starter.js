@@ -23,7 +23,7 @@ import { generateCSS } from '../src/generator/index.js';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 
-const SIZE_LIMIT_KB = 130;
+const SIZE_LIMIT_KB = 140;
 
 // Curated "core" utility names per category. Only these become rules; the rest
 // of the framework is available through the build/purge/arbitrary paths.
