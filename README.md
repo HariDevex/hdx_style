@@ -1,166 +1,208 @@
-| 📐 Responsive breakpoints | **5** |
-| ✅ Tests | **334** |
-| 📄 Source files | **72** |
-| ⚙️ Runtime dependencies | **4** |
-| 🚫 PostCSS dependency | **No** |
-| 🚫 Tailwind dependency | **No** |
+<div align="center">
 
-### 📊 Verified Statistics
+# 🎨 HDX Style
 
-Run `node stats.js` to generate from source; `npm run stats:verify` (also part of CI) fails if this table drifts from the source:
+### Modern Utility-First CSS Framework with a Complete Design System
 
-| Metric | Count |
-|---|---|
-| 📦 Utilities | **2,035** |
-| 🗂️ Utility categories | **21** |
-| 🧩 Components | **92** |
-| 🎛️ Variants | **49** |
-| 📐 Responsive breakpoints | **5** |
-| ✅ Tests | **334** |
-| 📄 Source files | **72** |
-| ⚙️ Runtime dependencies | **4** |
-| 🚫 PostCSS dependency | **No** |
-| 🚫 Tailwind dependency | **No** |
-
-### ✨ Why HDX Style?
-
-| | |
-|---|---|
-| ⚡ **Demand-driven builds** | Production output ~1,000× smaller — only the classes you actually use |
-| 🔬 **Class parser** | `hdx-md_hover_bg-primary` → `{ variants: [md, hover], utility: bg-primary }` |
-| 🎨 **Design tokens** | Semantic colors, spacing, shadows, breakpoints → CSS variables |
-| 🌙 **Dark mode** | `class`, `media`, or `both` strategies, namespaced as `hdx-dark` |
-| 📐 **Responsive prefixes** | `sm` `md` `lg` `xl` `2xl` on every single utility |
-| 🔌 **Plugin API** | Registry-based: add utilities, variants, and components |
-| 🧱 **Components** | 58 drop-in components — buttons, cards, modals, tables, and more |
-| 🧹 **Auto purging** | Scans HTML/JS/JSX/TS/Vue/Svelte and keeps only the utilities *and components* you use |
-| ♿ **Accessible** | Focus rings, `sr-only`, and reduced-motion support built in |
-| 🔒 **Deterministic** | Identical input → identical CSS. No timestamps, no surprises |
+[![npm version](https://img.shields.io/npm/v/@haridevx/hdx-style?style=for-the-badge&logo=npm&logoColor=white&color=blue)](https://www.npmjs.com/package/@haridevx/hdx-style)
+[![license](https://img.shields.io/npm/l/@haridevx/hdx-style?style=for-the-badge&color=green)](LICENSE)
+[![node](https://img.shields.io/node/v/@haridevx/hdx-style?style=for-the-badge&logo=node.js&logoColor=white&color=orange)](package.json)
+[![CI](https://img.shields.io/github/actions/workflow/status/HariDevex/hdx_style/ci.yml?style=for-the-badge&logo=github-actions&logoColor=white&label=CI)](.github/workflows/ci.yml)
 
 ---
 
-## Table of Contents
-- [Table of Contents](#table-of-contents)
-- [Architecture](#architecture)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [CLI Commands](#cli-commands)
-- [Configuration](#configuration)
-- [Default Values](#default-values)
-- [Design Tokens](#design-tokens)
-- [CSS Variables](#css-variables)
-- [Utilities](#utilities)
-  - [Display](#display)
-  - [Flexbox](#flexbox)
-  - [Grid](#grid)
-  - [Spacing](#spacing)
-  - [Sizing](#sizing)
-  - [Typography](#typography)
-  - [Colors](#colors)
-  - [Backgrounds](#backgrounds)
-  - [Borders](#borders)
-  - [Border Radius](#border-radius)
-  - [Shadows](#shadows)
-  - [Opacity](#opacity)
-  - [Overflow](#overflow)
-  - [Positioning](#positioning)
-  - [Z-Index](#z-index)sponsive 
-  - [Transforms](#transforms)
-  - [Transitions](#transitions)
-  - [Animations](#animations)
-- [Class Parser](#class-parser)
-- [Variant Pipeline](#variant-pipeline)
-- [Responsive Design](#responsive-design)
-- [State Variants](#state-variants)
-- [Dark Mode](#dark-mode)
-- [Components](#components)
-  - [Buttons](#buttons)
-  - [Inputs](#inputs)
-  - [Cards](#cards)
-  - [Badges](#badges)
-  - [Alerts](#alerts)
-  - [Avatars](#avatars)
-  - [Modals](#modals)
-  - [Tables](#tables)
-  - [Container](#container)
-- [Accessibility](#accessibility)
-- [Plugin System](#plugin-system)
-- [Content Purging](#content-purging)
-- [Framework Integration](#framework-integration)
-- [Complete Page Example](#complete-page-example)
-- [Git Workflow](#git-workflow)
-- [License](#license)
+**⚡ Demand-driven** · **🔬 Class Parser** · **🎨 Design Tokens** · **🌙 Dark Mode** · **📐 Responsive** · **🔌 Plugin API** · **🧱 Components** · **♿ Accessible**
 
 ---
 
-<h2 id="architecture">🏗️ Architecture</h2>
+</div>
+
+> **`@haridevx/hdx-style`** is an independent, modular CSS framework with **2,035 utilities**, **92 components**, and **49 variants** — shipping zero PostCSS and zero Tailwind runtime dependencies.
+
+<table>
+<tr>
+<td align="center"><b>📦 Utilities</b><br>2,035</td>
+<td align="center"><b>🧩 Components</b><br>92</td>
+<td align="center"><b>🎛️ Variants</b><br>49</td>
+<td align="center"><b>📐 Breakpoints</b><br>5</td>
+<td align="center"><b>✅ Tests</b><br>334</td>
+<td align="center"><b>📄 Source Files</b><br>72</td>
+<td align="center"><b>⚙️ Runtime Deps</b><br>4</td>
+<td align="center"><b>🚫 PostCSS</b><br>None</td>
+<td align="center"><b>🚫 Tailwind</b><br>None</td>
+</tr>
+</table>
+
+> Run `node stats.js` to regenerate; `npm run stats:verify` (part of CI) fails if this table drifts from source.
+
+---
+
+## ✨ Why HDX Style?
+
+<table>
+<tr>
+<td><b>⚡ Demand-driven builds</b></td>
+<td>Production output ~1,000× smaller — only the classes you actually use</td>
+</tr>
+<tr>
+<td><b>🔬 Class parser</b></td>
+<td><code>hdx-md_hover_bg-primary</code> → <code>{ variants: [md, hover], utility: bg-primary }</code></td>
+</tr>
+<tr>
+<td><b>🎨 Design tokens</b></td>
+<td>Semantic colors, spacing, shadows, breakpoints → CSS variables</td>
+</tr>
+<tr>
+<td><b>🌙 Dark mode</b></td>
+<td><code>class</code>, <code>media</code>, or <code>both</code> strategies, namespaced as <code>hdx-dark</code></td>
+</tr>
+<tr>
+<td><b>📐 Responsive prefixes</b></td>
+<td><code>sm</code> <code>md</code> <code>lg</code> <code>xl</code> <code>2xl</code> on every single utility</td>
+</tr>
+<tr>
+<td><b>🔌 Plugin API</b></td>
+<td>Registry-based: add utilities, variants, and components</td>
+</tr>
+<tr>
+<td><b>🧱 Components</b></td>
+<td>92 drop-in components — buttons, cards, modals, tables, and more</td>
+</tr>
+<tr>
+<td><b>🧹 Auto purging</b></td>
+<td>Scans HTML/JS/JSX/TS/Vue/Svelte and keeps only the utilities <i>and components</i> you use</td>
+</tr>
+<tr>
+<td><b>♿ Accessible</b></td>
+<td>Focus rings, <code>sr-only</code>, and reduced-motion support built in</td>
+</tr>
+<tr>
+<td><b>🔒 Deterministic</b></td>
+<td>Identical input → identical CSS. No timestamps, no surprises</td>
+</tr>
+</table>
+
+---
+
+## 📑 Table of Contents
+
+| | Section |
+|---|---|
+| 🏗️ | [Architecture](#-architecture) |
+| 📥 | [Installation](#-installation) |
+| 🚀 | [Quick Start](#-quick-start) |
+| 💻 | [CLI Commands](#-cli-commands) |
+| ⚙️ | [Configuration](#%EF%B8%8F-configuration) |
+| 📋 | [Default Values](#-default-values) |
+| 🎨 | [Design Tokens](#-design-tokens) |
+| 🧬 | [CSS Variables](#-css-variables) |
+| 🛠️ | [Utilities](#%EF%B8%8F-utilities) |
+| 🔬 | [Class Parser](#-class-parser) |
+| 🔀 | [Variant Pipeline](#-variant-pipeline) |
+| 📐 | [Responsive Design](#-responsive-design) |
+| 🎚️ | [State Variants](#%EF%B8%8F-state-variants) |
+| 🌙 | [Dark Mode](#-dark-mode) |
+| 🧱 | [Components](#-components) |
+| ♿ | [Accessibility](#%E2%8C%83-accessibility) |
+| 🔌 | [Plugin System](#-plugin-system) |
+| 🧹 | [Content Purging](#-content-purging) |
+| 🧩 | [Framework Integration](#-framework-integration) |
+| 🖼️ | [Complete Page Example](#-complete-page-example) |
+| 🔀 | [Git Workflow](#-git-workflow) |
+| 📜 | [License](#-license) |
+
+---
+
+## 🏗️ Architecture
 
 HDX Style is an independent, modular CSS framework. Its pipeline:
 
-```text
-Configuration (hdx.config.js)
-        ↓
-Design Tokens (theme)
-        ↓
-Content Scanner (extract HDX classes from HTML/JS/JSX/Vue/Svelte)
-        ↓
-Class Parser (hdx-md_hover_bg-primary → { variants: [md, hover], utility: bg-primary })
-        ↓
-Variant Pipeline (state → dark → responsive, ordered)
-        ↓
-CSS Generator (demand-driven in production)
-        ↓
-dist/hdx.css
+```
+┌─────────────────────┐
+│  Configuration      │  hdx.config.js
+│  (hdx.config.js)    │
+└─────────┬───────────┘
+          ▼
+┌─────────────────────┐
+│  Design Tokens      │  Colors, spacing, radius, shadows
+│  (theme)            │
+└─────────┬───────────┘
+          ▼
+┌─────────────────────┐
+│  Content Scanner    │  Extract HDX classes from
+│  (HTML/JS/JSX/Vue)  │  HTML, JS, JSX, TS, Vue, Svelte
+└─────────┬───────────┘
+          ▼
+┌─────────────────────┐
+│  Class Parser       │  hdx-md_hover_bg-primary
+│                     │  → { variants: [md, hover], utility: bg-primary }
+└─────────┬───────────┘
+          ▼
+┌─────────────────────┐
+│  Variant Pipeline   │  state → dark → responsive
+│                     │  (ordered composition)
+└─────────┬───────────┘
+          ▼
+┌─────────────────────┐
+│  CSS Generator      │  Demand-driven in production
+│                     │
+└─────────┬───────────┘
+          ▼
+┌─────────────────────┐
+│  dist/hdx.css       │
+└─────────────────────┘
 ```
 
-Layered design:
+### Layered Design
 
 | Layer | Responsibility |
 |---|---|
 | **Tokens** | Colors, spacing, radius, shadows, breakpoints, transitions |
-| **Utilities** | 20 categories, 1,850 utilities across display, flexbox, grid, spacing, etc. |
+| **Utilities** | 21 categories, 2,035 utilities across display, flexbox, grid, spacing, etc. |
 | **Components** | Base + variant + size classes for buttons, cards, modals, etc. |
 | **Variants** | State, responsive, dark, ancestor — compose via the variant pipeline |
 | **Generator** | Produces deterministic CSS. Demand-driven in production mode |
 
-Key design decisions:
+### Key Design Decisions
 
-- **Demand-driven generation**: In production (`--purge`, the default when `content` is set), only utilities *and components* actually used in your content are generated. The full ≈25 MB development stylesheet becomes a minimal production file with only the classes you used.
+- **Demand-driven generation**: In production (`--purge`, the default when `content` is set), only utilities *and components* actually used in your content are generated. The full ≈25 MB development stylesheet becomes a minimal production file.
 - **Class parser**: Any class like `hdx-md_hover_bg-primary` is decomposed into `variants: ['md', 'hover']` + `utility: 'bg-primary'` without assuming a fixed number of variants.
-- **Variant pipeline**: Variants compose in ordered layers — responsive wraps media queries, dark adds the `hdx-dark` ancestor, state adds pseudo-classes. The pipeline is extensible: future variants (e.g. `supports`, `container`) drop into the same mechanism.
-- **Registry-based plugins**: Plugins write to an isolated registry instead of mutating the original config. Invalid definitions are rejected with actionable errors.
+- **Variant pipeline**: Variants compose in ordered layers — responsive wraps media queries, dark adds the `hdx-dark` ancestor, state adds pseudo-classes. The pipeline is extensible.
+- **Registry-based plugins**: Plugins write to an isolated registry instead of mutating the original config.
 - **Configurable reset**: Set `reset: false` to use HDX Style as a pure utility layer.
 - **Deterministic output**: Identical input always produces identical CSS. No timestamps, no random ordering.
 
 ---
 
-<h2 id="installation">📥 Installation</h2>
+## 📥 Installation
 
-> **Published on npm.** `@haridevx/hdx-style` is on the public npm registry, so `npm install`, the unpkg CDN link, and `@haridevx/hdx-style/...` imports below work out of the box:
+> **Published on npm.** `@haridevx/hdx-style` is on the public npm registry.
+
+### 📦 npm
 
 ```bash
 npm install @haridevx/hdx-style
 ```
 
-### CDN
+### 🌐 CDN
 
 ```html
 <link rel="stylesheet" href="https://unpkg.com/@haridevx/hdx-style/dist/hdx.css">
 ```
 
-### CSS Import
+### 🎨 CSS Import
 
 ```css
 @import "@haridevx/hdx-style/css";
 ```
 
-### JavaScript Import
+### 📜 JavaScript Import
 
 ```js
 import "@haridevx/hdx-style/css";
 ```
 
-### Node API
+### 🔧 Node API
 
 ```js
 import { generateCSS, loadConfig } from "@haridevx/hdx-style";
@@ -172,18 +214,18 @@ The package ships TypeScript definitions (`.d.ts`) for the full public API.
 
 ---
 
-<h2 id="quick-start">🚀 Quick Start</h2>
+## 🚀 Quick Start
 
 ### 1. Install
 
 ```bash
 npm install @haridevx/hdx-style
-npx hdx_style init
+npx hdx-style init
 ```
 
 ### 2. Configure `hdx.config.js`
 
-`hdx_style init` creates the config with the correct module syntax for your project: `hdx.config.cjs` (CommonJS) for CommonJS projects, `hdx.config.js` (ESM) for `"type": "module"` projects. ESM, CommonJS (`.cjs`), and `.mjs` config files are all supported.
+`hdx-style init` creates the config with the correct module syntax for your project:
 
 ```js
 export default {
@@ -198,7 +240,7 @@ export default {
 ### 3. Build
 
 ```bash
-npx hdx_style build
+npx hdx-style build
 ```
 
 ### 4. Use
@@ -215,26 +257,26 @@ npx hdx_style build
 
 ---
 
-<h2 id="cli-commands">💻 CLI Commands</h2>
+## 💻 CLI Commands
 
 ```bash
-npx hdx_style init              # Create hdx.config.js / .cjs / .mjs
-npx hdx_style build             # Build dist/hdx.css — purges unused CSS when content is configured (recommended default)
-npx hdx_style build -p          # Production build (explicit purge; same as the default when content is set)
-npx hdx_style build --production  # Production build (same as -p)
-npx hdx_style build --no-purge  # Full utility × variant matrix (CDN/stylesheet distribution)
-npx hdx_style build -o out.css  # Custom output path
-npx hdx_style build -c my.config.js  # Custom config path
-npx hdx_style watch             # Watch and rebuild (content-scans/purges by default)
-npx hdx_style watch --no-purge  # Watch with a full (unpurged) rebuild
-npx hdx_style generate          # Full stylesheet — always non-purged (no -p/--production)
-npx hdx_style --version         # Print version
-npx hdx_style --help            # Print help
+npx hdx-style init              # Create hdx.config.js / .cjs / .mjs
+npx hdx-style build             # Build dist/hdx.css — purges unused CSS when content is configured
+npx hdx-style build -p          # Production build (explicit purge)
+npx hdx-style build --production  # Same as -p
+npx hdx-style build --no-purge  # Full utility × variant matrix (CDN distribution)
+npx hdx-style build -o out.css  # Custom output path
+npx hdx-style build -c my.config.js  # Custom config path
+npx hdx-style watch             # Watch and rebuild (purges by default)
+npx hdx-style watch --no-purge  # Watch with full rebuild
+npx hdx-style generate          # Full stylesheet — always non-purged
+npx hdx-style --version         # Print version
+npx hdx-style --help            # Print help
 ```
 
 ---
 
-<h2 id="configuration">⚙️ Configuration</h2>
+## ⚙️ Configuration
 
 Create `hdx.config.js` (or `hdx.config.cjs` / `hdx.config.mjs`) in your project root:
 
@@ -248,18 +290,16 @@ export default {
     './src/**/*.{html,js,jsx,ts,tsx,vue,svelte}',
   ],
 
-  // Force classes to always be included (see Safelist below)
+  // Force classes to always be included
   safelist: [],
 
   // Dark mode strategy: 'class' | 'media' | 'both' | 'none'
-  // class: .hdx-dark ancestor  |  media: prefers-color-scheme  |  both: both rules  |  none: no dark styles
   darkMode: 'class',
 
   // Include the global reset/base styles? (default true)
   reset: true,
 
-  // Emit the built-in component layer (.hdx-btn, .hdx-card, …)? (default true)
-  // Set false if you ship your own component CSS / later-declared overrides.
+  // Emit the built-in component layer? (default true)
   components: true,
 
   // Theme customization (deep-merged with defaults)
@@ -284,24 +324,20 @@ export default {
 
 | Strategy | When styles apply | Generated CSS |
 |---|---|---|
-| `class` (default) | `.hdx-dark` on an ancestor (`<html class="hdx-dark">`) | `.hdx-dark .hdx-dark_bg-primary { ... }` |
+| `class` (default) | `.hdx-dark` on an ancestor | `.hdx-dark .hdx-dark_bg-primary { ... }` |
 | `media` | OS-level `prefers-color-scheme: dark` | `@media (prefers-color-scheme: dark) { ... }` |
 | `both` | Both mechanisms; class overrides take precedence | Both rules emitted |
-| `none` | Dark styles disabled entirely | No `dark` variants or dark variables |
+| `none` | Dark styles disabled entirely | No `dark` variants |
 
 ### Custom Reset
 
-HDX Style includes a global reset (`box-sizing`, margin/padding zeroing, base font, etc.) by default. To use HDX Style purely as a utility layer on top of your existing global styles:
-
 ```js
-export default {
-  reset: false,
-};
+export default { reset: false };  // Use HDX Style purely as a utility layer
 ```
 
 ### Safelist
 
-Force classes to always be included in the CSS output, even if not detected in content files:
+Force classes to always be included, even if not detected in content files:
 
 ```js
 export default {
@@ -315,33 +351,12 @@ export default {
 };
 ```
 
-This is useful for:
-- Complete classes built dynamically via string concatenation
-- Classes used in JavaScript logic not scanned by the content scanner
-- Ensuring critical utility classes are never purged
-
-> **No prefix patterns**: safelist entries must be complete class names. `'hdx-opacity-'` is not treated as "keep every `hdx-opacity-*`" — list each full class you need (e.g. `'hdx-opacity-25'`, `'hdx-opacity-50'`).
+> **No prefix patterns**: safelist entries must be complete class names. `'hdx-opacity-'` is not treated as "keep every `hdx-opacity-*`" — list each full class.
 
 ### Custom Prefix
 
 ```js
-export default {
-  prefix: 'my_',  // All classes become my_flex, my_p-4, etc.
-};
-```
-
-### Custom Colors
-
-```js
-export default {
-  theme: {
-    colors: {
-      primary: '#7C3AED',
-      'primary-hover': '#6D28D9',
-      brand: '#FF6B35',
-    },
-  },
-};
+export default { prefix: 'my_' };  // All classes become my_flex, my_p-4, etc.
 ```
 
 ### Custom Breakpoints
@@ -363,49 +378,88 @@ export default {
 
 ---
 
-<h2 id="default-values">📋 Default Values</h2>
+## 📋 Default Values
 
-Everything below is generated from `src/theme/defaults.js` — the exact values shipped when `theme` is left empty. Override any key in `hdx.config.js`; user values are deep-merged over these defaults.
+Everything below is generated from `src/theme/defaults.js`. Override any key in `hdx.config.js`; user values are deep-merged over these defaults.
 
 ### Default Config
 
 | Key | Default | Notes |
 |---|---|---|
 | `prefix` | `hdx-` | All utility/variant/component classes get this prefix |
-| `content` | `[]` | Empty ⇒ full (unpurged) build; set globs to enable purging |
+| `content` | `[]` | Empty → full (unpurged) build; set globs to enable purging |
 | `safelist` | `[]` | Complete class names always emitted |
 | `darkMode` | `'class'` | `class` \| `media` \| `both` \| `none` |
-| `reset` | `true` | Global reset + base styles (`body`, `*`, …) |
-| `components` | `true` | Built-in component layer (`.hdx-btn`, …) |
-| `plugins` | `[]` | Plugin functions (utilities, variants, components) |
+| `reset` | `true` | Global reset + base styles |
+| `components` | `true` | Built-in component layer |
+| `plugins` | `[]` | Plugin functions |
 
-Base font stack (`body`): `Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`
+Base font stack: `Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`
 
-### Colors (semantic)
+### 🎨 Colors (Semantic)
 
-| Token | Value | Token | Value |
-|---|---|---|---|
-| `primary` | `#2563EB` | `primary-hover` | `#1D4ED8` |
-| `primary-active` | `#1E40AF` | `secondary` | `#64748B` |
-| `secondary-hover` | `#475569` | `secondary-active` | `#334155` |
-| `success` | `#16A34A` | `success-hover` | `#15803D` |
-| `success-active` | `#166534` | `danger` | `#DC2626` |
-| `danger-hover` | `#B91C1C` | `danger-active` | `#991B1B` |
-| `warning` | `#D97706` | `warning-hover` | `#B45309` |
-| `warning-active` | `#92400E` | `info` | `#0284C7` |
-| `info-hover` | `#0369A1` | `info-active` | `#075985` |
-| `background` | `#F8FAFC` | `surface` | `#FFFFFF` |
-| `surface-secondary` | `#F1F5F9` | `text` | `#0F172A` |
-| `text-secondary` | `#475569` | `text-muted` | `#64748B` |
-| `border` | `#E2E8F0` | `border-strong` | `#CBD5E1` |
-| `white` | `#FFFFFF` | `black` | `#000000` |
-| `gray-50` | `#F8FAFC` | `gray-100` | `#F1F5F9` |
-| `gray-200` | `#E2E8F0` | `gray-300` | `#CBD5E1` |
-| `gray-400` | `#94A3B8` | `gray-500` | `#64748B` |
-| `gray-600` | `#475569` | `gray-700` | `#334155` |
-| `gray-800` | `#1E293B` | `gray-900` | `#0F172A` |
+<table>
+<tr>
+<td>
 
-### Dark Mode Colors (`darkColors`)
+| Token | Value |
+|---|---|
+| `primary` | `#2563EB` |
+| `primary-hover` | `#1D4ED8` |
+| `primary-active` | `#1E40AF` |
+| `secondary` | `#64748B` |
+| `secondary-hover` | `#475569` |
+| `secondary-active` | `#334155` |
+| `success` | `#16A34A` |
+| `success-hover` | `#15803D` |
+| `success-active` | `#166534` |
+| `danger` | `#DC2626` |
+| `danger-hover` | `#B91C1C` |
+| `danger-active` | `#991B1B` |
+
+</td>
+<td>
+
+| Token | Value |
+|---|---|
+| `warning` | `#D97706` |
+| `warning-hover` | `#B45309` |
+| `warning-active` | `#92400E` |
+| `info` | `#0284C7` |
+| `info-hover` | `#0369A1` |
+| `info-active` | `#075985` |
+| `background` | `#F8FAFC` |
+| `surface` | `#FFFFFF` |
+| `surface-secondary` | `#F1F5F9` |
+| `text` | `#0F172A` |
+| `text-secondary` | `#475569` |
+| `text-muted` | `#64748B` |
+
+</td>
+<td>
+
+| Token | Value |
+|---|---|
+| `border` | `#E2E8F0` |
+| `border-strong` | `#CBD5E1` |
+| `white` | `#FFFFFF` |
+| `black` | `#000000` |
+| `gray-50` | `#F8FAFC` |
+| `gray-100` | `#F1F5F9` |
+| `gray-200` | `#E2E8F0` |
+| `gray-300` | `#CBD5E1` |
+| `gray-400` | `#94A3B8` |
+| `gray-500` | `#64748B` |
+| `gray-600` | `#475569` |
+| `gray-700` | `#334155` |
+| `gray-800` | `#1E293B` |
+| `gray-900` | `#0F172A` |
+
+</td>
+</tr>
+</table>
+
+### 🌙 Dark Mode Colors (`darkColors`)
 
 Applied under `.hdx-dark` (or the media query when `darkMode: 'media'`).
 
@@ -419,7 +473,7 @@ Applied under `.hdx-dark` (or the media query when `darkMode: 'media'`).
 | `danger` | `#F87171` | `warning` | `#FBBF24` |
 | `info` | `#0EA5E9` | `on-accent` | `#0F172A` |
 
-### Spacing
+### 📏 Spacing (4px base)
 
 | Key | Value | Key | Value |
 |---|---|---|---|
@@ -432,9 +486,9 @@ Applied under `.hdx-dark` (or the media query when `darkMode: 'media'`).
 | `16` | `4rem` (64px) | `20` | `5rem` (80px) |
 | `24` | `6rem` (96px) | `32` | `8rem` (128px) |
 
-### Typography
+### 🔤 Typography
 
-**Font size**
+**Font Size**
 
 | Key | Value | Key | Value |
 |---|---|---|---|
@@ -444,21 +498,13 @@ Applied under `.hdx-dark` (or the media query when `darkMode: 'media'`).
 | `3xl` | `1.875rem` | `4xl` | `2.25rem` |
 | `5xl` | `3rem` | | |
 
-**Font weight**
+**Font Weight:** `thin` (100), `extralight` (200), `light` (300), `normal` (400), `medium` (500), `semibold` (600), `bold` (700), `extrabold` (800), `black` (900)
 
-| Key | Value | Key | Value |
-|---|---|---|---|
-| `thin` | `100` | `extralight` | `200` |
-| `light` | `300` | `normal` | `400` |
-| `medium` | `500` | `semibold` | `600` |
-| `bold` | `700` | `extrabold` | `800` |
-| `black` | `900` | | |
+**Line Height:** `none` (1), `tight` (1.25), `snug` (1.375), `normal` (1.5), `relaxed` (1.625), `loose` (2)
 
-**Line height:** `none: 1`, `tight: 1.25`, `snug: 1.375`, `normal: 1.5`, `relaxed: 1.625`, `loose: 2`
+**Letter Spacing:** `tighter` (-0.05em), `tight` (-0.025em), `normal` (0em), `wide` (0.025em), `wider` (0.05em), `widest` (0.1em)
 
-**Letter spacing:** `tighter: -0.05em`, `tight: -0.025em`, `normal: 0em`, `wide: 0.025em`, `wider: 0.05em`, `widest: 0.1em`
-
-### Border Radius
+### 🔲 Border Radius
 
 | Key | Value | Key | Value |
 |---|---|---|---|
@@ -467,7 +513,7 @@ Applied under `.hdx-dark` (or the media query when `darkMode: 'media'`).
 | `xl` | `0.75rem` | `2xl` | `1rem` |
 | `3xl` | `1.5rem` | `full` | `9999px` |
 
-### Shadows
+### 🌫️ Shadows
 
 | Key | Value |
 |---|---|
@@ -479,7 +525,7 @@ Applied under `.hdx-dark` (or the media query when `darkMode: 'media'`).
 | `2xl` | `0 25px 50px rgba(15, 23, 42, 0.15)` |
 | `inner` | `inset 0 2px 4px rgba(15, 23, 42, 0.06)` |
 
-### Breakpoints
+### 📐 Breakpoints
 
 | Key | Value | Key | Value |
 |---|---|---|---|
@@ -487,17 +533,17 @@ Applied under `.hdx-dark` (or the media query when `darkMode: 'media'`).
 | `lg` | `1024px` | `xl` | `1280px` |
 | `2xl` | `1536px` | | |
 
-### Opacity
+### 🎚️ Opacity
 
 `0`→`0`, `5`→`0.05`, `10`→`0.1`, `15`→`0.15`, `20`→`0.2`, `25`→`0.25`, `30`→`0.3`, `40`→`0.4`, `50`→`0.5`, `60`→`0.6`, `70`→`0.7`, `75`→`0.75`, `80`→`0.8`, `90`→`0.9`, `95`→`0.95`, `100`→`1`
 
-### Z-Index
+### 📊 Z-Index
 
-Numeric scale: `0`→`0`, `10`→`10`, `20`→`20`, `30`→`30`, `40`→`40`, `50`→`50`, `auto`→`auto`
+Numeric: `0`→`0`, `10`→`10`, `20`→`20`, `30`→`30`, `40`→`40`, `50`→`50`, `auto`→`auto`
 
 Semantic layers: `dropdown`→`1000`, `sticky`→`1100`, `overlay`→`1200`, `modal`→`1300`, `popover`→`1400`, `toast`→`1500`
 
-### Transitions
+### ⏱️ Transitions
 
 **Duration:** `75`→`75ms`, `100`→`100ms`, `150`→`150ms`, `200`→`200ms`, `300`→`300ms`, `500`→`500ms`, `700`→`700ms`, `1000`→`1000ms`
 
@@ -505,7 +551,7 @@ Semantic layers: `dropdown`→`1000`, `sticky`→`1100`, `overlay`→`1200`, `mo
 
 ---
 
-<h2 id="design-tokens">🎨 Design Tokens</h2>
+## 🎨 Design Tokens
 
 ### Colors (Semantic System)
 
@@ -520,20 +566,9 @@ colors: {
   'secondary-active': '#334155',
 
   success: '#16A34A',
-  'success-hover': '#15803D',
-  'success-active': '#166534',
-
   danger: '#DC2626',
-  'danger-hover': '#B91C1C',
-  'danger-active': '#991B1B',
-
   warning: '#D97706',
-  'warning-hover': '#B45309',
-  'warning-active': '#92400E',
-
   info: '#0284C7',
-  'info-hover': '#0369A1',
-  'info-active': '#075985',
 
   background: '#F8FAFC',
   surface: '#FFFFFF',
@@ -549,33 +584,11 @@ colors: {
   white: '#FFFFFF',
   black: '#000000',
 
-  'gray-50': '#F8FAFC',
-  'gray-100': '#F1F5F9',
-  'gray-200': '#E2E8F0',
-  'gray-300': '#CBD5E1',
-  'gray-400': '#94A3B8',
-  'gray-500': '#64748B',
-  'gray-600': '#475569',
-  'gray-700': '#334155',
-  'gray-800': '#1E293B',
-  'gray-900': '#0F172A',
-}
-
-darkColors: {
-  background: '#0F172A',
-  surface: '#1E293B',
-  'surface-secondary': '#334155',
-  text: '#F8FAFC',
-  'text-secondary': '#CBD5E1',
-  'text-muted': '#94A3B8',
-  border: '#334155',
-  'border-strong': '#475569',
-  primary: '#60A5FA',
-  success: '#22C55E',
-  danger: '#F87171',
-  warning: '#FBBF24',
-  info: '#0EA5E9',
-  'on-accent': '#0F172A',
+  'gray-50': '#F8FAFC',  'gray-100': '#F1F5F9',
+  'gray-200': '#E2E8F0', 'gray-300': '#CBD5E1',
+  'gray-400': '#94A3B8', 'gray-500': '#64748B',
+  'gray-600': '#475569', 'gray-700': '#334155',
+  'gray-800': '#1E293B', 'gray-900': '#0F172A',
 }
 ```
 
@@ -584,67 +597,21 @@ darkColors: {
 ```js
 spacing: {
   0: '0px',
-  0.5: '0.125rem', // 2px
-  1: '0.25rem',    // 4px
-  1.5: '0.375rem', // 6px
-  2: '0.5rem',     // 8px
-  3: '0.75rem',   // 12px
-  4: '1rem',      // 16px
-  5: '1.25rem',   // 20px
-  6: '1.5rem',    // 24px
-  8: '2rem',      // 32px
-  10: '2.5rem',   // 40px
-  12: '3rem',     // 48px
-  16: '4rem',     // 64px
-  20: '5rem',     // 80px
-  24: '6rem',     // 96px
-  32: '8rem',     // 128px
-}
-```
-
-### Typography
-
-```js
-fontSize: {
-  xs: '0.75rem',
-  sm: '0.875rem',
-  base: '1rem',
-  lg: '1.125rem',
-  xl: '1.25rem',
-  '2xl': '1.5rem',
-  '3xl': '1.875rem',
-  '4xl': '2.25rem',
-  '5xl': '3rem',
-}
-
-fontWeight: {
-  thin: '100',
-  extralight: '200',
-  light: '300',
-  normal: '400',
-  medium: '500',
-  semibold: '600',
-  bold: '700',
-  extrabold: '800',
-  black: '900',
-}
-
-lineHeight: {
-  none: '1',
-  tight: '1.25',
-  snug: '1.375',
-  normal: '1.5',
-  relaxed: '1.625',
-  loose: '2',
-}
-
-letterSpacing: {
-  tighter: '-0.05em',
-  tight: '-0.025em',
-  normal: '0em',
-  wide: '0.025em',
-  wider: '0.05em',
-  widest: '0.1em',
+  0.5: '0.125rem',  // 2px
+  1: '0.25rem',     // 4px
+  1.5: '0.375rem',  // 6px
+  2: '0.5rem',      // 8px
+  3: '0.75rem',     // 12px
+  4: '1rem',        // 16px
+  5: '1.25rem',     // 20px
+  6: '1.5rem',      // 24px
+  8: '2rem',        // 32px
+  10: '2.5rem',     // 40px
+  12: '3rem',       // 48px
+  16: '4rem',       // 64px
+  20: '5rem',       // 80px
+  24: '6rem',       // 96px
+  32: '8rem',       // 128px
 }
 ```
 
@@ -652,14 +619,9 @@ letterSpacing: {
 
 ```js
 radius: {
-  none: '0px',
-  sm: '0.25rem',
-  md: '0.375rem',
-  lg: '0.5rem',
-  xl: '0.75rem',
-  '2xl': '1rem',
-  '3xl': '1.5rem',
-  full: '9999px',
+  none: '0px',  sm: '0.25rem',  md: '0.375rem',
+  lg: '0.5rem', xl: '0.75rem', '2xl': '1rem',
+  '3xl': '1.5rem', full: '9999px',
 }
 ```
 
@@ -677,21 +639,9 @@ shadows: {
 }
 ```
 
-### Breakpoints
-
-```js
-breakpoints: {
-  sm: '640px',
-  md: '768px',
-  lg: '1024px',
-  xl: '1280px',
-  '2xl': '1536px',
-}
-```
-
 ---
 
-<h2 id="css-variables">🧬 CSS Variables</h2>
+## 🧬 CSS Variables
 
 All semantic colors generate CSS custom properties:
 
@@ -724,7 +674,7 @@ Utilities reference these variables:
 
 ---
 
-<h2 id="utilities">🛠️ Utilities</h2>
+## 🛠️ Utilities
 
 ### Display
 
@@ -805,15 +755,11 @@ Utilities reference these variables:
 <div class="hdx-px-4">Padding X</div>
 <div class="hdx-py-2">Padding Y</div>
 <div class="hdx-pt-4">Padding Top</div>
-<div class="hdx-pr-4">Padding Right</div>
-<div class="hdx-pb-4">Padding Bottom</div>
-<div class="hdx-pl-4">Padding Left</div>
 
 <!-- Margin -->
 <div class="hdx-m-4">Margin 1rem</div>
 <div class="hdx-mx-auto">Margin Auto X</div>
 <div class="hdx-mt-6">Margin Top</div>
-<div class="hdx-mb-8">Margin Bottom</div>
 
 <!-- Negative Margins -->
 <div class="hdx--mt-4">Negative Top Margin</div>
@@ -825,137 +771,70 @@ Utilities reference these variables:
   <div>Item 2</div>
   <div>Item 3</div>
 </div>
-<div class="hdx-space-x-2 hdx-flex">
-  <button>Button 1</button>
-  <button>Button 2</button>
-</div>
 
 <!-- Gap -->
 <div class="hdx-flex hdx-gap-4">Gap 4</div>
 <div class="hdx-grid hdx-gap-6">Gap 6</div>
 ```
 
-Space and (horizontal/vertical) dividers apply to adjacent children via the
-Tailwind child combinator:
-`.hdx-space-y-4 > :not([hidden]) ~ :not([hidden])`,
-so `hdx-hidden` children are respected automatically.
-
 ### Sizing
 
 ```html
-<!-- Width -->
 <div class="hdx-w-full">Width 100%</div>
 <div class="hdx-w-screen">Width 100vw</div>
 <div class="hdx-w-auto">Width Auto</div>
 <div class="hdx-w-fit">Width Fit</div>
-<div class="hdx-w-4">Width 1rem</div>
 <div class="hdx-w-1/2">Width 50%</div>
-
-<!-- Height -->
 <div class="hdx-h-full">Height 100%</div>
 <div class="hdx-h-screen">Height 100vh</div>
-<div class="hdx-h-auto">Height Auto</div>
-<div class="hdx-h-4">Height 1rem</div>
-
-<!-- Min/Max -->
-<div class="hdx-min-w-0">Min Width</div>
-<div class="hdx-max-w-prose">Max Width Prose</div>
 <div class="hdx-min-h-screen">Min Height Screen</div>
-<div class="hdx-max-h-64">Max Height</div>
+<div class="hdx-max-w-prose">Max Width Prose</div>
 ```
 
 ### Typography
 
 ```html
-<!-- Font Size -->
 <h1 class="hdx-text-5xl">Heading 5xl</h1>
 <h2 class="hdx-text-4xl">Heading 4xl</h2>
 <h3 class="hdx-text-3xl">Heading 3xl</h3>
-<h4 class="hdx-text-2xl">Heading 2xl</h4>
-<h5 class="hdx-text-xl">Heading xl</h5>
 <p class="hdx-text-lg">Large text</p>
-<p class="hdx-text-base">Base text</p>
 <p class="hdx-text-sm">Small text</p>
 <p class="hdx-text-xs">Extra small</p>
 
-<!-- Font Weight -->
-<p class="hdx-font-normal">Normal</p>
-<p class="hdx-font-medium">Medium</p>
-<p class="hdx-font-semibold">Semibold</p>
 <p class="hdx-font-bold">Bold</p>
-<p class="hdx-font-extrabold">Extrabold</p>
-
-<!-- Text Alignment -->
-<p class="hdx-text-left">Left</p>
-<p class="hdx-text-center">Center</p>
-<p class="hdx-text-right">Right</p>
-<p class="hdx-text-justify">Justify</p>
-
-<!-- Text Transform -->
-<p class="hdx-uppercase">Uppercase</p>
-<p class="hdx-lowercase">Lowercase</p>
-<p class="hdx-capitalize">Capitalize</p>
-
-<!-- Font Style -->
+<p class="hdx-font-semibold">Semibold</p>
+<p class="hdx-text-center">Centered</p>
+<p class="hdx-uppercase">UPPERCASE</p>
 <p class="hdx-italic">Italic</p>
-<p class="hdx-not-italic">Not Italic</p>
-
-<!-- Text Decoration -->
-<p class="hdx-underline">Underline</p>
-<p class="hdx-line-through">Strikethrough</p>
-<p class="hdx-no-underline">No Underline</p>
-
-<!-- Font Family -->
-<p class="hdx-font-sans">Sans Serif</p>
-<p class="hdx-font-serif">Serif</p>
+<p class="hdx-underline">Underlined</p>
 <p class="hdx-font-mono">Monospace</p>
-
-<!-- Line Height -->
-<p class="hdx-leading-tight">Tight</p>
-<p class="hdx-leading-normal">Normal</p>
-<p class="hdx-leading-loose">Loose</p>
-
-<!-- Letter Spacing -->
-<p class="hdx-tracking-tight">Tight</p>
-<p class="hdx-tracking-normal">Normal</p>
-<p class="hdx-tracking-wide">Wide</p>
+<p class="hdx-leading-tight">Tight Line Height</p>
+<p class="hdx-tracking-wide">Wide Letter Spacing</p>
 ```
 
 ### Colors
 
 ```html
-<!-- Background Colors -->
 <div class="hdx-bg-primary">Primary</div>
-<div class="hdx-bg-secondary">Secondary</div>
 <div class="hdx-bg-success">Success</div>
 <div class="hdx-bg-danger">Danger</div>
 <div class="hdx-bg-warning">Warning</div>
 <div class="hdx-bg-info">Info</div>
-<div class="hdx-bg-background">Background</div>
-<div class="hdx-bg-surface">Surface</div>
 
-<!-- Text Colors -->
 <p class="hdx-text-primary">Primary Text</p>
 <p class="hdx-text-text">Default Text</p>
 <p class="hdx-text-text-secondary">Secondary Text</p>
-<p class="hdx-text-text-muted">Muted Text</p>
 <p class="hdx-text-white">White Text</p>
-<p class="hdx-text-black">Black Text</p>
 
-<!-- Border Colors -->
 <div class="hdx-border hdx-border-primary">Primary Border</div>
-<div class="hdx-border hdx-border-danger">Danger Border</div>
 ```
 
 ### Backgrounds
 
 ```html
 <div class="hdx-bg-cover">Cover</div>
-<div class="hdx-bg-contain">Contain</div>
 <div class="hdx-bg-center">Center</div>
 <div class="hdx-bg-no-repeat">No Repeat</div>
-<div class="hdx-bg-fixed">Fixed</div>
-<div class="hdx-bg-clip-text">Clip Text</div>
 
 <!-- Gradients -->
 <div class="hdx-bg-gradient-to-r hdx-from-primary hdx-to-info">
@@ -966,83 +845,47 @@ so `hdx-hidden` children are respected automatically.
 </div>
 ```
 
-Gradients set `background-image` from `from-*` / `via-*` / `to-*` stops, which
-compose a `--hdx-gradient-stops` variable consumed by `hdx-bg-gradient-to-*`
-directions (`t/tr/r/br/b/bl/l/tl`). Skeleton-shimmer backgrounds can then use
-`hdx-bg-gradient-to-r` with theme colors.
-
 ### Interaction
 
 ```html
-<button class="hdx-cursor-pointer">Pointer Cursor</button>
-<button class="hdx-cursor-not-allowed hdx-opacity-50" disabled>Disabled</button>
-<input class="hdx-select-none">No Text Selection</input>
-<input class="hdx-appearance-none">Custom Select</input>
+<button class="hdx-cursor-pointer">Pointer</button>
+<button class="hdx-cursor-not-allowed" disabled>Disabled</button>
+<input class="hdx-select-none">No Selection</input>
 <textarea class="hdx-resize-none">Fixed Size</textarea>
-<textarea class="hdx-resize-y">Vertical Resize</textarea>
 ```
 
 ### Borders
 
 ```html
-<!-- Border Width -->
 <div class="hdx-border">1px Border</div>
 <div class="hdx-border-2">2px Border</div>
-<div class="hdx-border-4">4px Border</div>
-<div class="hdx-border-0">No Border</div>
-
-<!-- Individual Sides -->
-<div class="hdx-border-t">Top Border</div>
-<div class="hdx-border-r">Right Border</div>
-<div class="hdx-border-b">Bottom Border</div>
-<div class="hdx-border-l">Left Border</div>
-<div class="hdx-border-x">X Border</div>
-<div class="hdx-border-y">Y Border</div>
-
-<!-- Border Style -->
-<div class="hdx-border hdx-border-dashed">Dashed</div>
-<div class="hdx-border hdx-border-dotted">Dotted</div>
-<div class="hdx-border hdx-border-double">Double</div>
-
-<!-- Divide (child borders) -->
+<div class="hdx-border-dashed">Dashed</div>
+<div class="hdx-border-dotted">Dotted</div>
 <div class="hdx-divide-y hdx-divide-solid">
   <div>Item 1</div>
   <div>Item 2</div>
 </div>
 ```
 
-`hdx-divide-x` / `hdx-divide-y` (and `hdx-divide-*-0|2|4|8`) emit the child
-combinator so borders render **between** adjacent children only.
-
 ### Border Radius
 
 ```html
 <div class="hdx-rounded">Default (md)</div>
-<div class="hdx-rounded-sm">Small</div>
-<div class="hdx-rounded-md">Medium</div>
 <div class="hdx-rounded-lg">Large</div>
-<div class="hdx-rounded-xl">Extra Large</div>
-<div class="hdx-rounded-2xl">2XL</div>
+<div class="hdx-rounded-xl">XL</div>
 <div class="hdx-rounded-full">Full (Pill)</div>
-<div class="hdx-rounded-none">None</div>
-
-<!-- Individual Corners -->
 <div class="hdx-rounded-tl-lg">Top Left</div>
-<div class="hdx-rounded-tr-lg">Top Right</div>
-<div class="hdx-rounded-br-lg">Bottom Right</div>
-<div class="hdx-rounded-bl-lg">Bottom Left</div>
 ```
 
 ### Shadows
 
 ```html
-<div class="hdx-shadow-sm">Small Shadow</div>
-<div class="hdx-shadow">Default Shadow</div>
-<div class="hdx-shadow-md">Medium Shadow</div>
-<div class="hdx-shadow-lg">Large Shadow</div>
-<div class="hdx-shadow-xl">XL Shadow</div>
-<div class="hdx-shadow-none">No Shadow</div>
-<div class="hdx-shadow-inner">Inner Shadow</div>
+<div class="hdx-shadow-sm">Small</div>
+<div class="hdx-shadow">Default</div>
+<div class="hdx-shadow-md">Medium</div>
+<div class="hdx-shadow-lg">Large</div>
+<div class="hdx-shadow-xl">XL</div>
+<div class="hdx-shadow-inner">Inner</div>
 ```
 
 ### Opacity
@@ -1061,9 +904,7 @@ combinator so borders render **between** adjacent children only.
 <div class="hdx-overflow-hidden">Hidden</div>
 <div class="hdx-overflow-auto">Auto</div>
 <div class="hdx-overflow-scroll">Scroll</div>
-<div class="hdx-overflow-visible">Visible</div>
 <div class="hdx-overflow-x-auto">Overflow X Auto</div>
-<div class="hdx-overflow-y-scroll">Overflow Y Scroll</div>
 ```
 
 ### Positioning
@@ -1073,21 +914,11 @@ combinator so borders render **between** adjacent children only.
 <div class="hdx-absolute">Absolute</div>
 <div class="hdx-fixed">Fixed</div>
 <div class="hdx-sticky">Sticky</div>
-
-<!-- Position Values -->
 <div class="hdx-top-0">Top 0</div>
-<div class="hdx-right-0">Right 0</div>
-<div class="hdx-bottom-0">Bottom 0</div>
-<div class="hdx-left-0">Left 0</div>
 <div class="hdx-inset-0">Inset 0</div>
 <div class="hdx-top-1/2 hdx-left-1/2 hdx--translate-x-1/2 hdx--translate-y-1/2">
   Centered
 </div>
-
-<!-- Negative Offsets -->
-<div class="hdx--top-4">Top: -1rem</div>
-<div class="hdx--left-1/2">Left: -50%</div>
-<div class="hdx--bottom-full">Bottom: -100%</div>
 ```
 
 ### Z-Index
@@ -1095,72 +926,29 @@ combinator so borders render **between** adjacent children only.
 ```html
 <div class="hdx-z-0">Z-0</div>
 <div class="hdx-z-10">Z-10</div>
-<div class="hdx-z-20">Z-20</div>
-<div class="hdx-z-30">Z-30</div>
-<div class="hdx-z-40">Z-40</div>
-<div class="hdx-z-50">Z-50</div>
-<div class="hdx-z-auto">Z-Auto</div>
-```
-
-Semantic layering utilities are generated from the same theme scale:
-
-```html
-<div class="hdx-z-dropdown">Dropdown (1000)</div>
-<div class="hdx-z-sticky">Sticky (1100)</div>
-<div class="hdx-z-overlay">Overlay (1200)</div>
 <div class="hdx-z-modal">Modal (1300)</div>
-<div class="hdx-z-popover">Popover (1400)</div>
 <div class="hdx-z-toast">Toast (1500)</div>
 ```
-
-Built-in components read from the same scale: the modal overlay (`hdx-modal-overlay`)
-emits its `z-index` from the theme's `zIndex.overlay` token, so customizing the
-z-index scale flows through to the component layer's overlay.
 
 ### Transforms
 
 ```html
 <div class="hdx-scale-95">Scale 95%</div>
-<div class="hdx-scale-100">Scale 100%</div>
 <div class="hdx-scale-105">Scale 105%</div>
-<div class="hdx-scale-110">Scale 110%</div>
-
-<div class="hdx-rotate-3">Rotate 3deg</div>
 <div class="hdx-rotate-45">Rotate 45deg</div>
-<div class="hdx-rotate-90">Rotate 90deg</div>
-
 <div class="hdx-translate-x-1/2">Translate X 50%</div>
-<div class="hdx-translate-y-1/4">Translate Y 25%</div>
-
 <div class="hdx-skew-x-3">Skew X 3deg</div>
-<div class="hdx-skew-y-6">Skew Y 6deg</div>
-
 <div class="hdx-origin-center">Origin Center</div>
-<div class="hdx-origin-top-left">Origin Top Left</div>
 ```
 
 ### Transitions
 
 ```html
-<div class="hdx-transition">Default Transition</div>
-<div class="hdx-transition-all">All Properties</div>
+<div class="hdx-transition">Default</div>
 <div class="hdx-transition-colors">Colors Only</div>
-<div class="hdx-transition-opacity">Opacity Only</div>
-<div class="hdx-transition-shadow">Shadow Only</div>
 <div class="hdx-transition-transform">Transform Only</div>
-<div class="hdx-transition-none">No Transition</div>
-
-<!-- Duration -->
 <div class="hdx-duration-150">150ms</div>
-<div class="hdx-duration-200">200ms</div>
-<div class="hdx-duration-300">300ms</div>
-<div class="hdx-duration-500">500ms</div>
-
-<!-- Timing -->
-<div class="hdx-ease">Default Ease</div>
-<div class="hdx-ease-in">Ease In</div>
-<div class="hdx-ease-out">Ease Out</div>
-<div class="hdx-ease-linear">Linear</div>
+<div class="hdx-ease-in-out">Ease In Out</div>
 ```
 
 ### Animations
@@ -1175,7 +963,7 @@ z-index scale flows through to the component layer's overlay.
 
 ---
 
-<h2 id="class-parser">🔬 Class Parser</h2>
+## 🔬 Class Parser
 
 The class parser decomposes any HDX class into its components. It does **not** assume a fixed number of variants:
 
@@ -1187,13 +975,13 @@ The class parser decomposes any HDX class into its components. It does **not** a
 | `hdx-lg_dark_hover_bg-primary` | `{ variants: ['lg', 'dark', 'hover'], utility: 'bg-primary' }` |
 | `hdx-2xl_focus-visible_ring` | `{ variants: ['2xl', 'focus-visible'], utility: 'ring' }` |
 
-Applied primarily by the scanner in production builds to map used classes to required utilities + variant combos.
+---
 
-<h2 id="variant-pipeline">🔀 Variant Pipeline</h2>
+## 🔀 Variant Pipeline
 
 Variants compose in ordered layers instead of special-cased combinations:
 
-```text
+```
 hdx-md_hover_bg-primary
   → variants: ['md', 'hover']
   → pipeline: hover (:hover) wrapped by md (@media (min-width: 768px))
@@ -1205,7 +993,7 @@ hdx-lg_dark_hover_bg-primary
   → @media (min-width: 1024px) { .hdx-dark .hdx-lg_dark_hover_bg-primary:hover { ... } }
 ```
 
-Variant types:
+### Variant Types
 
 | Type | Behavior | Examples |
 |---|---|---|
@@ -1213,22 +1001,17 @@ Variant types:
 | `responsive` | Media query wrapper | `sm`, `md`, `lg`, `xl`, `2xl` |
 | `dark` | `hdx-dark` ancestor or media query | `dark` |
 | `ancestor` | Ancestor selector | `group-hover`, `peer-hover` |
-| `important` | `!important` override variant | `hdx-important_bg-primary` |
+| `important` | `!important` override | `hdx-important_bg-primary` |
 
-**Ordering guarantee (cascade contract).** All base utility rules are emitted
-before every responsive `@media` block, so the idiomatic "hidden on mobile,
-shown at `lg`" pattern is safe to use:
+**Ordering guarantee:** All base utility rules are emitted before every responsive `@media` block, so the idiomatic "hidden on mobile, shown at `lg`" pattern is safe:
 
 ```html
 <aside class="hdx-hidden hdx-lg_flex">Sidebar — shown from lg up</aside>
 ```
 
-`display:none` applies below `lg`; `display:flex` applies at `>= lg`. This
-holds in both full and purged builds (there is a regression test for it).
+---
 
-<!-- Responsive Grid -->
-
-<h2 id="responsive-design">📐 Responsive Design</h2>
+## 📐 Responsive Design
 
 All utilities support responsive prefixes:
 
@@ -1244,14 +1027,12 @@ All utilities support responsive prefixes:
   Responsive Width
 </div>
 
-<!-- Responsive Grid -->
 <div class="
   hdx-grid
   hdx-grid-cols-1
   hdx-sm_grid-cols-2
   hdx-md_grid-cols-3
   hdx-lg_grid-cols-4
-  hdx-xl_grid-cols-6
 ">
   <div>1</div>
   <div>2</div>
@@ -1259,35 +1040,10 @@ All utilities support responsive prefixes:
   <div>4</div>
 </div>
 
-<!-- Responsive Flex Direction -->
-<div class="
-  hdx-flex
-  hdx-flex-col
-  hdx-md_flex-row
-">
+<div class="hdx-flex hdx-flex-col hdx-md_flex-row">
   <div>Stack on mobile</div>
   <div>Row on desktop</div>
 </div>
-
-<!-- Responsive Padding -->
-<div class="
-  hdx-p-4
-  hdx-sm_p-6
-  hdx-md_p-8
-  hdx-lg_p-12
-">
-  Responsive Padding
-</div>
-
-<!-- Responsive Text -->
-<h1 class="
-  hdx-text-2xl
-  hdx-sm_text-3xl
-  hdx-md_text-4xl
-  hdx-lg_text-5xl
-">
-  Responsive Heading
-</h1>
 ```
 
 ### Breakpoints
@@ -1302,97 +1058,41 @@ All utilities support responsive prefixes:
 
 ---
 
-<h2 id="state-variants">🎚️ State Variants</h2>
+## 🎚️ State Variants
 
 HDX Style supports 20 state variants:
 
-| Variant | Pseudo-class |
-|---|---|
-| `hover` | `:hover` |
-| `focus` | `:focus` |
-| `focus-visible` | `:focus-visible` |
-| `active` | `:active` |
-| `visited` | `:visited` |
-| `disabled` | `:disabled` |
-| `checked` | `:checked` |
-| `required` | `:required` |
-| `invalid` | `:invalid` |
-| `valid` | `:valid` |
-| `first` | `:first-child` |
-| `last` | `:last-child` |
-| `odd` | `:nth-child(odd)` |
-| `even` | `:nth-child(even)` |
-| `empty` | `:empty` |
-| `enabled` | `:enabled` |
-| `read-only` | `:read-only` |
-| `placeholder` | `::placeholder` |
-| `first-line` | `::first-line` |
-| `selection` | `::selection` |
+| Variant | Pseudo-class | Variant | Pseudo-class |
+|---|---|---|---|
+| `hover` | `:hover` | `active` | `:active` |
+| `focus` | `:focus` | `visited` | `:visited` |
+| `focus-visible` | `:focus-visible` | `disabled` | `:disabled` |
+| `checked` | `:checked` | `first` | `:first-child` |
+| `required` | `:required` | `last` | `:last-child` |
+| `invalid` | `:invalid` | `odd` | `:nth-child(odd)` |
+| `valid` | `:valid` | `even` | `:nth-child(even)` |
+| `empty` | `:empty` | `enabled` | `:enabled` |
+| `read-only` | `:read-only` | `placeholder` | `::placeholder` |
+| `first-line` | `::first-line` | `selection` | `::selection` |
 
 ### Hover
 
 ```html
 <button class="
-  hdx-bg-primary
-  hdx-text-white
-  hdx-px-4 hdx-py-2
-  hdx-rounded-lg
+  hdx-bg-primary hdx-text-white
+  hdx-px-4 hdx-py-2 hdx-rounded-lg
   hdx-transition
-  hdx-hover_bg-primary-hover
-  hdx-hover_shadow-md
+  hdx-hover_bg-primary-hover hdx-hover_shadow-md
 ">
   Hover Me
 </button>
-
-<div class="
-  hdx-bg-surface
-  hdx-p-4
-  hdx-transition
-  hdx-hover_bg-surface-secondary
-  hdx-hover_shadow-lg
-">
-  Hover Card
-</div>
 ```
 
 ### Focus
 
 ```html
-<input class="
-  hdx-input
-  hdx-focus_ring
-  hdx-focus_border-primary
-" />
-
-<button class="
-  hdx-btn hdx-btn-primary
-  hdx-focus_ring-2
-">
-  Focus Ring
-</button>
-```
-
-### Focus Visible
-
-```html
-<button class="
-  hdx-btn hdx-btn-primary
-  hdx-focus-visible_ring
-">
-  Focus Visible Only
-</button>
-```
-
-### Active
-
-```html
-<button class="
-  hdx-btn hdx-btn-primary
-  hdx-active_scale-95
-  hdx-active_bg-primary-active
-">
-  Click Me
-</button>
+<input class="hdx-input hdx-focus_ring hdx-focus_border-primary" />
+<button class="hdx-btn hdx-btn-primary hdx-focus_ring-2">Focus Ring</button>
 ```
 
 ### Disabled
@@ -1400,47 +1100,10 @@ HDX Style supports 20 state variants:
 ```html
 <button class="
   hdx-btn hdx-btn-primary
-  hdx-disabled_opacity-50
-  hdx-disabled_cursor-not-allowed
+  hdx-disabled_opacity-50 hdx-disabled_cursor-not-allowed
 " disabled>
   Disabled Button
 </button>
-
-<input class="
-  hdx-input
-  hdx-disabled_bg-surface-secondary
-  hdx-disabled_cursor-not-allowed
-" disabled />
-```
-
-### Checked / Required / Invalid
-
-```html
-<input type="checkbox" class="hdx-checkbox hdx-checked_bg-primary hdx-checked_border-primary">
-<input type="text" class="hdx-input hdx-required_border-danger">
-<input type="email" class="hdx-input hdx-invalid_border-danger hdx-invalid_text-danger">
-```
-
-### First / Last / Odd / Even
-
-```html
-<div class="hdx-flex hdx-flex-col">
-  <div class="hdx-p-4 hdx-first_rounded-t-lg hdx-last_rounded-b-lg hdx-odd_bg-surface hdx-even_bg-surface-secondary">
-    Item
-  </div>
-</div>
-```
-
-### Placeholder
-
-```html
-<input class="hdx-input hdx-placeholder_text-text-muted" placeholder="Enter text...">
-```
-
-### Selection
-
-```html
-<p class="hdx-selection_bg-primary hdx-selection_text-white">Selected text</p>
 ```
 
 ### Group Hover
@@ -1448,17 +1111,12 @@ HDX Style supports 20 state variants:
 ```html
 <div class="hdx-group">
   <div class="
-    hdx-bg-surface
-    hdx-group-hover_bg-surface-secondary
-    hdx-group-hover_shadow-md
-    hdx-transition
-    hdx-p-4
-    hdx-rounded-xl
+    hdx-bg-surface hdx-p-4 hdx-rounded-xl
+    hdx-group-hover_bg-surface-secondary hdx-group-hover_shadow-md hdx-transition
   ">
     <h3 class="hdx-text-lg hdx-font-semibold">Group Card</h3>
     <p class="hdx-mt-2 hdx-text-sm hdx-text-text-secondary
-      hdx-group-hover_text-text
-      hdx-transition
+      hdx-group-hover_text-text hdx-transition
     ">
       Hover the parent to see changes
     </p>
@@ -1468,47 +1126,35 @@ HDX Style supports 20 state variants:
 
 ### Combined Variants
 
-Combine responsive + state, responsive + dark, or dark + state:
-
 ```html
-<!-- Responsive + State: hdx-md_hover_bg-primary-hover -->
 <button class="hdx-btn hdx-btn-primary hdx-md_hover_bg-primary-hover">
   Hover on md+
 </button>
 
-<!-- Responsive + Dark: hdx-lg_dark_bg-surface-secondary -->
 <div class="hdx-bg-surface hdx-lg_dark_bg-surface-secondary">
   Dark on lg+
 </div>
-
-<!-- Dark + State: hdx-dark_hover_bg-primary-hover -->
-<button class="hdx-btn hdx-btn-primary hdx-dark_hover_bg-primary-hover">
-  Hover in dark mode
-</button>
 ```
 
 ---
 
-<h2 id="important-variant">🚨 Important Variant</h2>
+## 🚨 Important Variant
 
-Use `important` as a variant to override component-layer CSS with equal
-specificity (replaces Tailwind's escaped `.\!bg-primary`):
+Use `important` as a variant to override component-layer CSS with equal specificity:
 
 ```html
 <input class="hdx-input hdx-important_border-error hdx-important_h-9">
 ```
 
-Combines with other variants: `hdx-md_important_flex`,
-`hdx-hover_important_text-primary`.
+Combines with other variants: `hdx-md_important_flex`, `hdx-hover_important_text-primary`.
 
 ---
 
-<h2 id="arbitrary-values">🔧 Arbitrary Values & Negative Utilities</h2>
+## 🔧 Arbitrary Values & Negative Utilities
 
 ### Arbitrary Values
 
-A safe subset of Tailwind-style arbitrary values resolves at build time
-(purged/production builds only):
+A safe subset of Tailwind-style arbitrary values resolves at build time:
 
 ```html
 <img class="hdx-w-[260px] hdx-max-h-[70vh] hdx-rounded-[10px]">
@@ -1516,59 +1162,18 @@ A safe subset of Tailwind-style arbitrary values resolves at build time
 <div class="hdx-rotate-[90deg] hdx-md_translate-x-[-50%]">Badge</div>
 ```
 
-Supported prefixes: `w h min-w min-h max-w max-h rounded text bg border ring
-leading tracking p px py pt pr pb pl m mx my mt mr mb ml gap gap-x gap-y top
-right bottom left opacity z delay duration rotate translate-x translate-y
-scale-x scale-y blur`. A bare number in a length/angle position gets
-`px`/`deg` appended automatically.
-
-**Color-aware prefixes.** `bg`, `border`, `ring`, and `text` disambiguate by
-value shape: a color-shaped value — `#hex`, `rgb()/rgba()/hsl()/hsla()`,
-`var()`, or a known CSS color keyword — maps to `background-color`,
-`border-color`, `--ring-color`, and `color` respectively. Any other value in
-a `text` slot is treated as `font-size`; any other value in a `bg`/`border`/
-`ring` slot is genuinely unsupported and is rejected with an "Unknown
-utility" build warning — so `hdx-bg-[url(...)]` is *not* a valid way to
-declare a background image.
+**Color-aware prefixes:** `bg`, `border`, `ring`, and `text` disambiguate by value shape:
 
 ```html
 <div class="hdx-bg-[#123456] hdx-text-[red] hdx-text-[14px] hdx-ring-[#ff0000]"></div>
 ```
 
-```css
-.hdx-bg-\[#123456\] { background-color: #123456; }
-.hdx-text-\[red\] { color: red; }
-.hdx-text-\[14px\] { font-size: 14px; }
-.hdx-ring-\[#ff0000\] { --ring-color: #ff0000; }
-```
-
-**Underscores are spaces.** Inside the brackets, every `_` becomes a space, so
-multi-word CSS values can be written as a single class:
+**Underscores are spaces:** Inside brackets, every `_` becomes a space:
 
 ```html
 <div class="hdx-blur-[1_rem]"></div>
+<!-- → filter: blur(1 rem); -->
 ```
-
-```css
-.hdx-blur-\[1_rem\] { filter: blur(1 rem); }
-```
-
-Tailwind's `\_` escape is **not** supported and there is no way to emit a
-literal underscore, so write multi-word values with real `_` placeholders.
-`bg`/`border`/`ring` are color-only, so prefer a registered background
-utility or plain CSS for `url()` backgrounds — `hdx-bg-[url(...)]` warns as
-an unknown utility:
-
-```html
-<!-- Correct — each underscore becomes a space inside the calc() -->
-<div class="hdx-w-[calc(100%_-_2rem)]"></div>
-
-<!-- Not a valid arbitrary value: url() is not a color -->
-<div class="hdx-bg-[url(/img/layout_background.png)]"></div>
-```
-
-Underscore-as-space also composes with the negative and numeric modifiers:
-`hdx--translate-x-[4px]` → `--translate-x: -4px`, `hdx-opacity-[.5]` → `opacity: 0.5`.
 
 ### Negative Values
 
@@ -1578,13 +1183,9 @@ Underscore-as-space also composes with the negative and numeric modifiers:
 <div class="hdx--rotate-45">Counter-rotated</div>
 ```
 
-Negative margins (`-m-*`), insets (`-top-*`, `-left-1/2`, `-bottom-full`),
-and transforms (`-translate-x/y-*`, `-rotate-*`) are generated from the theme
-spacing scale.
-
 ---
 
-<h2 id="dark-mode">🌙 Dark Mode</h2>
+## 🌙 Dark Mode
 
 ### Class Strategy (Default)
 
@@ -1599,14 +1200,9 @@ Add `hdx-dark` class to `<html>`:
 ```
 
 ```html
-<!-- Dark mode specific -->
 <div class="
-  hdx-bg-surface
-  hdx-text-text
-  hdx-border-border
-  hdx-dark_bg-surface-secondary
-  hdx-dark_text-text-secondary
-  hdx-dark_border-border-strong
+  hdx-bg-surface hdx-text-text hdx-border-border
+  hdx-dark_bg-surface-secondary hdx-dark_text-text-secondary hdx-dark_border-border-strong
 ">
   Adapts to dark mode
 </div>
@@ -1615,23 +1211,7 @@ Add `hdx-dark` class to `<html>`:
 ### Media Strategy
 
 ```js
-// hdx.config.js
-export default {
-  darkMode: 'media',
-  // ...
-};
-```
-
-Uses `@media (prefers-color-scheme: dark)` — no class toggle needed.
-
-### Both Strategies
-
-```js
-// hdx.config.js
-export default {
-  darkMode: 'both',
-  // ...
-};
+export default { darkMode: 'media' };  // Uses @media (prefers-color-scheme: dark)
 ```
 
 ### Dark Mode Color Variables
@@ -1652,48 +1232,13 @@ export default {
 }
 ```
 
-Note: the generated dark variables use `.hdx-dark`, not `.dark`. The dark mode class is namespaced like every other HDX class.
-
-### Complete Dark Mode Example
-
-```html
-<html class="hdx-dark">
-<body class="hdx-min-h-screen hdx-bg-background hdx-text-text">
-
-  <!-- Navigation -->
-  <nav class="hdx-bg-surface hdx-border-b hdx-border-border hdx-dark_bg-surface-secondary hdx-dark_border-border-strong">
-    <div class="hdx-container hdx-mx-auto hdx-px-4 hdx-py-3 hdx-flex hdx-items-center hdx-justify-between">
-      <span class="hdx-text-lg hdx-font-bold">Dashboard</span>
-      <div class="hdx-flex hdx-gap-4">
-        <a href="#" class="hdx-text-sm hdx-text-text-secondary hdx-hover_text-primary">Home</a>
-        <a href="#" class="hdx-text-sm hdx-text-text-secondary hdx-hover_text-primary">Settings</a>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Content -->
-  <main class="hdx-container hdx-mx-auto hdx-p-6">
-    <div class="hdx-grid hdx-grid-cols-1 hdx-md_grid-cols-3 hdx-gap-6">
-      <div class="hdx-bg-surface hdx-border hdx-border-border hdx-rounded-xl hdx-shadow-sm hdx-p-6
-                  hdx-dark_bg-surface-secondary hdx-dark_border-border-strong">
-        <h2 class="hdx-text-lg hdx-font-semibold hdx-text-text">Card 1</h2>
-        <p class="hdx-mt-2 hdx-text-sm hdx-text-text-secondary">Content here</p>
-      </div>
-    </div>
-  </main>
-
-</body>
-</html>
-```
-
 ---
 
-<h2 id="components">🧱 Components</h2>
+## 🧱 Components
 
 ### Buttons
 
 ```html
-<!-- Base Button -->
 <button class="hdx-btn hdx-btn-primary">Primary</button>
 <button class="hdx-btn hdx-btn-secondary">Secondary</button>
 <button class="hdx-btn hdx-btn-success">Success</button>
@@ -1703,20 +1248,10 @@ Note: the generated dark variables use `.hdx-dark`, not `.dark`. The dark mode c
 <button class="hdx-btn hdx-btn-outline">Outline</button>
 <button class="hdx-btn hdx-btn-ghost">Ghost</button>
 
-<!-- Button Sizes -->
+<!-- Sizes -->
 <button class="hdx-btn hdx-btn-primary hdx-btn-sm">Small</button>
 <button class="hdx-btn hdx-btn-primary hdx-btn-md">Medium</button>
 <button class="hdx-btn hdx-btn-primary hdx-btn-lg">Large</button>
-<button class="hdx-btn hdx-btn-primary hdx-btn-icon">Icon</button>
-
-<!-- Button with Icon -->
-<button class="hdx-btn hdx-btn-primary">
-  <svg>...</svg>
-  Click Me
-</button>
-
-<!-- Disabled -->
-<button class="hdx-btn hdx-btn-primary hdx-disabled_opacity-50" disabled>Disabled</button>
 
 <!-- Full Width -->
 <button class="hdx-btn hdx-btn-primary hdx-w-full">Full Width</button>
@@ -1725,51 +1260,22 @@ Note: the generated dark variables use `.hdx-dark`, not `.dark`. The dark mode c
 ### Inputs
 
 ```html
-<!-- Text Input -->
 <input type="text" class="hdx-input" placeholder="Enter text...">
-
-<!-- Input with Focus Ring -->
 <input type="text" class="hdx-input hdx-focus-ring" placeholder="With focus ring">
-
-<!-- Input Error State -->
 <input type="email" class="hdx-input hdx-input-error" placeholder="Invalid email">
 
-<!-- Select -->
 <select class="hdx-select">
   <option>Option 1</option>
   <option>Option 2</option>
 </select>
 
-<!-- Textarea -->
 <textarea class="hdx-textarea" rows="4" placeholder="Write a message..."></textarea>
 
-<!-- Label -->
 <label class="hdx-label">Email Address</label>
 <input type="email" class="hdx-input" placeholder="you@example.com">
 
-<!-- Checkbox -->
 <input type="checkbox" class="hdx-checkbox">
-
-<!-- Radio -->
 <input type="radio" class="hdx-radio" name="option">
-<input type="radio" class="hdx-radio" name="option">
-
-<!-- Complete Form -->
-<div class="hdx-flex hdx-flex-col hdx-gap-4">
-  <div>
-    <label class="hdx-label">Full Name</label>
-    <input type="text" class="hdx-input" placeholder="John Doe">
-  </div>
-  <div>
-    <label class="hdx-label">Email</label>
-    <input type="email" class="hdx-input" placeholder="john@example.com">
-  </div>
-  <div>
-    <label class="hdx-label">Message</label>
-    <textarea class="hdx-textarea" rows="3" placeholder="Your message..."></textarea>
-  </div>
-  <button class="hdx-btn hdx-btn-primary hdx-w-fit">Submit</button>
-</div>
 ```
 
 ### Cards
@@ -1798,15 +1304,12 @@ Note: the generated dark variables use `.hdx-dark`, not `.dark`. The dark mode c
 <div class="hdx-grid hdx-grid-cols-1 hdx-md_grid-cols-3 hdx-gap-6">
   <div class="hdx-card">
     <h3 class="hdx-text-lg hdx-font-semibold">Card 1</h3>
-    <p class="hdx-mt-2 hdx-text-sm hdx-text-text-secondary">Content</p>
   </div>
   <div class="hdx-card">
     <h3 class="hdx-text-lg hdx-font-semibold">Card 2</h3>
-    <p class="hdx-mt-2 hdx-text-sm hdx-text-text-secondary">Content</p>
   </div>
   <div class="hdx-card">
     <h3 class="hdx-text-lg hdx-font-semibold">Card 3</h3>
-    <p class="hdx-mt-2 hdx-text-sm hdx-text-text-secondary">Content</p>
   </div>
 </div>
 ```
@@ -1821,12 +1324,6 @@ Note: the generated dark variables use `.hdx-dark`, not `.dark`. The dark mode c
 <span class="hdx-badge-warning">Warning</span>
 <span class="hdx-badge-info">Info</span>
 <span class="hdx-badge-outline">Outline</span>
-
-<!-- Badge in Context -->
-<div class="hdx-flex hdx-items-center hdx-gap-2">
-  <h3 class="hdx-text-lg hdx-font-semibold">Dashboard</h3>
-  <span class="hdx-badge-primary">New</span>
-</div>
 ```
 
 ### Alerts
@@ -1847,12 +1344,10 @@ Note: the generated dark variables use `.hdx-dark`, not `.dark`. The dark mode c
 <div class="hdx-avatar hdx-avatar-lg">LG</div>
 <div class="hdx-avatar hdx-avatar-xl">XL</div>
 
-<!-- Avatar with Image -->
 <div class="hdx-avatar">
   <img src="avatar.jpg" alt="User" class="hdx-w-full hdx-h-full hdx-object-cover">
 </div>
 
-<!-- Avatar Group -->
 <div class="hdx-avatar-group">
   <div class="hdx-avatar">A</div>
   <div class="hdx-avatar">B</div>
@@ -1863,7 +1358,6 @@ Note: the generated dark variables use `.hdx-dark`, not `.dark`. The dark mode c
 ### Modals
 
 ```html
-<!-- Modal Overlay -->
 <div class="hdx-modal-overlay">
   <div class="hdx-modal">
     <div class="hdx-modal-header">
@@ -1898,11 +1392,6 @@ Note: the generated dark variables use `.hdx-dark`, not `.dark`. The dark mode c
         <td class="hdx-table-cell">john@example.com</td>
         <td class="hdx-table-cell">Admin</td>
       </tr>
-      <tr class="hdx-table-row">
-        <td class="hdx-table-cell">Jane Smith</td>
-        <td class="hdx-table-cell">jane@example.com</td>
-        <td class="hdx-table-cell">User</td>
-      </tr>
     </tbody>
   </table>
 </div>
@@ -1921,18 +1410,13 @@ Note: the generated dark variables use `.hdx-dark`, not `.dark`. The dark mode c
 
 ---
 
-<h2 id="accessibility">♿ Accessibility</h2>
+## ♿ Accessibility
 
 ### Focus Ring
 
 ```html
-<!-- Default focus ring (primary color) -->
 <button class="hdx-btn hdx-btn-primary hdx-focus-ring">Focus Ring</button>
-
-<!-- Custom focus ring color -->
 <button class="hdx-btn hdx-btn-primary hdx-focus-ring-danger">Danger Ring</button>
-
-<!-- No focus ring -->
 <button class="hdx-btn hdx-btn-primary hdx-focus-ring-0">No Ring</button>
 ```
 
@@ -1960,7 +1444,7 @@ HDX Style automatically reduces animations for users who prefer reduced motion:
 
 ---
 
-<h2 id="plugin-system">🔌 Plugin System</h2>
+## 🔌 Plugin System
 
 ### Creating a Plugin
 
@@ -2004,167 +1488,57 @@ export default {
 };
 ```
 
-### Built-in Plugins
-
-```js
-// Container plugin (included by default)
-export default function containerPlugin({ addComponent }) {
-  addComponent({
-    name: 'container',
-    css: `width: 100%;
-margin-inline: auto;
-padding-inline: 1rem;`,
-  });
-}
-```
-
 ---
 
-<h2 id="content-purging">🧹 Content Purging</h2>
+## 🧹 Content Purging
 
 Remove unused CSS in production:
 
 ```bash
-npx hdx_style build          # Purges unused CSS by default when content is configured
-npx hdx_style build -p       # Explicit purge (same as the default with content set)
-npx hdx_style build --production  # Same as -p
-```
-
-> **Heads-up — `build --no-purge` is huge by design.** When `content` is configured, `hdx_style build` purges automatically and emits only the utilities and components your app uses — keep `content` populated and you'll never see the full matrix. If you pass `--no-purge` (or have an empty `content` array, e.g. when generating a CDN stylesheet), the CLI generates every utility × variant combination — a multi-megabyte file (≈25 MB with the default theme). Use `build --no-purge` only when you explicitly want a distributable stylesheet.
-
-This scans your content files and only includes utilities and components that are actually used:
-
-```html
-<!-- These classes will be kept -->
-<div class="hdx-flex hdx-p-4 hdx-bg-primary">
-
-<!-- These classes will be removed (not in content) -->
-<!-- .hdx-grid, .hdx-text-center, etc. -->
+npx hdx-style build          # Purges unused CSS by default when content is configured
+npx hdx-style build -p       # Explicit purge (same as default with content set)
+npx hdx-style build --no-purge  # Full stylesheet (CDN distribution)
 ```
 
 ### How It Works
 
 Production builds use **demand-driven generation**:
 
-```text
+```
 Content files
     ↓
-Scanner (extracts HDX class names, supports multiline/template literals)
+Scanner (extracts HDX class names)
     ↓
 Class Parser (hdx-md_hover_bg-primary → { variants: [md, hover], utility: bg-primary })
     ↓
 Registry lookup (resolve needed utilities + their variant combos)
     ↓
-Component registry lookup (resolve needed components by their base class)
+Component registry lookup (resolve needed components by base class)
     ↓
-Generator (produces ONLY the requested rules, no combinatorial explosion)
+Generator (produces ONLY the requested rules)
 ```
 
-If your content contains only `<div class="hdx-flex hdx-p-4 hdx-text-primary"></div>`, the production output contains `.hdx-flex`, `.hdx-p-4`, `.hdx-text-primary` — and **not** `.hdx-grid`, `.hdx-shadow-xl`, `.hdx-rotate-45`, or any unrelated variant combinations.
-
-### Component Purging
-
-The component layer is purged exactly like utilities. A component definition — including its `states` blocks (`:hover`, `:active`, …) — is emitted only when its base class name appears in content:
-
-```html
-<button class="hdx-btn hdx-btn-primary">Go</button>
-<!-- keeps .hdx-btn and .hdx-btn-primary (+ :hover/:active states) -->
-<!-- drops .hdx-card, .hdx-modal*, .hdx-input, .hdx-badge*, … -->
-```
-
-Composed usage resolves independently: `hdx-btn hdx-btn-primary` keeps both `btn` and `btn-primary` (each is a separate definition today). Because components are demand-driven, an unused component in a minimal build no longer dominates output — a build that only ships `<div class="hdx-flex hdx-p-4"></div>` contains **no** component CSS at all. Safelisted component classes (e.g. `safelist: ['hdx-modal']`) are kept on every purged build, and `components: false` still disables the whole component layer for pure-utility builds.
-
-### Configuration
-
-```js
-// hdx.config.js
-export default {
-  content: [
-    './src/**/*.{html,js,jsx,ts,tsx,vue,svelte}',
-    './pages/**/*.{html,js,jsx,ts,tsx}',
-  ],
-};
-```
-
-### Safelist
-
-Force classes to always be included, even when not found in content:
-
-```js
-export default {
-  safelist: ['hdx-flex', 'hdx-hidden', 'hdx-bg-primary'],
-};
-```
-
-Useful for complete classes built dynamically via string concatenation or used in JavaScript logic the scanner cannot see. Entries must be full class names — prefix patterns like `hdx-opacity-` are not supported.
+If your content contains only `<div class="hdx-flex hdx-p-4 hdx-text-primary"></div>`, the production output contains `.hdx-flex`, `.hdx-p-4`, `.hdx-text-primary` — and **not** `.hdx-grid`, `.hdx-shadow-xl`, or any unrelated utilities.
 
 ### Supported File Types
 
-- HTML
-- JavaScript (JS)
-- JSX (React)
-- TypeScript (TS)
-- TSX (React)
-- Vue (SFC)
-- Svelte
-
-### Scanner Capabilities
-
-The scanner handles real-world formatting:
-
-```jsx
-<div
-  className="
-    hdx-flex
-    hdx-items-center
-    hdx-gap-4
-  "
->
-```
-
-```jsx
-// Template literals
-const classes = `hdx-flex hdx-p-4`;
-```
-
-```js
-// Conditional strings
-className={isActive ? "hdx-flex" : "hdx-block"}
-```
-
-> **Limitation**: Dynamically *generated* class names (e.g. `` `hdx-${color}-500` ``) cannot be statically discovered. Add them to the `safelist` or construct complete class strings.
+HTML · JavaScript (JS) · JSX · TypeScript (TS) · TSX · Vue (SFC) · Svelte
 
 ### Build Modes
 
 | Mode | Command | Output |
 |---|---|---|
-| Default (`content` configured) | `npx hdx_style build` | **Purges unused CSS** — only the utilities (and components) your content uses, plus their variants |
-| Default (no `content`) | `npx hdx_style build` | Complete stylesheet (all utilities × all variants — for CDN/stylesheet distribution) |
-| Production | `npx hdx_style build -p` | Explicit purge (same as the default when `content` is set) |
-| Production (alias) | `npx hdx_style build --production` | Same as `-p` |
-| Full stylesheet | `npx hdx_style build --no-purge` | Unpurged utility × variant matrix even when `content` is configured |
-| Full stylesheet | `npx hdx_style generate` | Always the complete stylesheet — ignores `-p`/`--production` |
-
-**Unknown-utility warnings.** In production mode the build reports any HDX
-class that resolves to no utility, with its `file:line:column`, instead of
-silently dropping it:
-
-```text
-⚠ Unknown utility "hdx-nonexistent-class" (./src/App.jsx:3:38) — no CSS generated
-```
-
-This makes Tailwind→HDX migrations auditable: nothing disappears quietly.
-
-**Responsive media ordering.** Base utilities are always emitted before the
-`@media` blocks, and every responsive block is grouped contiguously (ordered by
-breakpoint) at the end of the utilities section, so `hdx-hidden hdx-lg_flex`
-behaves correctly and the generated file is easy to inspect.
+| Default (`content` set) | `npx hdx-style build` | **Purges** — only utilities your content uses |
+| Default (no `content`) | `npx hdx-style build` | Complete stylesheet (all utilities × all variants) |
+| Production | `npx hdx-style build -p` | Explicit purge |
+| Full stylesheet | `npx hdx-style build --no-purge` | Unpurged utility × variant matrix |
+| Full stylesheet | `npx hdx-style generate` | Always complete — ignores `-p`/`--production` |
 
 ---
 
-<h2 id="framework-integration">🧩 Framework Integration</h2>
+## 🧩 Framework Integration
 
-Framework variants of the examples live in the [`examples/`](examples/) folder — each with its own scoped `hdx.config.js` showing demand-driven purging for that file type:
+Framework variants live in the [`examples/`](examples/) folder:
 
 | Example | Content scanned | Build command |
 |---|---|---|
@@ -2190,8 +1564,6 @@ Framework variants of the examples live in the [`examples/`](examples/) folder �
 
 ### React
 
-> Full runnable example: [`examples/react/App.jsx`](examples/react/App.jsx). Note that component class name maps must stay static — the scanner resolves `['hdx-btn', 'hdx-btn-primary'].join(' ')` but cannot discover template-literal interpolation.
-
 ```jsx
 import "@haridevx/hdx-style/css";
 
@@ -2213,8 +1585,6 @@ export default function App() {
 
 ### Vue
 
-> Full runnable example: [`examples/vue/App.vue`](examples/vue/App.vue).
-
 ```vue
 <template>
   <div class="hdx-min-h-screen hdx-bg-background hdx-p-6">
@@ -2234,30 +1604,7 @@ import "@haridevx/hdx-style/css";
 </script>
 ```
 
-### Vite
-
-```js
-// vite.config.js
-export default {
-  css: {
-    // HDX Style works with Vite out of the box
-  },
-};
-```
-
-```html
-<!-- index.html -->
-<link rel="stylesheet" href="./node_modules/@haridevx/hdx-style/dist/hdx.css">
-```
-
 ### Next.js
-
-```js
-// next.config.js
-module.exports = {
-  // Add HDX Style to your Next.js app
-};
-```
 
 ```jsx
 // pages/_app.js
@@ -2270,7 +1617,7 @@ export default function App({ Component, pageProps }) {
 
 ---
 
-<h2 id="complete-page-example">🖼️ Complete Page Example</h2>
+## 🖼️ Complete Page Example
 
 ```html
 <!DOCTYPE html>
@@ -2284,15 +1631,21 @@ export default function App({ Component, pageProps }) {
 <body class="hdx-min-h-screen hdx-bg-background hdx-text-text">
 
   <!-- Header -->
-  <header class="hdx-bg-surface hdx-border-b hdx-border-border hdx-dark_bg-surface-secondary hdx-dark_border-border-strong">
-    <div class="hdx-container hdx-mx-auto hdx-px-4 hdx-py-3 hdx-flex hdx-items-center hdx-justify-between">
+  <header class="hdx-bg-surface hdx-border-b hdx-border-border
+                 hdx-dark_bg-surface-secondary hdx-dark_border-border-strong">
+    <div class="hdx-container hdx-mx-auto hdx-px-4 hdx-py-3
+                hdx-flex hdx-items-center hdx-justify-between">
       <div class="hdx-flex hdx-items-center hdx-gap-3">
-        <div class="hdx-w-8 hdx-h-8 hdx-rounded-lg hdx-bg-primary hdx-flex hdx-items-center hdx-justify-center hdx-text-white hdx-text-sm hdx-font-bold">H</div>
+        <div class="hdx-w-8 hdx-h-8 hdx-rounded-lg hdx-bg-primary
+                    hdx-flex hdx-items-center hdx-justify-center
+                    hdx-text-white hdx-text-sm hdx-font-bold">H</div>
         <span class="hdx-text-lg hdx-font-bold hdx-text-text">HDX Dashboard</span>
       </div>
       <nav class="hdx-flex hdx-items-center hdx-gap-4">
-        <a href="#" class="hdx-text-sm hdx-font-medium hdx-text-text-secondary hdx-hover_text-primary hdx-transition">Dashboard</a>
-        <a href="#" class="hdx-text-sm hdx-font-medium hdx-text-text-secondary hdx-hover_text-primary hdx-transition">Settings</a>
+        <a href="#" class="hdx-text-sm hdx-font-medium hdx-text-text-secondary
+                          hdx-hover_text-primary hdx-transition">Dashboard</a>
+        <a href="#" class="hdx-text-sm hdx-font-medium hdx-text-text-secondary
+                          hdx-hover_text-primary hdx-transition">Settings</a>
         <div class="hdx-avatar hdx-avatar-sm">JD</div>
       </nav>
     </div>
@@ -2308,7 +1661,8 @@ export default function App({ Component, pageProps }) {
     </div>
 
     <!-- Stats Grid -->
-    <div class="hdx-grid hdx-grid-cols-1 hdx-sm_grid-cols-2 hdx-lg_grid-cols-4 hdx-gap-6 hdx-mb-8">
+    <div class="hdx-grid hdx-grid-cols-1 hdx-sm_grid-cols-2 hdx-lg_grid-cols-4
+                hdx-gap-6 hdx-mb-8">
       <div class="hdx-card">
         <p class="hdx-text-sm hdx-text-text-muted">Total Users</p>
         <p class="hdx-text-2xl hdx-font-bold hdx-text-text hdx-mt-1">12,345</p>
@@ -2342,18 +1696,28 @@ export default function App({ Component, pageProps }) {
         </div>
         <div class="hdx-card-body">
           <div class="hdx-flex hdx-flex-col hdx-gap-4">
-            <div class="hdx-flex hdx-items-center hdx-gap-3 hdx-p-3 hdx-rounded-lg hdx-hover_bg-surface-secondary hdx-transition">
-              <div class="hdx-w-10 hdx-h-10 hdx-rounded-full hdx-bg-primary hdx-flex hdx-items-center hdx-justify-center hdx-text-white hdx-text-sm hdx-font-medium">JD</div>
+            <div class="hdx-flex hdx-items-center hdx-gap-3 hdx-p-3 hdx-rounded-lg
+                        hdx-hover_bg-surface-secondary hdx-transition">
+              <div class="hdx-w-10 hdx-h-10 hdx-rounded-full hdx-bg-primary
+                          hdx-flex hdx-items-center hdx-justify-center
+                          hdx-text-white hdx-text-sm hdx-font-medium">JD</div>
               <div class="hdx-flex-1">
-                <p class="hdx-text-sm hdx-font-medium hdx-text-text">John Doe created a new project</p>
+                <p class="hdx-text-sm hdx-font-medium hdx-text-text">
+                  John Doe created a new project
+                </p>
                 <p class="hdx-text-xs hdx-text-text-muted">2 minutes ago</p>
               </div>
               <span class="hdx-badge-primary">New</span>
             </div>
-            <div class="hdx-flex hdx-items-center hdx-gap-3 hdx-p-3 hdx-rounded-lg hdx-hover_bg-surface-secondary hdx-transition">
-              <div class="hdx-w-10 hdx-h-10 hdx-rounded-full hdx-bg-success hdx-flex hdx-items-center hdx-justify-center hdx-text-white hdx-text-sm hdx-font-medium">JS</div>
+            <div class="hdx-flex hdx-items-center hdx-gap-3 hdx-p-3 hdx-rounded-lg
+                        hdx-hover_bg-surface-secondary hdx-transition">
+              <div class="hdx-w-10 hdx-h-10 hdx-rounded-full hdx-bg-success
+                          hdx-flex hdx-items-center hdx-justify-center
+                          hdx-text-white hdx-text-sm hdx-font-medium">JS</div>
               <div class="hdx-flex-1">
-                <p class="hdx-text-sm hdx-font-medium hdx-text-text">Jane Smith completed a task</p>
+                <p class="hdx-text-sm hdx-font-medium hdx-text-text">
+                  Jane Smith completed a task
+                </p>
                 <p class="hdx-text-xs hdx-text-text-muted">15 minutes ago</p>
               </div>
               <span class="hdx-badge-success">Done</span>
@@ -2382,38 +1746,31 @@ export default function App({ Component, pageProps }) {
 </html>
 ```
 
-A runnable version of this page lives in [`examples/vanilla/index.html`](examples/vanilla/index.html) with its own [`examples/vanilla/hdx.config.js`](examples/vanilla/hdx.config.js). Build it with:
+Build it with:
 
 ```bash
 node src/cli/index.js build -p -c examples/vanilla/hdx.config.js
 ```
 
-React and Vue variants are in [`examples/react/`](examples/react/) and [`examples/vue/`](examples/vue/) — see the [Framework Integration](#framework-integration) section for the full list of examples and build commands.
+React and Vue variants are in [`examples/react/`](examples/react/) and [`examples/vue/`](examples/vue/).
 
 ---
 
-<h2 id="git-workflow">🔀 Git Workflow</h2>
+## 🔀 Git Workflow
 
-HDX Style uses **Trunk-Based Development** — optimized for NPM library distribution with rapid iteration and clean release history.
+HDX Style uses **Trunk-Based Development** — optimized for NPM library distribution.
 
 ### Branching Model
 
 | Branch | Purpose | Lifetime |
 |---|---|---|
-| `main` | Stable, always-shippable source. CI must pass before merge. | Permanent |
-| `next` | Pre-release testing (optional; for major breaking changes) | Until stable |
-| `release/*` | Backport patches to older majors (if needed) | Until EOL |
-| `feat/*` / `fix/*` | Short-lived feature or bugfix branches | Deleted after merge |
+| `main` | Stable, always-shippable source | Permanent |
+| `next` | Pre-release testing (optional) | Until stable |
+| `release/*` | Backport patches to older majors | Until EOL |
+| `feat/*` / `fix/*` | Short-lived feature or bugfix | Deleted after merge |
 | `hotfix/*` | Urgent production fixes | Deleted after release |
 
-**Rules:**
-- `main` is protected — all changes go through PR (no direct push).
-- Feature branches are **short-lived** (< 2 days ideally); rebase daily.
-- Delete branches immediately after merge.
-
 ### Conventional Commits
-
-Every commit message must follow the [Conventional Commits](https://www.conventionalcommits.org/) spec:
 
 ```
 <type>(<scope>): <description>
@@ -2422,8 +1779,6 @@ Every commit message must follow the [Conventional Commits](https://www.conventi
 
 [optional footer(s)]
 ```
-
-**Types:**
 
 | Type | When to Use | Version Bump |
 |---|---|---|
@@ -2437,30 +1792,7 @@ Every commit message must follow the [Conventional Commits](https://www.conventi
 | `chore` | Build scripts, deps, tooling | None |
 | `BREAKING CHANGE` | Any breaking API or class-prefix change | `major` |
 
-**Scope** (optional but encouraged): `core`, `generator`, `scanner`, `parser`, `theme`, `cli`, `components`, `utilities`, `variants`, `vite`, `plugin`, `deps`, `ci`, `docs`
-
-**Examples:**
-
-```text
-feat(utilities): add text-fluid-* clamp() typography utilities
-fix(generator): prevent markImportant from corrupting quoted semicolons
-feat(theme): add semantic z-index tokens (dropdown, sticky, overlay, modal)
-docs: document color-aware arbitrary value prefixes
-chore(deps): bump vitest to ^2.0.0
-BREAKING CHANGE: class prefix hdx- → hdx- (set prefix:'hdx-' to keep old syntax)
-```
-
 ### Release Process
-
-HDX Style follows **Semantic Versioning** (semver):
-
-| Change Type | Version Bump | Example |
-|---|---|---|
-| New feature (backwards-compatible) | `0.x.0` → `0.(x+1).0` | 0.2.3 → 0.3.0 |
-| Bug fix / patch | `0.x.y` → `0.x.(y+1)` | 0.2.3 → 0.2.4 |
-| Breaking change | `0.x.y` → `1.0.0` (or next major) | 0.2.x → 1.0.0 |
-
-**Release checklist (manual or CI-automated):**
 
 ```bash
 # 1. Ensure main is up to date and CI passes
@@ -2469,13 +1801,11 @@ git checkout main && git pull
 # 2. Run the full verification suite
 npm test && npm run build && npm run stats:verify && npm run defaults && npm run token-docs:verify
 
-# 3. Bump version in package.json (or use npm)
-npm version patch   # 0.2.3 → 0.2.4
-# or: npm version minor
-# or: npm version major
+# 3. Bump version
+npm version patch   # or: minor / major
 
-# 4. Update CHANGELOG.md with the new version heading and date
-# 5. Regenerate default-values.txt (CI guards drift)
+# 4. Update CHANGELOG.md
+# 5. Regenerate default-values.txt
 npm run defaults
 
 # 6. Commit the release
@@ -2486,21 +1816,9 @@ git tag v<version>
 # 7. Push with tags
 git push && git push --tags
 
-# 8. Publish to npm (prepack runs build + build:css automatically)
+# 8. Publish to npm
 npm publish --access public
 ```
-
-**CI guards (already enforced in `.github/workflows/ci.yml`):**
-- `npm run stats:verify` — fails if README statistics table drifts from source.
-- `npm run defaults && git diff --exit-code default-values.txt` — fails if `default-values.txt` is stale.
-- `npm run token-docs:verify` — fails if token documentation mismatches `defaults.js`.
-
-### Commit Isolation Guidelines
-
-- **One logical change per commit.** Don't mix a bug fix with a refactor.
-- **Never commit generated files** (`dist/`, `css/index.css`) — they are built by `prepack` / CI.
-- **Stage selectively** — use `git add <specific-files>` rather than `git add -A` for feature commits.
-- **Use `.gitignore`** to exclude `node_modules/`, `dist/`, and editor artifacts.
 
 ### Branch Naming Convention
 
@@ -2515,8 +1833,14 @@ release/0.2.x-backport
 
 ---
 
-<h2 id="license">📜 License</h2>
+## 📜 License
 
-Licensed By HariDevX
---------------------
-MIT
+Licensed by **HariDevX** · [MIT](LICENSE)
+
+---
+
+<div align="center">
+
+**Built with care by [HariDevX](https://github.com/HariDevex)**
+
+</div>
