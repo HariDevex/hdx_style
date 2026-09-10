@@ -14,6 +14,9 @@ import { interactiveComponents } from './interactive.js';
 import { iconComponents } from './icon.js';
 import { notificationComponents } from './notification.js';
 import { navComponents } from './nav.js';
+import { overlayComponents } from './overlay.js';
+import { formComponents } from './form.js';
+import { mediaComponents } from './media.js';
 
 /**
  * Get all component definitions
@@ -40,6 +43,9 @@ export function getAllComponents(config) {
     ...iconComponents(config),
     ...notificationComponents(config),
     ...navComponents(config),
+    ...overlayComponents(config),
+    ...formComponents(config),
+    ...mediaComponents(config),
     ...customComponents,
   ];
 }
