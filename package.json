@@ -1,6 +1,6 @@
 {
   "name": "@haridevx/hdx-style",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "HDX Style — Modern utility-first CSS framework with design system",
   "keywords": [
     "css",
@@ -43,7 +43,6 @@
   },
   "files": [
     "src/",
-    "dist/",
     "css/",
     "index.d.ts",
     "vite.d.ts"
