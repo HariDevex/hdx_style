@@ -6,3 +6,25 @@ export { extractClassNames } from './scanner/extractor.js';
 export { getAllUtilities } from './utilities/index.js';
 export { getAllVariants } from './variants/index.js';
 export { defaultTheme, defaultConfig } from './theme/defaults.js';
+export {
+  hdxTailwindPreset,
+  createTailwindPreset,
+  hdxTailwindPlugin,
+  createTailwindPlugin,
+  generateTailwindThemeCSS,
+  hdxColors,
+  hdxDarkColors,
+  hdxSpacing,
+  hdxFontSize,
+  hdxFontWeight,
+  hdxLineHeight,
+  hdxLetterSpacing,
+  hdxBorderRadius,
+  hdxBoxShadow,
+  hdxScreens,
+  hdxOpacity,
+  hdxZIndex,
+  hdxTransitionDuration,
+  hdxTransitionTimingFunction,
+  hdxFontFamily,
+} from './tailwind.js';

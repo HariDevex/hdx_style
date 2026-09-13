@@ -80,3 +80,5 @@ export function prefixClass(name: string, prefix?: string): string;
 export function escapeClassName(name: string): string;
 export function getSelector(name: string, prefix?: string): string;
 export function getSelectorWithDot(name: string, prefix?: string): string;
+
+export * from './tailwind.d.ts';

@@ -35,4 +35,13 @@ describe('Starter stylesheet (css/index.css)', () => {
     const missing = curated.filter(n => !allNames.has(n));
     expect(missing).toEqual([]);
   });
+
+  it('generates the Tailwind v4 @theme stylesheet (css/tailwind-theme.css)', () => {
+    build();
+    const themePath = path.join(root, '..', 'css', 'tailwind-theme.css');
+    expect(fs.existsSync(themePath)).toBe(true);
+    const css = fs.readFileSync(themePath, 'utf-8');
+    expect(css).toContain('@theme {');
+    expect(css).toContain('--color-primary: #2563EB;');
+  });
 });

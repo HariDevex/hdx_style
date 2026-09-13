@@ -17,7 +17,7 @@
 
 </div>
 
-> **`@haridevx/hdx-style`** is an independent, modular CSS framework with **2,035 utilities**, **156 components**, and **49 variants** — shipping zero PostCSS and zero Tailwind runtime dependencies.
+> **`@haridevx/hdx-style`** is an independent, modular CSS framework with **2,035 utilities**, **221 components**, and **49 variants** — shipping zero PostCSS runtime dependency with official Tailwind CSS integration.
 
 ### 📊 Verified Statistics
 
@@ -27,14 +27,14 @@ Run `node stats.js` to generate from source; `npm run stats:verify` (also part o
 |---|---|
 | 📦 Utilities | **2,035** |
 | 🗂️ Utility categories | **21** |
-| 🧩 Components | **156** |
+| 🧩 Components | **221** |
 | 🎛️ Variants | **49** |
 | 📐 Responsive breakpoints | **5** |
-| ✅ Tests | **369** |
-| 📄 Source files | **78** |
-| ⚙️ Runtime dependencies | **4** |
+| ✅ Tests | **383** |
+| 📄 Source files | **80** |
+| ⚙️ Runtime dependencies | **5** |
 | 🚫 PostCSS dependency | **No** |
-| 🚫 Tailwind dependency | **No** |
+| 🚫 Tailwind dependency | **Yes** |
 
 ---
 
@@ -67,7 +67,7 @@ Run `node stats.js` to generate from source; `npm run stats:verify` (also part o
 </tr>
 <tr>
 <td><b>🧱 Components</b></td>
-<td>156 drop-in components — buttons, cards, modals, tables, and more</td>
+<td>221 drop-in components — buttons, cards, modals, tables, and more</td>
 </tr>
 <tr>
 <td><b>🧹 Auto purging</b></td>
@@ -1325,23 +1325,44 @@ export default { darkMode: 'media' };  // Uses @media (prefers-color-scheme: dar
 
 ### Buttons
 
+Full suite of buttons with solid colorways, color-specific outlines, subtle link styles, responsive sizes, pill shapes, and button groups:
+
 ```html
+<!-- Solid Colors (with automatic on-accent text contrast) -->
 <button class="hdx-btn hdx-btn-primary">Primary</button>
 <button class="hdx-btn hdx-btn-secondary">Secondary</button>
 <button class="hdx-btn hdx-btn-success">Success</button>
 <button class="hdx-btn hdx-btn-danger">Danger</button>
 <button class="hdx-btn hdx-btn-warning">Warning</button>
 <button class="hdx-btn hdx-btn-info">Info</button>
-<button class="hdx-btn hdx-btn-outline">Outline</button>
-<button class="hdx-btn hdx-btn-ghost">Ghost</button>
 
-<!-- Sizes -->
+<!-- Outline Variants -->
+<button class="hdx-btn hdx-btn-outline-primary">Outline Primary</button>
+<button class="hdx-btn hdx-btn-outline-success">Outline Success</button>
+<button class="hdx-btn hdx-btn-outline-danger">Outline Danger</button>
+
+<!-- Ghost, Link & Pill -->
+<button class="hdx-btn hdx-btn-ghost">Ghost</button>
+<button class="hdx-btn hdx-btn-link">Text Link</button>
+<button class="hdx-btn hdx-btn-primary hdx-btn-pill">Pill Button</button>
+
+<!-- Responsive Sizes (xs -> xl) -->
+<button class="hdx-btn hdx-btn-primary hdx-btn-xs">Extra Small</button>
 <button class="hdx-btn hdx-btn-primary hdx-btn-sm">Small</button>
 <button class="hdx-btn hdx-btn-primary hdx-btn-md">Medium</button>
 <button class="hdx-btn hdx-btn-primary hdx-btn-lg">Large</button>
+<button class="hdx-btn hdx-btn-primary hdx-btn-xl">Extra Large</button>
 
-<!-- Full Width -->
-<button class="hdx-btn hdx-btn-primary hdx-w-full">Full Width</button>
+<!-- Button Groups -->
+<div class="hdx-btn-group">
+  <button class="hdx-btn hdx-btn-primary">Left</button>
+  <button class="hdx-btn hdx-btn-primary">Center</button>
+  <button class="hdx-btn hdx-btn-primary">Right</button>
+</div>
+
+<!-- Accessible States -->
+<button class="hdx-btn hdx-btn-primary" disabled>Disabled</button>
+<button class="hdx-btn hdx-btn-primary" aria-disabled="true">Aria Disabled</button>
 ```
 
 ### Inputs
@@ -1401,16 +1422,57 @@ export default { darkMode: 'media' };  // Uses @media (prefers-color-scheme: dar
 </div>
 ```
 
-### Badges
+### Skeletons (Shimmer Loaders)
+
+Pre-built animated skeleton loaders with pulse animation for cards, avatars, and text:
 
 ```html
-<span class="hdx-badge">Default</span>
+<div class="hdx-card hdx-p-6 hdx-flex hdx-flex-col hdx-gap-4">
+  <div class="hdx-flex hdx-items-center hdx-gap-4">
+    <div class="hdx-skeleton-avatar"></div>
+    <div class="hdx-flex-1">
+      <div class="hdx-skeleton-text hdx-w-3/4"></div>
+      <div class="hdx-skeleton-text hdx-w-1/2"></div>
+    </div>
+  </div>
+  <div class="hdx-skeleton-card"></div>
+  <div class="hdx-skeleton-button"></div>
+</div>
+```
+
+### Badges
+
+Badges in solid, outline, soft tinted palettes, indicator dots, and counters:
+
+```html
+<!-- Solid Badges -->
 <span class="hdx-badge-primary">Primary</span>
+<span class="hdx-badge-secondary">Secondary</span>
 <span class="hdx-badge-success">Success</span>
 <span class="hdx-badge-danger">Danger</span>
 <span class="hdx-badge-warning">Warning</span>
 <span class="hdx-badge-info">Info</span>
-<span class="hdx-badge-outline">Outline</span>
+
+<!-- Soft / Subtle Tinted Badges -->
+<span class="hdx-badge-soft-primary">Active Feature</span>
+<span class="hdx-badge-soft-success">Operational</span>
+<span class="hdx-badge-soft-danger">Critical Alert</span>
+<span class="hdx-badge-soft-warning">Pending Review</span>
+
+<!-- Outline Badges -->
+<span class="hdx-badge-outline-primary">Primary</span>
+<span class="hdx-badge-outline-success">Verified</span>
+
+<!-- Status Dot & Count Badges -->
+<span class="hdx-badge hdx-badge-dot">
+  <span class="hdx-w-2 hdx-h-2 hdx-rounded-full hdx-bg-success"></span> Online
+</span>
+<span class="hdx-badge-danger hdx-badge-count">9+</span>
+
+<!-- Sizes & Rounded Shapes -->
+<span class="hdx-badge-primary hdx-badge-xs">XS</span>
+<span class="hdx-badge-primary hdx-badge-lg">Large Badge</span>
+<span class="hdx-badge-secondary hdx-badge-rounded">Rectangular Badge</span>
 ```
 
 ### Alerts
@@ -1524,72 +1586,112 @@ Add `hdx-tooltip-visible` to show the tip. Theme: `toast-bg` / `toast-text` driv
 
 ### Interactive
 
-Composed buttons, dropdowns, and responsive content grids.
+Composed dropdowns, accordions, tabs, and responsive content grids:
 
 ```html
-<!-- Pill / ghost buttons -->
-<button class="hdx-ui-btn-ghost">Ghost</button>
-<button class="hdx-ui-btn-ghost hdx-ui-btn-ghost-hover">Hovered</button>
-<button class="hdx-btn hdx-ui-btn-pill">Pill</button>
-
 <!-- Dropdown -->
 <div class="hdx-ui-dropdown">
-  <button class="hdx-ui-btn-ghost">Menu ▾</button>
+  <button class="hdx-btn hdx-btn-outline">Options ▾</button>
   <div class="hdx-ui-dropdown-menu hdx-ui-dropdown-open">
-    <a class="hdx-ui-dropdown-item">Profile</a>
-    <a class="hdx-ui-dropdown-item">Settings</a>
+    <a class="hdx-ui-dropdown-item">Account Settings</a>
+    <a class="hdx-ui-dropdown-item">Team Members</a>
+    <a class="hdx-ui-dropdown-item hdx-text-danger">Sign Out</a>
   </div>
+</div>
+
+<!-- Accordion -->
+<div class="hdx-ui-accordion">
+  <div class="hdx-ui-accordion-item">
+    <button class="hdx-ui-accordion-header">
+      <span>How does HDX Style demand-driven purging work?</span>
+      <span>▾</span>
+    </button>
+    <div class="hdx-ui-accordion-content">
+      HDX scans all template and script source files, extracting used class names and synthesizing only the exact utilities and components required.
+    </div>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="hdx-ui-tabs">
+  <a href="#overview" class="hdx-ui-tab hdx-ui-tab-active">Overview</a>
+  <a href="#deployments" class="hdx-ui-tab">Deployments</a>
+  <a href="#settings" class="hdx-ui-tab">Settings</a>
+  <span class="hdx-ui-tab hdx-ui-tab-disabled">Billing (Locked)</span>
 </div>
 
 <!-- Responsive grid -->
 <div class="hdx-ui-grid-3col">…</div>
 ```
 
-Theme: `surface`, `border`, `text`, `surface-secondary`, `button-ghost-border`, `button-ghost-text`.
+### Layout & Real-World Primitives
 
-### Layout & Navigation
-
-Sticky headers, top/side/bottom navs, tabs, breadcrumbs, pagination, search and profile cards.
+Complete layout shells, sidebar rails, KPI analytics cards, empty state placeholders, dividers, and navigation headers:
 
 ```html
-<header class="hdx-ui-header hdx-ui-header-sticky">
-  <span class="hdx-text-lg hdx-font-bold">Brand</span>
-  <ul class="hdx-ui-nav-tabs">
-    <li><a href="#" class="hdx-ui-nav-tab hdx-ui-nav-tab-active">Overview</a></li>
-    <li><a href="#" class="hdx-ui-nav-tab">Analytics</a></li>
-  </ul>
-  <div class="hdx-ui-search-box">
-    <input class="hdx-ui-search-input" placeholder="Search…">
+<!-- Full Dashboard Application Shell -->
+<div class="hdx-ui-page-shell">
+
+  <!-- Mini Sidebar Rail -->
+  <aside class="hdx-ui-sidebar-rail">
+    <div class="hdx-w-8 hdx-h-8 hdx-rounded-lg hdx-bg-primary hdx-text-white hdx-flex hdx-items-center hdx-justify-center hdx-font-bold">H</div>
+  </aside>
+
+  <!-- Main View Area -->
+  <div class="hdx-ui-page-main hdx-pl-18">
+
+    <!-- Page Header with Action Slot -->
+    <header class="hdx-ui-page-header">
+      <div>
+        <h1 class="hdx-ui-page-title">Executive Overview</h1>
+        <p class="hdx-ui-page-subtitle">Real-time health, KPIs, and infrastructure status.</p>
+      </div>
+      <div class="hdx-ui-page-actions">
+        <div class="hdx-btn-group">
+          <button class="hdx-btn hdx-btn-outline hdx-btn-sm">Day</button>
+          <button class="hdx-btn hdx-btn-primary hdx-btn-sm">Month</button>
+          <button class="hdx-btn hdx-btn-outline hdx-btn-sm">Year</button>
+        </div>
+        <button class="hdx-btn hdx-btn-primary hdx-btn-sm">Download Report</button>
+      </div>
+    </header>
+
+    <!-- Padded Content Container -->
+    <main class="hdx-ui-page-content">
+
+      <!-- KPI Metrics Grid -->
+      <div class="hdx-ui-kpi-grid">
+        <div class="hdx-ui-kpi-card">
+          <span class="hdx-ui-kpi-label">Active Users</span>
+          <span class="hdx-ui-kpi-value">42,891</span>
+          <span class="hdx-ui-kpi-trend hdx-text-success">↑ +18.4% this week</span>
+        </div>
+        <div class="hdx-ui-kpi-card">
+          <span class="hdx-ui-kpi-label">API Latency</span>
+          <span class="hdx-ui-kpi-value">28ms</span>
+          <span class="hdx-ui-kpi-trend hdx-text-success">↓ -4ms vs SLA</span>
+        </div>
+        <div class="hdx-ui-kpi-card">
+          <span class="hdx-ui-kpi-label">Error Rate</span>
+          <span class="hdx-ui-kpi-value">0.01%</span>
+          <span class="hdx-ui-kpi-trend hdx-text-success">Nominal</span>
+        </div>
+      </div>
+
+      <hr class="hdx-ui-divider">
+
+      <!-- Zero-Data Empty State -->
+      <div class="hdx-ui-empty-state">
+        <div class="hdx-ui-empty-state-icon">⚡</div>
+        <h3 class="hdx-ui-empty-state-title">No pending security incidents</h3>
+        <p class="hdx-ui-empty-state-desc">All system microservices are functioning smoothly within compliance parameters.</p>
+        <button class="hdx-btn hdx-btn-primary hdx-btn-sm">Run Security Audit</button>
+      </div>
+
+    </main>
   </div>
-</header>
-
-<ol class="hdx-ui-breadcrumb">
-  <li><a href="#" class="hdx-ui-breadcrumb-item">Home</a></li>
-  <li class="hdx-ui-breadcrumb-separator">/</li>
-  <li class="hdx-ui-breadcrumb-current">Projects</li>
-</ol>
-
-<ul class="hdx-ui-pagination">
-  <li><a href="#" class="hdx-ui-pagination-item hdx-ui-pagination-item-disabled">‹</a></li>
-  <li><a href="#" class="hdx-ui-pagination-item hdx-ui-pagination-item-active">1</a></li>
-  <li><a href="#" class="hdx-ui-pagination-item">2</a></li>
-</ul>
-
-<footer class="hdx-ui-footer">…</footer>
+</div>
 ```
-
-Mobile app bottom tab bar (fixed, safe-area aware — add `padding-bottom: env(safe-area-inset-bottom)` handling is built in):
-
-```html
-<nav class="hdx-ui-nav-bottom">
-  <a href="#" class="hdx-ui-nav-bottom-item hdx-ui-nav-bottom-item-active">Home</a>
-  <a href="#" class="hdx-ui-nav-bottom-item">Stats</a>
-</nav>
-```
-
-`hdx-ui-header` is sticky by default. `hdx-ui-header-transparent` gives a transparent hero-overlay header (solidifying on scroll needs a few lines of user JS toggling a class — HDX only supplies the two visual states).
-
-Theme: `nav-bg`, `nav-text`, `nav-accent`, `primary`, `border`, `surface-secondary`, `input-bg`, `input-border`, `input-text`.
 
 ### Icons
 
@@ -1946,6 +2048,47 @@ export default function App({ Component, pageProps }) {
 }
 ```
 
+### Tailwind CSS
+
+HDX Style exports an official Tailwind CSS preset and plugin powered directly by the default design tokens (`default-values.txt` / `src/theme/defaults.js`):
+
+#### 1. Tailwind Config (Preset & Plugin)
+
+```javascript
+// tailwind.config.js
+import { hdxTailwindPreset, hdxTailwindPlugin } from '@haridevx/hdx-style/tailwind';
+
+export default {
+  presets: [hdxTailwindPreset],
+  plugins: [hdxTailwindPlugin],
+};
+```
+
+This extends Tailwind with:
+- **Colors**: All HDX semantic tokens (`primary`, `secondary`, `success`, `danger`, `surface`, `border`, `gray-*`, etc.)
+- **Dark Mode**: Complete `darkColors` palette and design token variables
+- **Typography**: HDX `fontSize`, `fontWeight`, `lineHeight`, `letterSpacing`, and fluid `.text-fluid-*` clamp utilities
+- **Tokens**: Spacing, `borderRadius`, `boxShadow`, `screens`, `opacity`, `zIndex`, and transitions
+
+#### 2. Tailwind v4 `@theme` Import
+
+```css
+@import "tailwindcss";
+@import "@haridevx/hdx-style/tailwind.css";
+```
+
+#### 3. Direct Token Import
+
+```javascript
+import {
+  hdxColors,
+  hdxDarkColors,
+  hdxSpacing,
+  hdxFontSize,
+  hdxScreens,
+} from '@haridevx/hdx-style/tailwind';
+```
+
 ---
 
 ## 🖼️ Complete Page Example
@@ -1956,122 +2099,154 @@ export default function App({ Component, pageProps }) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HDX Dashboard</title>
+  <title>HDX SaaS Dashboard</title>
   <link rel="stylesheet" href="./dist/hdx.css">
 </head>
 <body class="hdx-min-h-screen hdx-bg-background hdx-text-text">
 
-  <!-- Header -->
-  <header class="hdx-bg-surface hdx-border-b hdx-border-border
-                 hdx-dark_bg-surface-secondary hdx-dark_border-border-strong">
-    <div class="hdx-container hdx-mx-auto hdx-px-4 hdx-py-3
-                hdx-flex hdx-items-center hdx-justify-between">
-      <div class="hdx-flex hdx-items-center hdx-gap-3">
-        <div class="hdx-w-8 hdx-h-8 hdx-rounded-lg hdx-bg-primary
-                    hdx-flex hdx-items-center hdx-justify-center
-                    hdx-text-white hdx-text-sm hdx-font-bold">H</div>
-        <span class="hdx-text-lg hdx-font-bold hdx-text-text">HDX Dashboard</span>
+  <!-- Full Application Shell -->
+  <div class="hdx-ui-page-shell">
+
+    <!-- Mini Navigation Rail -->
+    <aside class="hdx-ui-sidebar-rail">
+      <div class="hdx-w-10 hdx-h-10 hdx-rounded-xl hdx-bg-primary hdx-text-white hdx-flex hdx-items-center hdx-justify-center hdx-font-bold hdx-shadow-md">
+        H
       </div>
-      <nav class="hdx-flex hdx-items-center hdx-gap-4">
-        <a href="#" class="hdx-text-sm hdx-font-medium hdx-text-text-secondary
-                          hdx-hover_text-primary hdx-transition">Dashboard</a>
-        <a href="#" class="hdx-text-sm hdx-font-medium hdx-text-text-secondary
-                          hdx-hover_text-primary hdx-transition">Settings</a>
-        <div class="hdx-avatar hdx-avatar-sm">JD</div>
+      <nav class="hdx-flex hdx-flex-col hdx-gap-4 hdx-mt-6">
+        <a href="#" class="hdx-w-10 hdx-h-10 hdx-rounded-lg hdx-flex hdx-items-center hdx-justify-center hdx-bg-surface-secondary hdx-text-primary hdx-transition" title="Overview">📊</a>
+        <a href="#" class="hdx-w-10 hdx-h-10 hdx-rounded-lg hdx-flex hdx-items-center hdx-justify-center hdx-text-text-muted hdx-hover_text-text hdx-transition" title="Deployments">🚀</a>
+        <a href="#" class="hdx-w-10 hdx-h-10 hdx-rounded-lg hdx-flex hdx-items-center hdx-justify-center hdx-text-text-muted hdx-hover_text-text hdx-transition" title="Settings">⚙️</a>
       </nav>
-    </div>
-  </header>
-
-  <!-- Main Content -->
-  <main class="hdx-container hdx-mx-auto hdx-p-6">
-
-    <!-- Page Title -->
-    <div class="hdx-mb-8">
-      <h1 class="hdx-text-3xl hdx-font-bold hdx-text-text">Dashboard</h1>
-      <p class="hdx-mt-2 hdx-text-text-secondary">Welcome back, John.</p>
-    </div>
-
-    <!-- Stats Grid -->
-    <div class="hdx-grid hdx-grid-cols-1 hdx-sm_grid-cols-2 hdx-lg_grid-cols-4
-                hdx-gap-6 hdx-mb-8">
-      <div class="hdx-card">
-        <p class="hdx-text-sm hdx-text-text-muted">Total Users</p>
-        <p class="hdx-text-2xl hdx-font-bold hdx-text-text hdx-mt-1">12,345</p>
-        <p class="hdx-text-xs hdx-text-success hdx-mt-2">+12% from last month</p>
+      <div class="hdx-mt-auto">
+        <div class="hdx-avatar hdx-avatar-sm">JD</div>
       </div>
-      <div class="hdx-card">
-        <p class="hdx-text-sm hdx-text-text-muted">Revenue</p>
-        <p class="hdx-text-2xl hdx-font-bold hdx-text-text hdx-mt-1">$45,678</p>
-        <p class="hdx-text-xs hdx-text-success hdx-mt-2">+8% from last month</p>
-      </div>
-      <div class="hdx-card">
-        <p class="hdx-text-sm hdx-text-text-muted">Orders</p>
-        <p class="hdx-text-2xl hdx-font-bold hdx-text-text hdx-mt-1">1,234</p>
-        <p class="hdx-text-xs hdx-text-danger hdx-mt-2">-3% from last month</p>
-      </div>
-      <div class="hdx-card">
-        <p class="hdx-text-sm hdx-text-text-muted">Conversion</p>
-        <p class="hdx-text-2xl hdx-font-bold hdx-text-text hdx-mt-1">3.2%</p>
-        <p class="hdx-text-xs hdx-text-success hdx-mt-2">+0.5% from last month</p>
-      </div>
-    </div>
+    </aside>
 
-    <!-- Content Grid -->
-    <div class="hdx-grid hdx-grid-cols-1 hdx-lg_grid-cols-3 hdx-gap-6">
+    <!-- Main Content Column -->
+    <div class="hdx-ui-page-main hdx-pl-18">
 
-      <!-- Recent Activity -->
-      <div class="hdx-lg_col-span-2 hdx-card">
-        <div class="hdx-card-header hdx-flex hdx-items-center hdx-justify-between">
-          <h2 class="hdx-text-lg hdx-font-semibold hdx-text-text">Recent Activity</h2>
-          <button class="hdx-btn hdx-btn-ghost hdx-btn-sm">View All</button>
+      <!-- Sticky Page Header -->
+      <header class="hdx-ui-page-header">
+        <div>
+          <div class="hdx-flex hdx-items-center hdx-gap-3">
+            <h1 class="hdx-ui-page-title">Executive Dashboard</h1>
+            <span class="hdx-badge-soft-success hdx-badge-dot">
+              <span class="hdx-w-2 hdx-h-2 hdx-rounded-full hdx-bg-success"></span> Live Production
+            </span>
+          </div>
+          <p class="hdx-ui-page-subtitle">Real-time metrics, infrastructure health, and recent operations.</p>
         </div>
-        <div class="hdx-card-body">
-          <div class="hdx-flex hdx-flex-col hdx-gap-4">
-            <div class="hdx-flex hdx-items-center hdx-gap-3 hdx-p-3 hdx-rounded-lg
-                        hdx-hover_bg-surface-secondary hdx-transition">
-              <div class="hdx-w-10 hdx-h-10 hdx-rounded-full hdx-bg-primary
-                          hdx-flex hdx-items-center hdx-justify-center
-                          hdx-text-white hdx-text-sm hdx-font-medium">JD</div>
-              <div class="hdx-flex-1">
-                <p class="hdx-text-sm hdx-font-medium hdx-text-text">
-                  John Doe created a new project
-                </p>
-                <p class="hdx-text-xs hdx-text-text-muted">2 minutes ago</p>
-              </div>
-              <span class="hdx-badge-primary">New</span>
-            </div>
-            <div class="hdx-flex hdx-items-center hdx-gap-3 hdx-p-3 hdx-rounded-lg
-                        hdx-hover_bg-surface-secondary hdx-transition">
-              <div class="hdx-w-10 hdx-h-10 hdx-rounded-full hdx-bg-success
-                          hdx-flex hdx-items-center hdx-justify-center
-                          hdx-text-white hdx-text-sm hdx-font-medium">JS</div>
-              <div class="hdx-flex-1">
-                <p class="hdx-text-sm hdx-font-medium hdx-text-text">
-                  Jane Smith completed a task
-                </p>
-                <p class="hdx-text-xs hdx-text-text-muted">15 minutes ago</p>
-              </div>
-              <span class="hdx-badge-success">Done</span>
-            </div>
+
+        <div class="hdx-ui-page-actions">
+          <div class="hdx-btn-group">
+            <button class="hdx-btn hdx-btn-outline hdx-btn-sm">24h</button>
+            <button class="hdx-btn hdx-btn-primary hdx-btn-sm">7d</button>
+            <button class="hdx-btn hdx-btn-outline hdx-btn-sm">30d</button>
+          </div>
+          <button class="hdx-btn hdx-btn-primary hdx-btn-sm hdx-btn-pill">
+            + New Deployment
+          </button>
+        </div>
+      </header>
+
+      <!-- Padded Content Container -->
+      <main class="hdx-ui-page-content">
+
+        <!-- KPI Metrics Grid -->
+        <div class="hdx-ui-kpi-grid">
+          <div class="hdx-ui-kpi-card">
+            <span class="hdx-ui-kpi-label">Monthly Recurring Revenue</span>
+            <span class="hdx-ui-kpi-value">$142,850</span>
+            <span class="hdx-ui-kpi-trend hdx-text-success">↑ +14.2% from last month</span>
+          </div>
+          <div class="hdx-ui-kpi-card">
+            <span class="hdx-ui-kpi-label">Active Subscriptions</span>
+            <span class="hdx-ui-kpi-value">3,420</span>
+            <span class="hdx-ui-kpi-trend hdx-text-success">↑ +8.1% net new</span>
+          </div>
+          <div class="hdx-ui-kpi-card">
+            <span class="hdx-ui-kpi-label">Avg P99 Latency</span>
+            <span class="hdx-ui-kpi-value">24ms</span>
+            <span class="hdx-ui-kpi-trend hdx-text-success">↓ -6ms optimization</span>
+          </div>
+          <div class="hdx-ui-kpi-card">
+            <span class="hdx-ui-kpi-label">System Uptime</span>
+            <span class="hdx-ui-kpi-value">99.98%</span>
+            <span class="hdx-ui-kpi-trend hdx-text-primary">SLA Guaranteed</span>
           </div>
         </div>
-      </div>
 
-      <!-- Quick Actions -->
-      <div class="hdx-card">
-        <div class="hdx-card-header">
-          <h2 class="hdx-text-lg hdx-font-semibold hdx-text-text">Quick Actions</h2>
-        </div>
-        <div class="hdx-card-body hdx-flex hdx-flex-col hdx-gap-3">
-          <button class="hdx-btn hdx-btn-primary hdx-w-full">New Project</button>
-          <button class="hdx-btn hdx-btn-outline hdx-w-full">Invite User</button>
-          <button class="hdx-btn hdx-btn-ghost hdx-w-full">View Reports</button>
-        </div>
-      </div>
+        <!-- 2-Column Responsive Split -->
+        <div class="hdx-grid hdx-grid-cols-1 hdx-lg_grid-cols-3 hdx-gap-6">
 
+          <!-- Activity Stream -->
+          <div class="hdx-lg_col-span-2 hdx-card">
+            <div class="hdx-card-header hdx-flex hdx-items-center hdx-justify-between">
+              <h2 class="hdx-text-lg hdx-font-semibold hdx-text-text">Live Operations</h2>
+              <span class="hdx-badge-primary hdx-badge-xs">Real-Time</span>
+            </div>
+            <div class="hdx-card-body hdx-flex hdx-flex-col hdx-gap-4">
+              <div class="hdx-flex hdx-items-center hdx-gap-3 hdx-p-3 hdx-rounded-lg hdx-hover_bg-surface-secondary hdx-transition">
+                <div class="hdx-w-10 hdx-h-10 hdx-rounded-full hdx-bg-primary hdx-flex hdx-items-center hdx-justify-center hdx-text-white hdx-font-medium">JD</div>
+                <div class="hdx-flex-1">
+                  <p class="hdx-text-sm hdx-font-medium hdx-text-text">Cluster US-East-1 Auto-scaled to 12 pods</p>
+                  <p class="hdx-text-xs hdx-text-text-muted">2 minutes ago</p>
+                </div>
+                <span class="hdx-badge-soft-success">Scaled</span>
+              </div>
+
+              <div class="hdx-flex hdx-items-center hdx-gap-3 hdx-p-3 hdx-rounded-lg hdx-hover_bg-surface-secondary hdx-transition">
+                <div class="hdx-w-10 hdx-h-10 hdx-rounded-full hdx-bg-success hdx-flex hdx-items-center hdx-justify-center hdx-text-white hdx-font-medium">GH</div>
+                <div class="hdx-flex-1">
+                  <p class="hdx-text-sm hdx-font-medium hdx-text-text">GitHub CI Workflow passed (commit #81e2e22)</p>
+                  <p class="hdx-text-xs hdx-text-text-muted">12 minutes ago</p>
+                </div>
+                <span class="hdx-badge-soft-primary">CI/CD</span>
+              </div>
+
+              <!-- Loading Skeleton State Preview -->
+              <div class="hdx-p-3 hdx-rounded-lg hdx-flex hdx-items-center hdx-gap-3">
+                <div class="hdx-skeleton-avatar"></div>
+                <div class="hdx-flex-1">
+                  <div class="hdx-skeleton-text hdx-w-3/4"></div>
+                  <div class="hdx-skeleton-text hdx-w-1/3"></div>
+                </div>
+                <div class="hdx-skeleton-button"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Controls Card -->
+          <div class="hdx-card hdx-flex hdx-flex-col hdx-gap-4">
+            <div class="hdx-card-header">
+              <h2 class="hdx-text-lg hdx-font-semibold hdx-text-text">Cluster Health</h2>
+            </div>
+            <div class="hdx-card-body hdx-flex hdx-flex-col hdx-gap-3">
+              <div class="hdx-flex hdx-items-center hdx-justify-between hdx-text-sm">
+                <span class="hdx-text-text-secondary">API Gateway</span>
+                <span class="hdx-badge-soft-success">Operational</span>
+              </div>
+              <div class="hdx-flex hdx-items-center hdx-justify-between hdx-text-sm">
+                <span class="hdx-text-text-secondary">PostgreSQL Primary</span>
+                <span class="hdx-badge-soft-success">Healthy</span>
+              </div>
+              <div class="hdx-flex hdx-items-center hdx-justify-between hdx-text-sm">
+                <span class="hdx-text-text-secondary">Edge CDN Cache</span>
+                <span class="hdx-badge-soft-primary">99.4% Hit</span>
+              </div>
+
+              <hr class="hdx-ui-divider">
+
+              <button class="hdx-btn hdx-btn-primary hdx-w-full">Manage Infrastructure</button>
+              <button class="hdx-btn hdx-btn-outline hdx-w-full">View System Logs</button>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
     </div>
-
-  </main>
+  </div>
 
 </body>
 </html>
