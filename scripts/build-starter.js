@@ -20,10 +20,11 @@ import { loadConfig } from '../src/core/config.js';
 import { getAllUtilities } from '../src/utilities/index.js';
 import { getAnimationKeyframes } from '../src/utilities/index.js';
 import { generateCSS } from '../src/generator/index.js';
+import { generateTailwindThemeCSS } from '../src/tailwind.js';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 
-const SIZE_LIMIT_KB = 140;
+const SIZE_LIMIT_KB = 160;
 
 // Curated "core" utility names per category. Only these become rules; the rest
 // of the framework is available through the build/purge/arbitrary paths.
@@ -170,6 +171,9 @@ function build() {
   fs.mkdirSync(outDir, { recursive: true });
   const outFile = path.join(outDir, 'index.css');
   fs.writeFileSync(outFile, css, 'utf-8');
+
+  const tailwindThemeFile = path.join(outDir, 'tailwind-theme.css');
+  fs.writeFileSync(tailwindThemeFile, generateTailwindThemeCSS() + '\n', 'utf-8');
 
   const kb = (css.length / 1024).toFixed(1);
   console.log(`Starter stylesheet: ${kept} utilities + components -> css/index.css (${kb} KB)`);

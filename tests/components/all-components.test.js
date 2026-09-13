@@ -115,4 +115,66 @@ describe('components', () => {
     const modal = components.find(c => c.name === 'modal');
     expect(modal.css).not.toContain('z-index');
   });
+
+  it('has expanded button variants, sizes, and accessibility states', () => {
+    expect(components.find(c => c.name === 'btn-xs')).toBeDefined();
+    expect(components.find(c => c.name === 'btn-xl')).toBeDefined();
+    expect(components.find(c => c.name === 'btn-pill')).toBeDefined();
+    expect(components.find(c => c.name === 'btn-link')).toBeDefined();
+    expect(components.find(c => c.name === 'btn-outline-primary')).toBeDefined();
+    expect(components.find(c => c.name === 'btn-outline-danger')).toBeDefined();
+    expect(components.find(c => c.name === 'btn-group')).toBeDefined();
+    expect(components.find(c => c.name === 'btn-group-vertical')).toBeDefined();
+
+    const btn = components.find(c => c.name === 'btn');
+    const stateSelectors = btn.states.map(s => s.selector);
+    expect(stateSelectors).toContain(':focus-visible');
+    expect(stateSelectors).toContain(':disabled');
+    expect(stateSelectors).toContain('[aria-disabled="true"]');
+  });
+
+  it('has expanded badge variants, sizes, and indicator shapes', () => {
+    expect(components.find(c => c.name === 'badge-secondary')).toBeDefined();
+    expect(components.find(c => c.name === 'badge-outline-primary')).toBeDefined();
+    expect(components.find(c => c.name === 'badge-soft-primary')).toBeDefined();
+    expect(components.find(c => c.name === 'badge-soft-success')).toBeDefined();
+    expect(components.find(c => c.name === 'badge-xs')).toBeDefined();
+    expect(components.find(c => c.name === 'badge-lg')).toBeDefined();
+    expect(components.find(c => c.name === 'badge-rounded')).toBeDefined();
+    expect(components.find(c => c.name === 'badge-dot')).toBeDefined();
+    expect(components.find(c => c.name === 'badge-count')).toBeDefined();
+  });
+
+  it('has skeleton loader components with pulse animation', () => {
+    const skeleton = components.find(c => c.name === 'skeleton');
+    expect(skeleton).toBeDefined();
+    expect(skeleton.css).toContain('animation:');
+    expect(components.find(c => c.name === 'skeleton-text')).toBeDefined();
+    expect(components.find(c => c.name === 'skeleton-avatar')).toBeDefined();
+    expect(components.find(c => c.name === 'skeleton-button')).toBeDefined();
+    expect(components.find(c => c.name === 'skeleton-card')).toBeDefined();
+  });
+
+  it('has real-world layout primitives for dashboards and pages', () => {
+    expect(components.find(c => c.name === 'ui-page-shell')).toBeDefined();
+    expect(components.find(c => c.name === 'ui-page-main')).toBeDefined();
+    expect(components.find(c => c.name === 'ui-page-header')).toBeDefined();
+    expect(components.find(c => c.name === 'ui-page-title')).toBeDefined();
+    expect(components.find(c => c.name === 'ui-page-content')).toBeDefined();
+    expect(components.find(c => c.name === 'ui-sidebar-rail')).toBeDefined();
+    expect(components.find(c => c.name === 'ui-kpi-grid')).toBeDefined();
+    expect(components.find(c => c.name === 'ui-kpi-card')).toBeDefined();
+    expect(components.find(c => c.name === 'ui-kpi-value')).toBeDefined();
+    expect(components.find(c => c.name === 'ui-empty-state')).toBeDefined();
+    expect(components.find(c => c.name === 'ui-divider')).toBeDefined();
+  });
+
+  it('has interactive accordion and tab primitives', () => {
+    expect(components.find(c => c.name === 'ui-accordion')).toBeDefined();
+    expect(components.find(c => c.name === 'ui-accordion-header')).toBeDefined();
+    expect(components.find(c => c.name === 'ui-accordion-content')).toBeDefined();
+    expect(components.find(c => c.name === 'ui-tabs')).toBeDefined();
+    expect(components.find(c => c.name === 'ui-tab')).toBeDefined();
+    expect(components.find(c => c.name === 'ui-tab-active')).toBeDefined();
+  });
 });

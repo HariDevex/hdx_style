@@ -7,7 +7,7 @@ import { colorVariable } from '../generator/resolver.js';
  */
 export function interactiveComponents(config) {
   const prefix = config.prefix;
-  const { radius, shadows } = config.theme;
+  const { radius, shadows, fontSize } = config.theme;
   const cv = (key) => colorVariable(key, prefix);
 
   return [
@@ -55,6 +55,7 @@ border-radius: 50%;
 animation: hdx-spin 0.6s linear infinite;`,
       category: 'components',
     },
+
     // --- Dropdowns ---
     {
       name: 'ui-dropdown',
@@ -102,6 +103,83 @@ visibility: visible;
 transform: translateY(0);`,
       category: 'components',
     },
+
+    // --- Accordion ---
+    {
+      name: 'ui-accordion',
+      css: `display: flex;
+flex-direction: column;
+border: 1px solid ${cv('border')};
+border-radius: ${radius['lg']};
+overflow: hidden;`,
+      category: 'components',
+    },
+    {
+      name: 'ui-accordion-item',
+      css: `border-bottom: 1px solid ${cv('border')};`,
+      category: 'components',
+    },
+    {
+      name: 'ui-accordion-header',
+      css: `display: flex;
+align-items: center;
+justify-content: space-between;
+width: 100%;
+padding: 1rem 1.25rem;
+font-weight: 500;
+font-size: ${fontSize.sm};
+color: ${cv('text')};
+background-color: ${cv('surface')};
+border: none;
+cursor: pointer;
+transition: background-color 0.15s ease;`,
+      category: 'components',
+    },
+    {
+      name: 'ui-accordion-content',
+      css: `padding: 1rem 1.25rem;
+color: ${cv('text-secondary')};
+font-size: ${fontSize.sm};
+background-color: ${cv('surface')};
+line-height: 1.6;`,
+      category: 'components',
+    },
+
+    // --- Tabs ---
+    {
+      name: 'ui-tabs',
+      css: `display: flex;
+gap: 0.5rem;
+border-bottom: 1px solid ${cv('border')};`,
+      category: 'components',
+    },
+    {
+      name: 'ui-tab',
+      css: `padding: 0.75rem 1rem;
+font-weight: 500;
+font-size: ${fontSize.sm};
+color: ${cv('text-muted')};
+border-bottom: 2px solid transparent;
+cursor: pointer;
+transition: all 0.15s ease;
+text-decoration: none;`,
+      category: 'components',
+    },
+    {
+      name: 'ui-tab-active',
+      css: `color: ${cv('primary')};
+border-bottom-color: ${cv('primary')};`,
+      category: 'components',
+    },
+    {
+      name: 'ui-tab-disabled',
+      css: `color: ${cv('text-muted')};
+opacity: 0.5;
+cursor: not-allowed;
+pointer-events: none;`,
+      category: 'components',
+    },
+
     // --- Responsive Layouts ---
     {
       name: 'ui-grid-1col',

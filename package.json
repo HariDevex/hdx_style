@@ -1,6 +1,6 @@
 {
   "name": "@haridevx/hdx-style",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "HDX Style — Modern utility-first CSS framework with design system",
   "keywords": [
     "css",
@@ -27,6 +27,11 @@
       "default": "./src/index.js"
     },
     "./css": "./css/index.css",
+    "./tailwind": {
+      "types": "./tailwind.d.ts",
+      "default": "./src/tailwind.js"
+    },
+    "./tailwind.css": "./css/tailwind-theme.css",
     "./vite": {
       "types": "./vite.d.ts",
       "default": "./src/vite.js"
@@ -46,6 +51,7 @@
     "dist/",
     "css/",
     "index.d.ts",
+    "tailwind.d.ts",
     "vite.d.ts"
   ],
   "scripts": {
@@ -68,7 +74,8 @@
     "chokidar": "^3.6.0",
     "commander": "^12.0.0",
     "fast-glob": "^3.3.0",
-    "picocolors": "^1.0.0"
+    "picocolors": "^1.0.0",
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

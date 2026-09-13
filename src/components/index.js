@@ -17,6 +17,7 @@ import { navComponents } from './nav.js';
 import { overlayComponents } from './overlay.js';
 import { formComponents } from './form.js';
 import { mediaComponents } from './media.js';
+import { skeletonComponents } from './skeleton.js';
 
 /**
  * Get all component definitions
@@ -46,6 +47,7 @@ export function getAllComponents(config) {
     ...overlayComponents(config),
     ...formComponents(config),
     ...mediaComponents(config),
+    ...skeletonComponents(config),
     ...customComponents,
   ];
 }
